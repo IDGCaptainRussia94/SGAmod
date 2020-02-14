@@ -1,9 +1,10 @@
 author = IDGCaptainRussia
-version = 1.0
+version = 1.00
 displayName = SGAmod
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true
 hideCode = false
+homepage = https://forums.terraria.org/index.php?threads/wip-sgamod.78876/
 hideResources = false
 includeSource = true
 modReferences = Idglibrary
