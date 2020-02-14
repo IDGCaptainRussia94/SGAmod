@@ -11,7 +11,7 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
-	public class LavaRocksGun : ModItem
+	public class LavaRocksGun : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()
 		{

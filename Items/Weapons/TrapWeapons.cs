@@ -10,7 +10,24 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class DartTrapGun : ModItem
+	public class TrapWeapon : ModItem
+	{
+
+		public override bool Autoload(ref string name)
+		{
+			return GetType() != typeof(TrapWeapon);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (GetType() != typeof(SuperDartTrapGun))
+			{
+				tooltips.RemoveAt(2);
+			}
+		}
+	}
+
+	public class DartTrapGun : TrapWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -340,7 +357,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class ThrowableBoulderTrap : ModItem
+	class ThrowableBoulderTrap : TrapWeapon
 	{
 
 		public override void SetStaticDefaults()
@@ -414,7 +431,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class ThrowableTrapSpikyball : ModItem
+	class ThrowableTrapSpikyball : TrapWeapon
 	{
 
 		public override void SetStaticDefaults()
@@ -610,7 +627,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class SpikeballFlail : ModItem
+	public class SpikeballFlail : TrapWeapon
 	{
 		public override void SetDefaults()
 		{

@@ -12,6 +12,11 @@ namespace SGAmod.Items.Tools
 	public class HammerEditor : ModItem
 	{
 		int myid = -1;
+
+		public override bool Autoload(ref string name)
+		{
+			return false;
+		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hammer Editor");

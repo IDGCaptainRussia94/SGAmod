@@ -1142,14 +1142,19 @@ modeproj.enhancedbees=true;
 			tag["ZZZExpertiseCollectedZZZ"] = ExpertiseCollected;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
 
-			tag["enemyvaluesTotal"] = ExpertisePointsFromBosses.Count;
-			for (int i = 0; i < ExpertisePointsFromBosses.Count; i += 1)
+			if (ExpertisePointsFromBosses != null)
 			{
-				int value = ExpertisePointsFromBosses[i];
-				string tagname = "enemyvalues" + ((string)i.ToString());
-				tag[tagname] = value;
-				string tagname2 = "enemyvaluesPoints" + ((string)i.ToString());
-				tag[tagname2] = ExpertisePointsFromBossesPoints[i];
+
+				tag["enemyvaluesTotal"] = ExpertisePointsFromBosses.Count;
+				for (int i = 0; i < ExpertisePointsFromBosses.Count; i += 1)
+				{
+					int value = ExpertisePointsFromBosses[i];
+					string tagname = "enemyvalues" + ((string)i.ToString());
+					tag[tagname] = value;
+					string tagname2 = "enemyvaluesPoints" + ((string)i.ToString());
+					tag[tagname2] = ExpertisePointsFromBossesPoints[i];
+				}
+
 			}
 
 			//ExpertisePointsFromBosses = null;

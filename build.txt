@@ -1,5 +1,5 @@
 author = IDGCaptainRussia
-version = 1.01
+version = 1.02
 displayName = SGAmod :-: [i:678] A Content Mod [i:678]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true

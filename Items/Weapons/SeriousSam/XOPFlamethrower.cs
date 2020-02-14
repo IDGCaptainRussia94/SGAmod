@@ -9,7 +9,7 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
-	public class XOPFlamethrower : ModItem
+	public class XOPFlamethrower : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()
 		{

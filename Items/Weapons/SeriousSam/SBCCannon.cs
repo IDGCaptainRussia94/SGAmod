@@ -12,7 +12,7 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
-	public class SBCCannon : ModItem
+	public class SBCCannon : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()
 		{
