@@ -1,0 +1,10 @@
+author = IDGCaptainRussia
+version = 1.0
+displayName = SGAmod
+buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
+includePDB = true
+hideCode = false
+hideResources = false
+includeSource = true
+modReferences = Idglibrary
+weakReferences = CalamityMod@1.4.2.101
