@@ -20,7 +20,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             item.width = 10;
             item.height = 10;
-            item.damage = 30;
+            item.damage = 32;
             item.melee = true;
             item.noMelee = true;
             item.useTurn = true;

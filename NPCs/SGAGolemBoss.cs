@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Idglibrary;
 
 namespace SGAmod.NPCs
 {
@@ -101,13 +102,13 @@ namespace SGAmod.NPCs
 		}
 
 		if (phase==1 && npc.ai[0]%100==0){
-		List<Projectile> itz=SgaLib.Shattershots(myowner.Center,P.position,new Vector2(P.width,P.height),ProjectileID.CultistBossFireBall,40,8,30,2,true,0,false,220);
+		List<Projectile> itz=Idglib.Shattershots(myowner.Center,P.position,new Vector2(P.width,P.height),ProjectileID.CultistBossFireBall,40,8,30,2,true,0,false,220);
 		//itz[0].aiStyle=5;
 		}
 		if (phase>0 && npc.ai[0]%350==0){
 		for (int i = 0; i < 3; i++)
 		{
-		List<Projectile> itz=SgaLib.Shattershots(myowner.Center,myowner.Center,new Vector2(0,0),mod.ProjectileType("Ringproj"),60,14,0,1,true,Main.rand.Next(-360,360),false,420);
+		List<Projectile> itz=Idglib.Shattershots(myowner.Center,myowner.Center,new Vector2(0,0),mod.ProjectileType("Ringproj"),60,14,0,1,true,Main.rand.Next(-360,360),false,420);
 		itz[0].timeLeft=200;
 		itz[0].tileCollide=true;
 		//itz[0].aiStyle=5;
@@ -125,7 +126,7 @@ namespace SGAmod.NPCs
 		if (phase==2){
 		if (System.Math.Abs(myowner.velocity.Y)<1){
 		if ((npc.ai[0])%600>400 && (npc.ai[0])%10==0){
-		List<Projectile> itz=SgaLib.Shattershots(myowner.Center,P.position+new Vector2((float)Main.rand.Next(-150,150),-700f),new Vector2(P.width,P.height),ProjectileID.DD2BetsyFireball,70,30,0,1,true,0,false,220);
+		List<Projectile> itz=Idglib.Shattershots(myowner.Center,P.position+new Vector2((float)Main.rand.Next(-150,150),-700f),new Vector2(P.width,P.height),ProjectileID.DD2BetsyFireball,70,30,0,1,true,0,false,220);
 		itz[0].timeLeft=600;
 		itz[0].tileCollide=false;
 		SGAprojectile modeproj=itz[0].GetGlobalProjectile<SGAprojectile>();

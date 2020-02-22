@@ -130,7 +130,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Portal Bullet");
-			Tooltip.SetDefault("Portals appear at the mouse curser which summon high velocity bullets to fly at the near enemies");
+			Tooltip.SetDefault("Portals appear at the mouse curser which summon high velocity bullets to fly at the nearby enemies");
 		}
 		public override string Texture
 		{

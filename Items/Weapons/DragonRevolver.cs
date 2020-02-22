@@ -35,7 +35,7 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 40;
 			item.useAnimation = 40;
 			item.knockBack = 10;
-			item.value = 10000;
+			item.value = Item.sellPrice(1,0,0,0);
 			item.rare = 12;
 			item.crit = 15;
 	        item.shootSpeed = 8f;
@@ -283,7 +283,7 @@ namespace SGAmod.Items.Weapons
 				angle.Normalize();
 				int proj=Projectile.NewProjectile(thetarget.Center.X, thetarget.Center.Y, 0f,0f, mod.ProjectileType("SlimeBlast"), (int)(3000 * (player.rangedDamage)), 15f, projectile.owner, 0f, 0f);
 				Main.projectile[proj].direction=projectile.direction;
-				Main.projectile[proj].ranged=true;
+				Main.projectile[proj].ranged = true;
 				Main.PlaySound(SoundID.Item45,thetarget.Center);
 				Main.PlaySound(SoundID.Item41,player.Center);
 				thetarget.Kill();

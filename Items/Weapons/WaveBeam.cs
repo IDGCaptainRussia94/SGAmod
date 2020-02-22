@@ -36,7 +36,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 2;
-			item.value = Item.sellPrice(1,0,0,0);
+			item.value = Item.sellPrice(0,75,0,0);
 			item.rare = 11;
 			//item.UseSound = SoundID.Item99;
 			item.autoReuse = true;

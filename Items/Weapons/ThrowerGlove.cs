@@ -16,10 +16,10 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Grenadier's Glove");
-			Tooltip.SetDefault("Throws hand grenades further, and increases their damage");
+			Tooltip.SetDefault("Throws hand grenades (and Molotovs) further, and increases their damage\nMay also be worn in place of a Grapple Hook to throw grenades with the grapple key\nHowever, the grenades are slower and has a cooldown");
 		}
 
-		public int FindGrenadeToThrow(Player player)
+		public static int FindGrenadeToThrow(Mod mod,Player player)
 		{
 		List<int> grenadetypes = new List<int>();
 			grenadetypes.Add(ItemID.Grenade);
@@ -31,6 +31,7 @@ namespace SGAmod.Items.Weapons
 			grenadetypes.Add(mod.ItemType("ThermalGrenade"));
 			grenadetypes.Add(mod.ItemType("CelestialCocktail"));
 			grenadetypes.Add(ItemID.MolotovCocktail);
+
 
 
 			for (int i = 0; i < 58; i++)
@@ -66,18 +67,19 @@ namespace SGAmod.Items.Weapons
 			//item.noUseGraphic = true;
 			item.noMelee = true;
 			item.autoReuse = true;
+			item.shoot = ModContent.ProjectileType<GrenadeNotAHook>();
 			item.value = Item.buyPrice(0, 0, 50, 0);
 			item.rare = 3;
 		}
 
 		public override bool CanUseItem(Player player)
 		{
-			return (FindGrenadeToThrow(player)>0);
+			return (ThrowerGlove.FindGrenadeToThrow(mod,player)>0);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			int basetype = FindGrenadeToThrow(player);
+			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player);
 			//if (player.CountItem(mod.ItemType("AcidGrenade"))>0)
 			//basetype = mod.ItemType("AcidGrenade");
 
@@ -121,7 +123,58 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class AcidGrenade : ModItem
+	internal class GrenadeNotAHook : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/AcidGrenade"); }
+		}
+
+		public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+			player.GetModPlayer<SGAPlayer>().greandethrowcooldown = 120;
+			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player);
+			//if (player.CountItem(mod.ItemType("AcidGrenade"))>0)
+			//basetype = mod.ItemType("AcidGrenade");
+
+			Vector2 basespeed = projectile.velocity/4f;
+			float speedbase = basespeed.Length();
+			basespeed.Normalize();
+
+			Item basetype2 = new Item();
+			basetype2.SetDefaults(basetype);
+			player.itemTime = basetype2.useTime;
+			int type = basetype2.shoot;
+			basespeed *= (basetype2.shootSpeed + speedbase);
+			int damage = (int)(basetype2.damage * player.thrownDamage);
+
+			Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, basespeed.X, basespeed.Y, type, damage, basetype2.knockBack, player.whoAmI);
+
+			player.ConsumeItem(basetype);
+
+			projectile.Kill();
+		}
+
+		// Use this hook for hooks that can have multiple hooks mid-flight: Dual Hook, Web Slinger, Fish Hook, Static Hook, Lunar Hook
+		public override bool? CanUseGrapple(Player player)
+		{
+			return player.GetModPlayer<SGAPlayer>().greandethrowcooldown<1;
+		}
+
+	}
+
+		class AcidGrenade : ModItem
 	{
 
 		public override void SetStaticDefaults()
@@ -369,7 +422,7 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 20;
 			item.useAnimation = 20;
 			item.maxStack = 999;
-			item.shootSpeed = 16f;
+			item.shootSpeed = 8f;
 			item.shoot = mod.ProjectileType("CelestialCocktailProj");
 			item.value = Item.buyPrice(0, 1, 0, 0);
 			item.rare = 10;

@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Idglibrary;
 
 
 namespace SGAmod.NPCs.Cratrosity
@@ -53,16 +54,16 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 
 
 		if (a==0 && pmlphasetimer%50==i*5 && pmlphasetimer<1100 && pmlphasetimer>0){
-		SgaLib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i+1)%2),it.Y*(i%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)3,0,1,true,0,false,300);
-		SgaLib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i)%2),it.Y*((i+1)%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)4,0,1,true,0,false,300);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i+1)%2),it.Y*(i%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)3,0,1,true,0,false,300);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i)%2),it.Y*((i+1)%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)4,0,1,true,0,false,300);
 		}
 
 		if (a==1 && pmlphasetimer%200<40 && pmlphasetimer<2200 && pmlphasetimer>1200 && pmlphasetimer%20==i){
-		SgaLib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)8,0,1,true,0,false,150);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)8,0,1,true,0,false,150);
 		}
 
 		if (a==2 && pmlphasetimer%180==i*10 && pmlphasetimer>2200 && pmlphasetimer<2800){
-		SgaLib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.CopperCoin,25,(float)3,0,1,true,0,false,200);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.CopperCoin,25,(float)3,0,1,true,0,false,200);
 		}
 
 }}
@@ -84,7 +85,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		pmlphase=pmlphase+1;
 		pmlphasetimer=1100;
 		if (pmlphase==2){pmlphasetimer=3000;}
-		SgaLib.Chat("Impressive, but not good enough",144, 79, 16);
+		Idglib.Chat("Impressive, but not good enough",144, 79, 16);
 		int spawnedint=NPC.NewNPC((int)npc.Center.X,(int)npc.Center.Y, summons[0]); summons.RemoveAt(0);
 		NPC him=Main.npc[spawnedint];
 		him.life=(int)(npc.life*0.75f);
@@ -121,7 +122,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		OrderOfTheCrates(P);
 		origin.compressvargoal=4f;
 		origin.themode=1;
-		npc.rotation=SgaLib.LookAt(npc.Center,P.Center);
+		npc.rotation=Idglib.LookAt(npc.Center,P.Center);
 		npc.dontTakeDamage=true;
 		npc.velocity=(npc.velocity*0.97f);
 		if (pmlphasetimer<1000){
@@ -131,8 +132,8 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		npc.velocity=(it*(30f-pmlphasetimer*0.02f));
 		}
 		if (pmlphasetimer%120<60 && pmlphasetimer%20==0){
-		SgaLib.Shattershots(npc.Center,npc.Center+it*50,new Vector2(0,0),ProjectileID.NanoBullet,40,(float)6,80,3,true,0,false,600);
-		SgaLib.PlaySound(13,npc.Center, 0);
+		Idglib.Shattershots(npc.Center,npc.Center+it*50,new Vector2(0,0),ProjectileID.NanoBullet,40,(float)6,80,3,true,0,false,600);
+		Idglib.PlaySound(13,npc.Center, 0);
 		}
 		}
 		}

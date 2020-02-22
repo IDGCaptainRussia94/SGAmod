@@ -23,6 +23,8 @@ namespace SGAmod.Projectiles
         public virtual int startrate => 90;
         public virtual int drainrate => 5;
         public virtual int portalprojectile => mod.ProjectileType("UnmanedBolt");
+        public virtual float portaldistfromsword => 60f;
+        public virtual float velmulti => 8f;
 
         private int ogdamage = 0;
 
@@ -36,6 +38,14 @@ namespace SGAmod.Projectiles
             projectile.height = 24;
             projectile.tileCollide = false;
             projectile.timeLeft = 90;
+        }
+
+        public virtual void WhileFiring()
+        {
+            //nothin
+
+
+
         }
 
         public override void AI()
@@ -76,8 +86,10 @@ namespace SGAmod.Projectiles
                     player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir)+(angleoffset* player.direction);
                     projectile.damage=player.GetWeaponDamage(player.HeldItem);
 
-                    projectile.Center = player.Center + (projectile.velocity * 60f);
-                    projectile.velocity *= 8f;
+                    WhileFiring();
+
+                    projectile.Center = player.Center + (projectile.velocity * portaldistfromsword);
+                    projectile.velocity *= velmulti;
 
 
                     if (player.manaRegenDelay<15)

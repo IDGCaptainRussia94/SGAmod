@@ -50,6 +50,7 @@ namespace SGAmod.Items.Tools
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
+
 	}
 
 	public class BraxsawProj : ModProjectile

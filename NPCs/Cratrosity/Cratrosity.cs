@@ -98,7 +98,7 @@ public float nonaispin=0f;
 		{
 	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKey"));
 	if (SGAWorld.downedCratrosity==false){
-		SgaLib.Chat("The hungry video game industry has been tamed! New items are available for buying",244, 179, 66);
+		Idglib.Chat("The hungry video game industry has been tamed! New items are available for buying",244, 179, 66);
 		SGAWorld.downedCratrosity=true;
 	}
         }
@@ -204,17 +204,17 @@ return false;
 		case 4:
 		{
 		if (npc.ai[0]%10==0){
-		Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.SilverCoin,(int)(npc.damage*(25.00/defaultdamage)),14,0,1,true,0,true,100);
+		Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.SilverCoin, (int)(npc.damage*(25.00/defaultdamage)),14,0,1,true,0,true,100);
 		}
 		break;
 		}
 		case 3:
 		{
 		if (npc.ai[0]%3==0 && npc.ai[0]%50>38){
-		Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.SilverCoin,(int)(npc.damage*(25/defaultdamage)),16,0,1,true,0,true,90);
+		Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.GoldCoin, (int)(npc.damage*(30/defaultdamage)),16,0,1,true,0,true,90);
 		}
 		if (npc.ai[0]%8==0 && Main.expertMode){
-		List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center+new Vector2(0,-5),new Vector2(0,0),ProjectileID.GoldCoin,(int)(npc.damage*(30/defaultdamage)),7,360,2,true,npc.ai[0]/20,true,300);
+		List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center+new Vector2(0,-5),new Vector2(0,0),ProjectileID.SilverCoin,(int)(npc.damage*(25/defaultdamage)),7,360,2,true,npc.ai[0]/20,true,300);
 		}
 		break;
 		}
@@ -223,8 +223,8 @@ return false;
 
 		if (npc.ai[0]%50==0){
 		Idglib.Shattershots(npc.Center,P.position+new Vector2(P.velocity.X,P.velocity.Y),new Vector2(P.width,P.height),ProjectileID.GoldCoin, (int)(npc.damage * (30.00 / defaultdamage)), (int)(npc.damage*(20.00/defaultdamage)),0,1,true,0,true,100);
-		Idglib.Shattershots(npc.Center,P.position+new Vector2(P.velocity.X*3,P.velocity.Y*3),new Vector2(P.width,P.height),ProjectileID.GoldCoin, (int)(npc.damage * (30.00 / defaultdamage)), (int)(npc.damage*(20.00/defaultdamage)),0,1,true,0,true,100);
-		Idglib.Shattershots(npc.Center,P.position+new Vector2(P.velocity.X*6,P.velocity.Y*6),new Vector2(P.width,P.height),ProjectileID.GoldCoin, (int)(npc.damage * (30.00 / defaultdamage)), (int)(npc.damage*(20.00/defaultdamage)),0,1,true,0,true,100);
+		Idglib.Shattershots(npc.Center,P.position+new Vector2(P.velocity.X*3,P.velocity.Y*3),new Vector2(P.width,P.height),ProjectileID.SilverCoin, (int)(npc.damage * (20.00 / defaultdamage)), (int)(npc.damage*(20.00/defaultdamage)),0,1,true,0,true,100);
+		Idglib.Shattershots(npc.Center,P.position+new Vector2(P.velocity.X*6,P.velocity.Y*6),new Vector2(P.width,P.height),ProjectileID.CopperCoin, (int)(npc.damage * (10.00 / defaultdamage)), (int)(npc.damage*(20.00/defaultdamage)),0,1,true,0,true,100);
 
 		}
 		}

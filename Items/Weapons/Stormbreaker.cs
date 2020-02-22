@@ -46,7 +46,7 @@ namespace SGAmod.Items.Weapons
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.autoReuse = true;
-			item.value = Item.buyPrice(1, 0, 0, 0);
+			item.value = Item.sellPrice(1, 0, 0, 0);
 			item.rare = 12;
 			item.channel = true;
 			item.expert=true;

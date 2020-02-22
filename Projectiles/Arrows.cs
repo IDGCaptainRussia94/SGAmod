@@ -356,7 +356,79 @@ namespace SGAmod.Projectiles
 		}
 
 	}
+	public class DankArrow : PitchArrow
+	{
 
+		double keepspeed = 0.0;
+		float homing = 0.06f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dank Arrow");
+		}
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.arrow = true;
+			aiType = ProjectileID.WoodenArrowFriendly;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			projectile.type = ProjectileID.BoneArrow;
+			if (Main.rand.Next(0, 100) < 50 && !target.boss && !target.buffImmune[BuffID.Poisoned])
+				target.AddBuff(mod.BuffType("DankSlow"), 60 * 3);
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			effects(1);
+			return true;
+		}
+
+
+		public override void effects(int type)
+		{
+			if (type == 0)
+			{
+				Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 8f;
+				for (int num315 = 0; num315 < 3; num315 = num315 + 1)
+				{
+					int num316 = Dust.NewDust(projectile.position+positiondust, projectile.width, projectile.height, 184, 0f, 0f, 50, Main.hslToRgb(0.15f, 1f, 1.00f), 1.00f);
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					Main.dust[num316].noGravity = true;
+					Dust dust3 = Main.dust[num316];
+					dust3.velocity = (randomcircle * 1.25f * Main.rand.NextFloat());
+					dust3.velocity += projectile.velocity / 5f;
+					//dust.velocity += projectile.velocity * Main.rand.NextFloat(1f / 6f, 0.5f);
+				}
+			}
+			if (type == 1)
+			{
+				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 112, 0.33f, -0.125f);
+				//Main.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 10);
+				Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 8f;
+				for (int num315 = 0; num315 < 25; num315 = num315 + 1)
+				{
+					int num316 = Dust.NewDust(projectile.position + positiondust, projectile.width, projectile.height, 184, 0f, 0f, 50, Main.hslToRgb(0.15f, 1f, 1.00f), 1.00f);
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					Main.dust[num316].noGravity = true;
+					Dust dust3 = Main.dust[num316];
+					dust3.velocity = (randomcircle * 3f * Main.rand.NextFloat());
+					dust3.velocity += projectile.velocity / 2f;
+				}
+
+			}
+
+		}
+	}
 	public class WraithArrow : PitchArrow
 	{
 

@@ -117,7 +117,7 @@ if (npc.ai[0]==2){
 bosses[0]=NPC.NewNPC((int)npc.Center.X + 900, (int)npc.Center.Y - 32, NPCID.Spazmatism);
 			Main.npc[bosses[0]].boss=false;
 			Main.npc[bosses[0]].timeLeft=99999;
-			bossattach[0]=-1;
+					bossattach[0]=-1;
 bosses[1]=NPC.NewNPC((int)npc.Center.X + 900, (int)npc.Center.Y - 32, NPCID.SkeletronPrime);
 			Main.npc[bosses[1]].boss=false;
 			Main.npc[bosses[1]].timeLeft=99999;
@@ -212,6 +212,8 @@ Main.npc[bosses[3]].defDefense=20;
 Main.npc[bosses[3]].defense=20;
 bossattach[3]=-1;
 }
+
+
 thisboss.active=false;
 bossattach[i]=-1;
 bosses[i]=0;
@@ -241,7 +243,7 @@ shooting=shooting+1;
 if (divider<4){
 if (shooting%160>120 && shooting%8==0)
 {
-SgaLib.Shattershots(npc.position,P.position+P.velocity*(1f+(shooting-120 % 160)/30f), new Vector2(P.width,P.height),88,40,8,0,1,true,0,false,450);
+Idglib.Shattershots(npc.position,P.position+P.velocity*(1f+(shooting - 120 % 160)/150f), new Vector2(P.width,P.height),88,25,8,0,1,true,0,false,450);
 }
 
 							if ((shooting+90) % 180 == 0 && Main.expertMode)
@@ -282,14 +284,14 @@ if(Main.expertMode){
 expert=1;
 }
 if (shooting%((int)(30+(npc.life/5000)))==0){
-								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),100,24+(expert*6),12,60,2+expert,true,0,true,300);
+								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),100,25,12,60,2+expert,true,0,true,300);
 }
 
 if (shooting%(int)(60)<30 && shooting%3==0){
-								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),83,35,3+expert,0,1,true,(float)shooting/22,false,300);
+								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),83,20,3+expert,0,1,true,(float)shooting/22,false,300);
 }
 if ((shooting-30)%(int)(60)<30 && shooting%3==0){
-								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),83,35,3+expert,0,1,true,-(float)shooting/22,false,300);
+								Idglib.Shattershots(npc.Center, P.position,new Vector2(P.width,P.height),83,20,3+expert,0,1,true,-(float)shooting/22,false,300);
 }
 if (phase<240){
 npc.velocity=new Vector2(((P.position.X-500)-npc.position.X)/32,((P.position.Y-150)-npc.position.Y)/16);

@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.GameInput;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using Idglibrary;
 using Terraria.ModLoader.IO;
@@ -38,11 +39,12 @@ namespace SGAmod
 		public bool MassiveBleeding = false;
 		public bool ActionCooldown = false;
 		public bool thermalblaze = false; public bool acidburn = false;
-		public bool LifeFlower = false; public bool GeyserInABottle=false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false;
+		public bool LifeFlower = false; public bool GeyserInABottle=false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool PrimordialSkull = false;
 		public bool Matrix = false;
 		public int EnhancingCharm = 0;
 		public int FieryheartBuff = 0;
 		public int creeperexplosion = 0;
+		public bool DankShrineZone = false;
 		private Projectile[] projectileslunarslime = new Projectile[15];
 
 		public bool lunarSlimeHeart = false;
@@ -52,7 +54,7 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
 		private int lockedelay = 0;
-		public int Novusset = 0;	public bool Blazewyrmset = false;	public bool SpaceDiverset = false;	public bool MisterCreeperset = false;	public bool Mangroveset = false;
+		public int Novusset = 0;	public bool Blazewyrmset = false;	public bool SpaceDiverset = false;	public bool MisterCreeperset = false;	public bool Mangroveset = false; public int Dankset = 0;
 		public float SpaceDiverWings = 0f;
 		public int Havoc = 0;
 		public int breathingdelay = 0;
@@ -60,8 +62,8 @@ namespace SGAmod
 		public float UseTimeMul = 1f;
 		public bool Noselfdamage = false;
 		public float UseTimeMulPickaxe = 1f;
-		public float TrapDamageMul = 1f;
-		public float ThrowingSpeed = 1f;
+		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
+		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
@@ -77,8 +79,12 @@ namespace SGAmod
 		public bool MurkyDepths=false;
 		public int[] ammoinboxes = new int[4];
 		public int anticipation = 0; public int anticipationLevel = 0;
+		public float recoil = 0;
+		public int greandethrowcooldown = 0;
+		public int? resetver = 1;
 
 		public List<int> ExpertisePointsFromBosses;
+		public List<string> ExpertisePointsFromBossesModded;
 		public List<int> ExpertisePointsFromBossesPoints;
 		public int ExpertiseCollected = 0;
 		public int ExpertiseCollectedTotal = 0;
@@ -175,6 +181,10 @@ namespace SGAmod
 			}
 		}
 
+		public override void UpdateBiomes()
+		{
+			DankShrineZone = (SGAWorld.MoistStonecount > 15 && Main.tile[(int)(player.Center.X/16), (int)(player.Center.Y / 16)].wall==mod.WallType("SwampWall"));
+		}
 
 		public override void ResetEffects()
 		{
@@ -199,7 +209,8 @@ namespace SGAmod
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
 			lunarSlimeHeart = false;
-			TrapDamageMul = 1f;
+			TrapDamageMul = 1f; TrapDamageAP = 0f;
+			Thrownsavingchance = 0f;
 			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false;
 			EnhancingCharm = 0;
 			if (devpower>0)
@@ -214,27 +225,10 @@ namespace SGAmod
 			plasmaLeftInClipMax = 1000;
 			beedamagemul = 1f;
 			anticipationLevel = -1;
-		}
-
-		private void SendClientChangesPacket()
-		{
-
-			if (Main.netMode == 1) {
-				ModPacket packet = SGAmod.Instance.GetPacket();
-				packet.Write((byte)MessageType.ClientSendInfo);
-				packet.Write(player.whoAmI);
-				packet.Write(ammoLeftInClip);
-				packet.Write(sufficate);
-				packet.Write(PrismalShots);
-				packet.Write(devpower);
-				packet.Write(plasmaLeftInClip);
-				for (int i = 54; i < 58; i++)
-				{
-					packet.Write(ammoinboxes[i - 54]);
-				}
-				packet.Send();
-			}
-
+			PrimordialSkull = false;
+			if (player.itemTime < 1)
+			recoil = Math.Max(recoil - 0.5f, 0f);
+			greandethrowcooldown = Math.Max(greandethrowcooldown - 1, 0);
 		}
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -276,6 +270,8 @@ namespace SGAmod
 			sgaplayer.devpower = devpower;
 			sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
 			sgaplayer.Redmanastar = Redmanastar;
+			sgaplayer.ExpertiseCollected = ExpertiseCollected;
+			sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -298,13 +294,38 @@ namespace SGAmod
 				}
 			}
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.devpower != devpower 
-			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip|| sgaplayer.Redmanastar != Redmanastar)
+			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal)
 			mismatch = true;
 
 
 			if (mismatch) {
 				SendClientChangesPacket();
 			}
+		}
+
+
+		private void SendClientChangesPacket()
+		{
+
+			if (Main.netMode == 1)
+			{
+				ModPacket packet = SGAmod.Instance.GetPacket();
+				packet.Write((byte)MessageType.ClientSendInfo);
+				packet.Write(player.whoAmI);
+				packet.Write(ammoLeftInClip);
+				packet.Write(sufficate);
+				packet.Write(PrismalShots);
+				packet.Write(devpower);
+				packet.Write(plasmaLeftInClip);
+				packet.Write(ExpertiseCollected);
+				packet.Write(ExpertiseCollectedTotal);
+				for (int i = 54; i < 58; i++)
+				{
+					packet.Write(ammoinboxes[i - 54]);
+				}
+				packet.Send();
+			}
+
 		}
 
 
@@ -355,15 +376,29 @@ namespace SGAmod
 
 				ammoinboxes[i - 54] = player.inventory[i].type;
 			}
+
 		}
 
 		public override void PostUpdateBuffs()
 		{
 			player.statManaMax2 += 20 * Redmanastar;
+
 		}
 
 		public override void PostUpdateEquips()
 		{
+			if (Dankset > 0)
+			{
+				bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+				if (!underground && Main.dayTime)
+				player.lifeRegen += 3;
+			}
+			if (Main.netMode != 1)
+			{
+				Overlays.Scene.Activate("SGAmod:SGAHUD");
+			}
+
+
 
 			if (EnhancingCharm > 0)
 			{
@@ -480,8 +515,9 @@ FieryheartBuff = FieryheartBuff-1;
 beefield=beefield-1;
 beefieldtoggle=beefieldtoggle-1;
 Novusset-=1;
+Dankset -= 1;
 
-breathingdelay+=1; breathingdelay%=30;
+			breathingdelay += 1; breathingdelay%=30;
 if (sufficate<0){
 if (breathingdelay%5==0)
 sufficate=(int)MathHelper.Clamp(sufficate+1,-200,player.breathMax-1);
@@ -787,6 +823,8 @@ modeproj.enhancedbees=true;
 
 		public override void ModifyHitByNPC (NPC npc, ref int damage, ref bool crit)
 		{
+			if (PrimordialSkull)
+			damage = damage / 2;
 			damage=OnHit(ref damage,crit,npc,null);
 		}
 
@@ -811,8 +849,6 @@ modeproj.enhancedbees=true;
 				damage = (int)(damage * 1.5);
 			}
 
-
-
 		if (Noselfdamage)
 			{
 			if (creeperexplosion<9800)
@@ -834,9 +870,9 @@ modeproj.enhancedbees=true;
 		damage*=3;
 
 		int lifelost=(int)(((float)damage/(float)player.statLifeMax)*100f);
-		sufficate-=lifelost;
+		sufficate-=(lifelost+5);
 		if (sufficate<0)
-		sufficate=(int)MathHelper.Clamp(-lifelost,sufficate,0);
+		sufficate=(int)MathHelper.Clamp(-(lifelost),sufficate,0);
 
 		return false;
 		}}
@@ -859,7 +895,7 @@ modeproj.enhancedbees=true;
 			}
 			if (NPC.CountNPCS(mod.NPCType("TPD")) > 0 && Main.rand.Next(0,10)<(Main.expertMode ? 6 : 3))
 			{
-				player.AddBuff(BuffID.Electrified, 60+(damage * 4));
+				player.AddBuff(BuffID.Electrified, 20+(damage * 2));
 			}
 			if (CirnoWings)
 		{
@@ -897,7 +933,7 @@ modeproj.enhancedbees=true;
 		int lifelost=(int)(((float)damage/(float)player.statLifeMax)*150f);
 		sufficate-=lifelost;
 		if (sufficate<0)
-		sufficate=(int)MathHelper.Clamp(-lifelost,sufficate,0);
+		sufficate=(int)MathHelper.Clamp(-(lifelost+5),sufficate,0);
 		}
 
 			if (player.HeldItem.type==mod.ItemType("Powerjack"))
@@ -1092,10 +1128,10 @@ modeproj.enhancedbees=true;
 			//plasmaLeftInClip
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
-			if (SGAmod.UsesClips.ContainsKey(player.HeldItem.type)){
+			/*if (SGAmod.UsesClips.ContainsKey(player.HeldItem.type)){
 			int armLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
-			BulletCount.visible = true;
-			layers.Insert(armLayer+1, BulletCount);
+			//BulletCount.visible = true;
+			//layers.Insert(armLayer+1, BulletCount);
 			}
 
 			if (SGAmod.UsesPlasma.ContainsKey(player.HeldItem.type))
@@ -1103,7 +1139,7 @@ modeproj.enhancedbees=true;
 				int armLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
 				PlasmaCount.visible = true;
 				layers.Insert(armLayer + 1, PlasmaCount);
-			}
+			}*/
 
 			if (sgaplayer.SpaceDiverset)
 			{
@@ -1141,6 +1177,7 @@ modeproj.enhancedbees=true;
 
 			tag["ZZZExpertiseCollectedZZZ"] = ExpertiseCollected;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
+			tag["resetver"] = resetver;
 
 			if (ExpertisePointsFromBosses != null)
 			{
@@ -1153,6 +1190,8 @@ modeproj.enhancedbees=true;
 					tag[tagname] = value;
 					string tagname2 = "enemyvaluesPoints" + ((string)i.ToString());
 					tag[tagname2] = ExpertisePointsFromBossesPoints[i];
+					string tagname3 = "enemyvaluesModded" + ((string)i.ToString());
+					tag[tagname3] = ExpertisePointsFromBossesModded[i];
 				}
 
 			}
@@ -1170,28 +1209,41 @@ modeproj.enhancedbees=true;
 			devpowerbool = tag.GetBool("devpower");
 			devpower = tag.GetInt("devpowerint");
 			Redmanastar = tag.GetInt("Redmanastar");
+			int? resetver2=null;
+			resetver = tag.GetInt("resetver");
 
 			ExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedZZZ");
 			int maybeExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedTotalZZZ");
 			ExpertiseCollectedTotal = maybeExpertiseCollected;
 
-			if (maybeExpertiseCollected < 1)
+			if (maybeExpertiseCollected < 1 || (!tag.ContainsKey("resetver")))
 			{
 
 				GenerateNewBossList();
 			}
 			else
 			{
-				ExpertisePointsFromBosses = new List<int>();
-				ExpertisePointsFromBossesPoints = new List<int>();
 				int maxx = tag.GetInt("enemyvaluesTotal");
-				for (int i = 0; i < maxx; i += 1)
+				if (maxx < 1)
 				{
-					int v1 = tag.GetInt("enemyvalues" + ((string)i.ToString()));
-					int v2 = tag.GetInt("enemyvaluesPoints" + ((string)i.ToString()));
+					GenerateNewBossList();
 
-					ExpertisePointsFromBosses.Add(v1);
-					ExpertisePointsFromBossesPoints.Add(v2);
+				}
+				else
+				{
+					ExpertisePointsFromBosses = new List<int>();
+					ExpertisePointsFromBossesPoints = new List<int>();
+					ExpertisePointsFromBossesModded = new List<string>();
+					for (int i = 0; i < maxx; i += 1)
+					{
+						int v1 = tag.GetInt("enemyvalues" + ((string)i.ToString()));
+						int v2 = tag.GetInt("enemyvaluesPoints" + ((string)i.ToString()));
+						string v3 = tag.GetString("enemyvaluesModded" + ((string)i.ToString()));
+
+						ExpertisePointsFromBosses.Add(v1);
+						ExpertisePointsFromBossesPoints.Add(v2);
+						ExpertisePointsFromBossesModded.Add(v3);
+					}
 				}
 
 			}
@@ -1201,12 +1253,42 @@ modeproj.enhancedbees=true;
 
 		}
 
-		public int? FindBossEXP(int npcid)
+		public override void CatchFish(Item fishingRod, Item bait, int power, int liquidType, int poolSize, int worldLayer, int questFish, ref int caughtType, ref bool junk)
+		{
+			if (junk)
+			{
+				return;
+			}
+			if (DankShrineZone) {
+				int chance = 10 + (player.cratePotion ? 15 : 0) + (int)Math.Min(50, power);
+				if (Main.rand.Next(0, 100) < chance)
+					caughtType = mod.ItemType("DankCrate");
+			}
+		}
+
+		public int? FindBossEXP(int npcid,NPC npc)
 		{
 			int? found = -1;
+			int? foundpre = -1;
+
+			int modnpc = 0;
+			if (npc != null) {
+				if (npc.modNPC != null)
+				{
+					foundpre = ExpertisePointsFromBossesModded.FindIndex(x => (x == npc.modNPC.GetType().Name));
+					//Main.NewText(foundpre);
+					//Main.NewText(npc.modNPC.GetType().Name);
+					if (foundpre != null && foundpre > -1)
+					{
+						return foundpre;
+					}
+				}
+					
+			}
+			
 
 
-			if (npcid == NPCID.EaterofWorldsHead || npcid == NPCID.EaterofWorldsBody || npcid == NPCID.EaterofWorldsTail)
+				if (npcid == NPCID.EaterofWorldsHead || npcid == NPCID.EaterofWorldsBody || npcid == NPCID.EaterofWorldsTail)
 			{
 				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.EaterofWorldsHead));
 				goto gohere;
@@ -1216,6 +1298,8 @@ modeproj.enhancedbees=true;
 				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.GoblinPeon));
 				goto gohere;
 			}
+			goherelook:
+
 			found = ExpertisePointsFromBosses.FindIndex(x => x == npcid);
 
 			gohere:
@@ -1227,6 +1311,8 @@ modeproj.enhancedbees=true;
 		public void DoExpertiseCheck(NPC npc)
 		{
 
+			if (npc==null)
+				return;
 			if (!npc.active)
 				return;
 			if (npc.lifeMax < 100)
@@ -1242,12 +1328,14 @@ modeproj.enhancedbees=true;
 
 			int npcid = npc.type;
 
-			int? found = FindBossEXP(npcid);
+			int? found = FindBossEXP(npcid, npc);
 
 			if (found!=null && found > -1)
 			{
-
 				int collected = ExpertisePointsFromBossesPoints[(int)found];
+				if (SGAWorld.NightmareHardcore > 0)
+				collected = (int)(collected * (SGAWorld.NightmareHardcore==1 ? 1.15f : 1.25f));
+
 				ExpertiseCollected += collected;
 				ExpertiseCollectedTotal += collected;
 
@@ -1255,8 +1343,9 @@ modeproj.enhancedbees=true;
 
 				ExpertisePointsFromBosses.RemoveAt((int)found);
 				ExpertisePointsFromBossesPoints.RemoveAt((int)found);
+				ExpertisePointsFromBossesModded.RemoveAt((int)found);
 
-				int? findagain = FindBossEXP(npcid);
+				int? findagain = FindBossEXP(npcid,npc);
 
 				if (findagain == null || findagain < 0)
 				{
@@ -1271,171 +1360,133 @@ modeproj.enhancedbees=true;
 
 		}
 
+		public void addtolist(int value,int s2ndvalue)
+		{
+			ExpertisePointsFromBosses.Add(value);
+			ExpertisePointsFromBossesPoints.Add(s2ndvalue);
+			ExpertisePointsFromBossesModded.Add("");
+		}
+		public void addtolistmodded(string value, int s2ndvalue)
+		{
+			ExpertisePointsFromBosses.Add(-1);
+			ExpertisePointsFromBossesPoints.Add(s2ndvalue);
+			ExpertisePointsFromBossesModded.Add(value);
+		}
+
+
 		public void GenerateNewBossList()
 		{
 			ExpertisePointsFromBosses = new List<int>();
 			ExpertisePointsFromBossesPoints = new List<int>();
+			ExpertisePointsFromBossesModded = new List<string>();
 
-			//Prehardmode Bosses (+2000 total)
+			//Prehardmode Bosses (+2500 total)
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<CopperWraith>());
-			ExpertisePointsFromBossesPoints.Add(100);
+			addtolistmodded("CopperWraith", 100);
 
-			ExpertisePointsFromBosses.Add(NPCID.KingSlime);
-			ExpertisePointsFromBossesPoints.Add(100);
+			addtolist(NPCID.KingSlime,100);
 
-			ExpertisePointsFromBosses.Add(NPCID.EyeofCthulhu);
-			ExpertisePointsFromBossesPoints.Add(100);
+			addtolistmodded("CaliburnGuardian", 75);
+
+			addtolist(NPCID.EyeofCthulhu, 100);
 
 			for (int i = 0; i < 50; i += 1)
 			{
-				ExpertisePointsFromBosses.Add(NPCID.EaterofWorldsHead);
-				ExpertisePointsFromBossesPoints.Add(3);
+				addtolist(NPCID.EaterofWorldsHead, 3);
 			}
 
-			ExpertisePointsFromBosses.Add(NPCID.BrainofCthulhu);
-			ExpertisePointsFromBossesPoints.Add(150);
+			addtolistmodded("CaliburnGuardian", 100);
 
-			ExpertisePointsFromBosses.Add(NPCID.QueenBee);
-			ExpertisePointsFromBossesPoints.Add(150);
+			addtolist(NPCID.BrainofCthulhu, 150);
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<SpiderQueen>());
-			ExpertisePointsFromBossesPoints.Add(250);
+			addtolist(NPCID.QueenBee, 150);
 
-			ExpertisePointsFromBosses.Add(NPCID.SkeletronHead);
-			ExpertisePointsFromBossesPoints.Add(200);
+			addtolistmodded("SpiderQueen", 250);
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<Murk>());
-			ExpertisePointsFromBossesPoints.Add(300);
+			addtolistmodded("CaliburnGuardian", 125);
 
-			ExpertisePointsFromBosses.Add(NPCID.WallofFlesh);
-			ExpertisePointsFromBossesPoints.Add(500);
+			addtolist(NPCID.SkeletronHead, 200);
+
+			addtolistmodded("BossFlyMiniboss1", 200);
+
+			addtolistmodded("Murk", 300);
+
+			addtolist(NPCID.WallofFlesh, 500);
 
 
-			//Hardmode Bosses (+7000 total)
+			//Hardmode Bosses (+7400 total)
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<CobaltWraith>());
-			ExpertisePointsFromBossesPoints.Add(300);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<Cirno>());
-			ExpertisePointsFromBossesPoints.Add(300);
-			ExpertisePointsFromBosses.Add(NPCID.SkeletronPrime);
-			ExpertisePointsFromBossesPoints.Add(300);
-			ExpertisePointsFromBosses.Add(NPCID.TheDestroyer);
-			ExpertisePointsFromBossesPoints.Add(300);
-			ExpertisePointsFromBosses.Add(NPCID.Spazmatism);
-			ExpertisePointsFromBossesPoints.Add(150);
-			ExpertisePointsFromBosses.Add(NPCID.Retinazer);
-			ExpertisePointsFromBossesPoints.Add(150);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<SharkvernHead>());
-			ExpertisePointsFromBossesPoints.Add(500);
-			ExpertisePointsFromBosses.Add(NPCID.Plantera);
-			ExpertisePointsFromBossesPoints.Add(500);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<Cratrosity>());
-			ExpertisePointsFromBossesPoints.Add(700);
-			ExpertisePointsFromBosses.Add(NPCID.Golem);
-			ExpertisePointsFromBossesPoints.Add(500);
-			ExpertisePointsFromBosses.Add(NPCID.DD2Betsy);
-			ExpertisePointsFromBossesPoints.Add(700);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<TPD>());
-			ExpertisePointsFromBossesPoints.Add(800);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<Harbinger>());
-			ExpertisePointsFromBossesPoints.Add(800);
-			ExpertisePointsFromBosses.Add(NPCID.MoonLordCore);
-			ExpertisePointsFromBossesPoints.Add(1000);
+			addtolistmodded("CobaltWraith", 300);
+			addtolistmodded("Cirno", 300);
+			addtolist(NPCID.TheDestroyer, 300);
+			addtolist(NPCID.SkeletronPrime, 300);
+			addtolist(NPCID.Spazmatism, 150);
+			addtolist(NPCID.Retinazer, 150);//1500
+			addtolistmodded("SharkvernHead", 500);
+			addtolist(NPCID.Plantera, 500);//2500
+			addtolistmodded("Cratrosity", 700);
+			addtolist(NPCID.Golem, 500);
+			addtolist(NPCID.DD2Betsy, 700);
+			addtolist(NPCID.CultistBoss, 500);//4900
+			addtolistmodded("TPD", 800);
+			addtolistmodded("Harbinger", 700);
+			addtolist(NPCID.MoonLordCore, 1000);//7400
 
 			//Post-moonlord Bosses (+3000 total)
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<LuminiteWraith>());
-			ExpertisePointsFromBossesPoints.Add(1500);
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<SPinky>());
-			ExpertisePointsFromBossesPoints.Add(1500);
-
+			addtolistmodded("LuminiteWraith", 1500);
+			addtolistmodded("SPinky", 1500);
 
 			//Not bosses (+500 total)
 			for (int i = 0; i < 75; i += 1)
 			{
-				ExpertisePointsFromBosses.Add(NPCID.GoblinPeon);
-				ExpertisePointsFromBossesPoints.Add(2);
+				addtolist(NPCID.GoblinPeon, 2);
 			}
 
-			ExpertisePointsFromBosses.Add(ModContent.NPCType<TidalElemental>());
-			ExpertisePointsFromBossesPoints.Add(75);
+			addtolistmodded("TidalElemental", 75);
+			addtolist(NPCID.Tim, 50);
+			addtolist(NPCID.DoctorBones, 50);
+			addtolist(NPCID.Nymph, 50);
+			addtolist(NPCID.TheGroom, 25);
+			addtolist(NPCID.TheBride, 25);
+			addtolist(NPCID.DD2DarkMageT1, 75);
 
-			ExpertisePointsFromBosses.Add(NPCID.Tim);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.DoctorBones);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.Nymph);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.TheGroom);
-			ExpertisePointsFromBossesPoints.Add(25);
-			ExpertisePointsFromBosses.Add(NPCID.TheBride);
-			ExpertisePointsFromBossesPoints.Add(25);
-			ExpertisePointsFromBosses.Add(NPCID.DD2DarkMageT1);
-			ExpertisePointsFromBossesPoints.Add(75);
-
-
-
-
-
-
-			//Not bosses: Hardmode (+2500 total)
+			//Not bosses: Hardmode (+2600 total)
 			for (int i = 0; i < 2; i += 1)//800
 			{
-				ExpertisePointsFromBosses.Add(NPCID.GoblinSummoner);
-				ExpertisePointsFromBossesPoints.Add(50);
-				ExpertisePointsFromBosses.Add(NPCID.Mothron);
-				ExpertisePointsFromBossesPoints.Add(75);
-				ExpertisePointsFromBosses.Add(NPCID.Mimic);
-				ExpertisePointsFromBossesPoints.Add(25);
-				ExpertisePointsFromBosses.Add(NPCID.MartianSaucerCore);
-				ExpertisePointsFromBossesPoints.Add(150);
-				ExpertisePointsFromBosses.Add(NPCID.PirateShip);
-				ExpertisePointsFromBossesPoints.Add(50);
-				ExpertisePointsFromBosses.Add(NPCID.PirateCaptain);
-				ExpertisePointsFromBossesPoints.Add(50);
+				addtolist(NPCID.GoblinSummoner, 50);
+				addtolist(NPCID.Mothron, 75);
+				addtolist(NPCID.Mimic, 50);
+				addtolist(NPCID.MartianSaucerCore, 150);
+				addtolist(NPCID.PirateShip, 75);
+				addtolist(NPCID.PirateCaptain, 50);
 			}
 			//500
-			ExpertisePointsFromBosses.Add(NPCID.MartianProbe);
-			ExpertisePointsFromBossesPoints.Add(75);
-			ExpertisePointsFromBosses.Add(NPCID.Medusa);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.Clown);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.RuneWizard);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.RainbowSlime);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.Moth);
-			ExpertisePointsFromBossesPoints.Add(75);
-			ExpertisePointsFromBosses.Add(NPCID.DD2OgreT2);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.IceGolem);
-			ExpertisePointsFromBossesPoints.Add(50);
-			ExpertisePointsFromBosses.Add(NPCID.SandElemental);
-			ExpertisePointsFromBossesPoints.Add(50);
+			addtolist(NPCID.MartianProbe, 75);
+			addtolist(NPCID.Medusa, 50);
+			addtolist(NPCID.Clown, 50);
+			addtolist(NPCID.RuneWizard, 50);
+			addtolist(NPCID.RainbowSlime, 50);
+			addtolist(NPCID.Moth, 75);
+			addtolist(NPCID.DD2OgreT2, 50);
+			addtolist(NPCID.IceGolem, 50);
+			addtolist(NPCID.SandElemental, 50);
+
 			for (int i = 0; i < 3; i += 1)//1200
 			{
-				ExpertisePointsFromBosses.Add(NPCID.MourningWood);
-				ExpertisePointsFromBossesPoints.Add(50);
-				ExpertisePointsFromBosses.Add(NPCID.Pumpking);
-				ExpertisePointsFromBossesPoints.Add(100);
-				ExpertisePointsFromBosses.Add(NPCID.Everscream);
-				ExpertisePointsFromBossesPoints.Add(50);
-				ExpertisePointsFromBosses.Add(NPCID.SantaNK1);
-				ExpertisePointsFromBossesPoints.Add(75);
-				ExpertisePointsFromBosses.Add(NPCID.IceQueen);
-				ExpertisePointsFromBossesPoints.Add(125);
+				addtolist(NPCID.MourningWood, 50);
+				addtolist(NPCID.Pumpking, 100);
+				addtolist(NPCID.Everscream, 50);
+				addtolist(NPCID.SantaNK1, 75);
+				addtolist(NPCID.IceQueen, 125);
 			}
-
 
 			for (int i = 0; i < 100; i += 1)
 			{
-				ExpertisePointsFromBosses.Add(NPCID.CultistArcherWhite);
-				ExpertisePointsFromBossesPoints.Add(1);
+				addtolist(NPCID.CultistArcherWhite, 1);
 			}
 
-			//Tally-15000 Expertise
+			//Tally-16000 Expertise
 
 		}
 

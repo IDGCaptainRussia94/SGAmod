@@ -1,5 +1,7 @@
 using Microsoft.Xna.Framework;
 using System.Linq;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,6 +11,7 @@ using Terraria.ModLoader.IO;
 using Terraria.GameContent.UI;
 using System.Reflection;
 using SGAmod.Items.Weapons;
+using SGAmod.Items.Accessories;
 using Idglibrary;
 
 namespace SGAmod
@@ -60,6 +63,10 @@ namespace SGAmod
 
         public override string IsArmorSet(Item head, Item body, Item legs)
         {
+            if (head.type == mod.ItemType("DankWoodHelm") && body.type == mod.ItemType("DankWoodChest") && legs.type == mod.ItemType("DankLegs"))
+            {
+                return "Dank";
+            }
             if (head.type == mod.ItemType("UnmanedHood") && body.type == mod.ItemType("UnmanedBreastplate") && legs.type == mod.ItemType("UnmanedLeggings"))
             {
                 return "Novus";
@@ -83,6 +90,11 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+            if (set == "Dank")
+            {
+                player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nyou regen life faster while on the surface during the day";
+                sgaplayer.Dankset = 3;
+            }
             if (set == "Novus")
             {
                 player.setBonus = "Novus items emit more light when used and deal 20% more damage";
@@ -125,6 +137,13 @@ namespace SGAmod
                 if (ishavocitem > 0 && sgaplayer.Havoc > 0) {
                     damage = (int)(damage * 1.25);
                 } }
+
+            if (sgaplayer.Dankset>0)
+            {
+                damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.thrownDamage) - 4f) * 0.10f));
+
+
+            }
 
         }
 
@@ -258,39 +277,19 @@ namespace SGAmod
 
     }
 
-    public class SeriousSamWeapon : ModItem
-    {
-
-        public override bool Autoload(ref string name)
-        {
-            return GetType() != typeof(SeriousSamWeapon);
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-                // Get the vanilla damage tooltip
-                TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
-                if (tt != null)
-                {
-                string[] thetext = tt.text.Split(' ');
-                string newline = "";
-                List<string> valuez = new List<string>();
-                foreach (string text2 in thetext)
-                {
-                    valuez.Add(text2 + " ");
-                }
-                valuez.Insert(1, "technological ");
-                foreach (string text3 in valuez)
-                {
-                    newline+=text3;
-                }
-                tt.text = newline;
-                }
-        }
-    }
 
 
-    public class ClipWeaponReloading : ModProjectile
+
+
+
+
+
+
+
+
+
+
+        public class ClipWeaponReloading : ModProjectile
     {
 
         public override void SetStaticDefaults()
@@ -378,5 +377,279 @@ namespace SGAmod
         }
     }
 
+
+    public class TrapPrefixAccessory : TrapPrefix
+    {
+
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public TrapPrefixAccessory()
+        {
+        }
+        public TrapPrefixAccessory(float armorbreak, float damage)
+        {
+            this.armorbreak = armorbreak;
+            this.damage = damage;
+        }
+
+    }
+
+    public class ThrowerPrefix : TrapPrefix
+    {
+
+        public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
+
+        public ThrowerPrefix()
+        {
+        }
+        public ThrowerPrefix(float armorbreak, float damage, float thrownvelocity, float throweruserate)
+        {
+            this.thrownvelocity = thrownvelocity;
+            this.throweruserate = throweruserate;
+            this.armorbreak = armorbreak;
+            this.damage = damage;
+        }
+        public override bool CanRoll(Item item)
+        {
+            return item.thrown;
+        }
+    }
+
+    public class ThrowerPrefixAccessory : TrapPrefix
+    {
+
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public ThrowerPrefixAccessory()
+        {
+        }
+        public ThrowerPrefixAccessory(float armorbreak, float damage, float thrownvelocity, float throweruserate, float throwersavingchance)
+        {
+            this.thrownvelocity = thrownvelocity;
+            this.throweruserate = throweruserate;
+            this.armorbreak = armorbreak;
+            this.damage = damage;
+            this.throwersavingchance = throwersavingchance;
+        }
+        public override bool CanRoll(Item item)
+        {
+            return item.accessory;
+        }
+
+
+    }
+
+    public class TrapPrefix : ModPrefix
+    {
+        public float armorbreak = 0f;
+        public float damage = 0f;
+        public float thrownvelocity = 0f;
+        public float throweruserate = 0f;
+        public float throwersavingchance = 0f;
+
+        public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
+        public TrapPrefix()
+        {
+        }
+        public TrapPrefix(float armorbreak, float damage)
+        {
+            this.armorbreak = armorbreak;
+            this.damage = damage;
+        }
+        public override bool Autoload(ref string name)
+        {
+            if (base.Autoload(ref name))
+            {
+                if (GetType() == typeof(TrapPrefix))
+                {
+                    mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
+                    mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
+                    mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
+                    mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
+                }
+                if (GetType() == typeof(TrapPrefixAccessory))
+                {
+                    mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.05f));
+                    mod.AddPrefix("Knowledgable", new TrapPrefixAccessory(0.08f, 0f));
+                    mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.05f, 0.10f));
+                    mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.075f, 0.15f));
+                }
+                if (GetType() == typeof(ThrowerPrefix))
+                {
+                    mod.AddPrefix("Tossable", new ThrowerPrefix(0f, 0f, 0.1f, 0.15f));
+                    mod.AddPrefix("Impacting", new ThrowerPrefix(0f, 0f, 0.15f, 0.2f));
+                    mod.AddPrefix("Olympian", new ThrowerPrefix(0f, 0f, 0.25f, 0.4f));
+                }
+                if (GetType() == typeof(ThrowerPrefixAccessory))
+                {
+                    mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f,0f));
+                    mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f));
+                    mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f));
+                    mod.AddPrefix("Conservative", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f));
+                    mod.AddPrefix("Rougish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f));
+                }
+            }
+            return false;
+        }
+
+        public override bool CanRoll(Item item)
+        {
+            if (item.modItem != null)
+            {
+                Type myclass = item.modItem.GetType();
+                if (myclass.BaseType == typeof(TrapWeapon) || myclass.IsSubclassOf(typeof(TrapWeapon)))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public override float RollChance(Item item)
+        {
+            return 3f;
+        }
+
+        public override void Apply(Item item)
+        {
+            TrapDamageItems myitem = item.GetGlobalItem<TrapDamageItems>();
+            myitem.armorbreak = armorbreak;
+            myitem.damage2 = damage;
+            myitem.throweruserate = throweruserate;
+            myitem.thrownvelocity = thrownvelocity;
+            myitem.thrownsavingchance = throwersavingchance;
+            /*if (item.damage > 0)
+              {
+                  item.damage = (int)(item.damage * (1f + damage));
+              }*/
+            //myitem.damage = damage;
+        }
+    }
+
+    public class TrapDamageItems : GlobalItem
+    {
+        public float armorbreak = 0f;
+        public float damage2 = 0f;
+        public float throweruserate = 0f;
+        public float thrownvelocity = 0f;
+        public float thrownsavingchance = 0f;
+        public override bool InstancePerEntity
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override GlobalItem Clone(Item item, Item itemClone)
+        {
+            TrapDamageItems myClone = (TrapDamageItems)base.Clone(item, itemClone);
+            myClone.armorbreak = armorbreak;
+            myClone.damage2 = damage2;
+            myClone.throweruserate = throweruserate;
+            myClone.thrownvelocity = thrownvelocity;
+            myClone.thrownsavingchance = thrownsavingchance;
+            return myClone;
+        }
+
+
+        public override bool NewPreReforge(Item item)
+        {
+            damage2 = 0f;
+            armorbreak = 0f;
+            throweruserate = 0f;
+            thrownvelocity = 0f;
+            thrownsavingchance = 0f;
+            return base.NewPreReforge(item);
+        }
+
+        public override bool ConsumeItem(Item item, Player player)
+        {
+            if (item.thrown)
+                return Main.rand.Next(100) > (int)(player.GetModPlayer<SGAPlayer>().Thrownsavingchance * 100f);
+            else
+                return true;
+        }
+
+        public override void UpdateAccessory(Item item, Player player, bool hideVisual)
+        {
+            player.GetModPlayer<SGAPlayer>().TrapDamageAP += armorbreak;
+            player.GetModPlayer<SGAPlayer>().TrapDamageMul += damage2;
+            player.GetModPlayer<SGAPlayer>().ThrowingSpeed += throweruserate;
+            player.GetModPlayer<SGAPlayer>().Thrownsavingchance += thrownsavingchance;
+            player.thrownVelocity += thrownvelocity;
+        }
+        public override void UpdateInventory(Item item, Player player)
+        {
+            if (player.HeldItem == item)
+            {
+                player.GetModPlayer<SGAPlayer>().TrapDamageAP += armorbreak;
+                player.GetModPlayer<SGAPlayer>().TrapDamageMul += damage2;
+                player.GetModPlayer<SGAPlayer>().ThrowingSpeed += throweruserate;
+                player.thrownVelocity += thrownvelocity;
+            }
+        }
+
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+
+            if (damage2 > 0)
+            {
+                string line2 = "% extra trap damage (while held)";
+                if (item.accessory)
+                    line2 = "% extra trap damage";
+                TooltipLine line = new TooltipLine(mod, "Trapline1", "+" + ((damage2) * 100f) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (armorbreak > 0)
+            {
+                string line2 = "%";
+                if (item.accessory)
+                    line2 = "% trap damage";
+                TooltipLine line = new TooltipLine(mod, "Trapline2", "+" + ((armorbreak) * 100f) + line2 + " armor piercing");
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (throweruserate > 0)
+            {
+                string line2 = "% throwing rate";
+                TooltipLine line = new TooltipLine(mod, "Trapline3", "+" + ((throweruserate) * 100f) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (thrownvelocity > 0)
+            {
+                string line2 = "% throwing velocity";
+                TooltipLine line = new TooltipLine(mod, "Trapline4", "+" + ((thrownvelocity) * 100f) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (thrownsavingchance > 0)
+            {
+                string line2 = "% chance to not consume thrown item";
+                TooltipLine line = new TooltipLine(mod, "Trapline5", "+" + ((thrownsavingchance) * 100f) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+        }
+        public override void NetSend(Item item, BinaryWriter writer)
+        {
+            writer.Write((int)damage2 * 1000);
+            writer.Write((int)armorbreak * 1000);
+            writer.Write((int)thrownvelocity * 1000);
+            writer.Write((int)throweruserate * 1000);
+            writer.Write((int)thrownsavingchance * 1000);
+        }
+
+        public override void NetReceive(Item item, BinaryReader reader)
+        {
+            damage2 = (float)(reader.ReadInt32() / 1000f);
+            armorbreak = (float)(reader.ReadInt32() / 1000f);
+            thrownvelocity = (float)(reader.ReadInt32() / 1000f);
+            throweruserate = (float)(reader.ReadInt32() / 1000f);
+            thrownsavingchance = (float)(reader.ReadInt32() / 1000f);
+        }
+
+
+    }
 
 }

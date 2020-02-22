@@ -15,7 +15,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override void SetDefaults()
         {
-            item.damage = 28;
+            item.damage = 24;
             item.ranged = true;
             item.width = 56;
             item.height = 28;
@@ -50,7 +50,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			int numberProjectiles = 4 + Main.rand.Next(2);
+			int numberProjectiles = 3 + Main.rand.Next(2);
 			for (int i = 0; i < numberProjectiles; i++)
 			{
 				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(20));

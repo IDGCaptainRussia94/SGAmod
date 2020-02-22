@@ -151,6 +151,23 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			projectile.width = (int)((float)18f * projectile.scale);
 			projectile.height = (int)((float)18f * projectile.scale);
 
+			Tile tile = Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16];
+			if (tile != null)
+				if (tile.liquid > 64)
+				{
+					for (int num315 = 0; num315 < 40; num315 = num315 + 1)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						randomcircle *= Main.rand.NextFloat(0f, 2f);
+						int num316 = Dust.NewDust(new Vector2(projectile.position.X - 1, projectile.position.Y), projectile.width, projectile.height, mod.DustType("HotDust"), 0, 0, 50, Main.hslToRgb(0.15f, 1f, 1.00f), projectile.scale * 1.5f);
+						Main.dust[num316].noGravity = true;
+						Main.dust[num316].velocity = new Vector2(randomcircle.X, randomcircle.Y);
+					}
+
+
+					projectile.Kill();
+				}
+
 			Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.75f);
 
 			

@@ -17,6 +17,7 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.friendly = true;
 			projectile.hostile = false;
 			projectile.penetrate = 3;
+			projectile.melee = true;
 			projectile.damage = 34;
 			projectile.timeLeft = 1000;
 			projectile.light = 0.1f;

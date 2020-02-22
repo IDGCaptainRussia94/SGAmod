@@ -2,6 +2,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using SGAmod.Generation;
 
 namespace SGAmod.Items.Consumable
 {
@@ -41,6 +42,12 @@ namespace SGAmod.Items.Consumable
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
+		}
+
+		public override void OnConsumeItem(Player player)
+		{
+			//NormalWorldGeneration.PlaceCaiburnShrine(player.Center / 16f);
+			//WorldGen.placeTrap((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)+1, 0);
 		}
 	}
 }

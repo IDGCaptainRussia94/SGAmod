@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Idglibrary;
 
 namespace SGAmod.NPCs
 {
@@ -78,8 +79,8 @@ namespace SGAmod.NPCs
 					myguy.active = false;
 					if (SGAWorld.downedHarbinger == false)
 					{
-						SgaLib.Chat("Your end is nigh...", 15, 15, 150);
-						SgaLib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
+						Idglib.Chat("Your end is nigh...", 15, 15, 150);
+						Idglib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
 						SGAWorld.downedHarbinger = true;
 					}
 				}
@@ -93,7 +94,7 @@ namespace SGAmod.NPCs
 			else
 			{
 				npc.boss = false;
-				SgaLib.Chat("You are not ready for this...", 15, 15, 150);
+				Idglib.Chat("You are not ready for this...", 15, 15, 150);
 				for (int i = 180; i <= 361; i+=180)
 				{
 					int harbinger2 = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, npc.type);
@@ -169,7 +170,7 @@ namespace SGAmod.NPCs
 			if (npc.ai[0]>60){
 							if (npc.ai[0] == 65)
 							{
-								SgaLib.Chat(npc.ai[2] > 0 ? "VERY Impressive, you just might stand a chance..." : "Most impressive child...", 15, 15, 150);
+								Idglib.Chat(npc.ai[2] > 0 ? "VERY Impressive, you just might stand a chance..." : "Most impressive child...", 15, 15, 150);
 								if (npc.ai[2] > 0)
 								{
 									myguy.life = (int)(npc.lifeMax / 1.55);

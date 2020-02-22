@@ -22,11 +22,13 @@ namespace SGAmod
 		}
 
 		public float truthbetold=0;
-		public float damagemul=1;
+		public float damagemul = 1;
+		public bool DankSlow = false;
 		public bool MassiveBleeding = false;
 		public bool Napalm = false;
 		public bool thermalblaze=false; public bool acidburn =false;
 		public bool Gourged=false;
+		public bool SunderedDefense = false;
 		public bool MoonLightCurse = false;
 		public bool DosedInGas=false;
 		public bool InfinityWarStormbreaker=false;
@@ -34,7 +36,7 @@ namespace SGAmod
 		public int RemovedFireImmune=0;
 		public int Combusted=0;
 		public int immunitetolightning=0;
-		public int TimeSlow = 0;
+		public float TimeSlow = 0;
 		public bool Sodden = false;
 		bool fireimmunestate=false;
 		bool[] otherimmunesfill=new bool[3];
@@ -72,6 +74,8 @@ truthbetold=reader.ReadFloat32();
 			InfinityWarStormbreaker=false;
 			Napalm = false;
 			Sodden = false;
+			SunderedDefense = false;
+			DankSlow = false;
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -259,7 +263,7 @@ truthbetold=reader.ReadFloat32();
 					Main.dust[dust].color=Main.hslToRgb(0f, 0.5f, 0.35f);
 				}
 
-				if (InfinityWarStormbreaker){
+				if (InfinityWarStormbreaker || SunderedDefense){
 					Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
 					int dust = Dust.NewDust(new Vector2(npc.position.X,npc.position.Y)+randomcircle*(1.2f*(float)npc.width), npc.width + 4, npc.height + 4, mod.DustType("TornadoDust"), npc.velocity.X * 0.4f, (npc.velocity.Y-7f) * 0.4f, 30, default(Color)*1f, 0.5f);
 					Main.dust[dust].noGravity = true;
@@ -390,6 +394,14 @@ return true;
 
 		public override void PostAI(NPC npc)
 		{
+			if (SunderedDefense)
+			{
+				for (int i = 0; i < Main.maxPlayers; i += 1)
+				{
+					if (npc.immune[i] > 0)
+						npc.immune[i] = Math.Max(npc.immune[i]-3,0);
+				}
+			}
 			if (TimeSlow > 0)
 			{
 				npc.position -= npc.velocity-(npc.velocity / (1+TimeSlow));
@@ -619,6 +631,11 @@ return true;
 				damage += (int)(Math.Min(npc.defense, 30)/2);
 			if (Sodden)
 				damage = (int)((float)damage * 1.33f);
+
+			if (moddedplayer != null && moddedplayer.PrimordialSkull)
+				if (npc.HasBuff(BuffID.OnFire))
+					damage = (int)(damage * 1.25);
+
 			if (moddedplayer.MidasIdol > 0)
 			{
 				if (npc.HasBuff(BuffID.Midas))
@@ -651,6 +668,9 @@ return true;
 				damage += (int)(Math.Min(npc.defense, 30) / 2);
 			if (Sodden)
 			damage = (int)((float)damage * 1.33f);
+			if (player != null && player.GetModPlayer<SGAPlayer>().PrimordialSkull)
+				if (npc.HasBuff(BuffID.OnFire))
+					damage = (int)(damage * 1.25);
 
 			if (projectile.friendly)
 			{
@@ -672,15 +692,22 @@ return true;
 
 				if (trapdamage)
 				{
+					float totaldamage = 0f;
+					//damage += (int)((npc.defense * moddedplayer.TrapDamageAP) / 2.00);
+					totaldamage += moddedplayer.TrapDamageAP;
 					if (moddedplayer.JaggedWoodenSpike)
 					{
-						damage += (int)((npc.defense*0.4)/2.00);
+						totaldamage += 0.4f;
+						//damage += (int)((npc.defense*0.4)/2.00);
 					}
 					if (moddedplayer.JuryRiggedSpikeBuckler)
 					{
-						damage += (int)(damage * 0.1);
-						damage += (int)((npc.defense * 0.1) / 2.00);
+						//damage += (int)(damage * 0.1);
+						totaldamage += 0.1f;
+						//damage += (int)((npc.defense * 0.1) / 2.00);
 					}
+					totaldamage = Math.Min(totaldamage, 1f);
+					damage += (int)((npc.defense * totaldamage) / 2.00);
 				}
 
 				if (moddedplayer.beefield > 0 && (projectile.type==ProjectileID.Bee || projectile.type == ProjectileID.GiantBee))
@@ -705,6 +732,8 @@ return true;
 		private void OnHit(NPC npc,Player player, int damage,float knockback, bool crit,Item item,Projectile projectile,bool isproj=false)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+
+
 
 			if (isproj)
 			{
@@ -752,13 +781,18 @@ return true;
 			}
 
 SGAWorld.overalldamagedone=((int)damage)+SGAWorld.overalldamagedone;
-if (moddedplayer.FieryheartBuff>0){
-npc.AddBuff(189, 1*30);
-}
-if (moddedplayer.CirnoWings==true){
-if (isproj && projectile.magic==true)
-npc.AddBuff(BuffID.Frostburn, 5*60);
-}
+			if (projectile != null)
+			{
+				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				{
+					npc.AddBuff(189, 1 * 30);
+				}
+				if (moddedplayer.CirnoWings == true && projectile.owner == player.whoAmI)
+				{
+					if (isproj && projectile.magic == true)
+						npc.AddBuff(BuffID.Frostburn, 5 * 60);
+				}
+			}
 
 			if (moddedplayer.Redmanastar > 0)
 			{

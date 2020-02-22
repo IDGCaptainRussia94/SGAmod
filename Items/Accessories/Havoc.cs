@@ -18,9 +18,11 @@ namespace SGAmod.Items.Accessories
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.1f, 0.85f);
-            tooltips.Add(new TooltipLine(mod,"Dedicated", Idglib.ColorText(c,"Dedicated to PeopleMCNugget")));
-        }
+            Color c = Main.hslToRgb((float)(Main.GlobalTime/4f)%1f, 0.45f, 0.65f);
+			tooltips.Add(new TooltipLine(mod,"Dedicated", Idglib.ColorText(c,"Dedicated to PeopleMCNugget")));
+			c = Main.hslToRgb((float)(Main.GlobalTime / 3.17f) % 1f, 0.65f, 0.45f);
+			tooltips.Add(new TooltipLine(mod, "Dedicated2", Idglib.ColorText(c, "And the amazing spriters who helped him")));
+		}
 
 		public override string Texture
 		{

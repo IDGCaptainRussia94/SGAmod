@@ -133,7 +133,7 @@ namespace SGAmod.HavocGear.Items.Tools
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "BiomassBar", 7);
-			recipe.AddIngredient(ItemID.RichMahogany, 5);
+			recipe.AddIngredient(null, "DankWoodHammer", 1);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

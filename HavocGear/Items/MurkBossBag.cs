@@ -45,7 +45,7 @@ namespace SGAmod.HavocGear.Items
             }
 
             int random = Main.rand.Next(4);
-			if (random == 2)
+			if (random == 3)
 			{
 				player.QuickSpawnItem(mod.ItemType("Mudmore"));
 			}

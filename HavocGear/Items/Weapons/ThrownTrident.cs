@@ -32,7 +32,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.rare = 5;
 			item.autoReuse = true;
 			item.shoot = mod.ProjectileType("ThrownTridentFriendly");
-			item.shootSpeed = 16f;
+			item.shootSpeed = 8f;
 
 		}
 
@@ -40,7 +40,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 				speedY-=1f;
 				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));
-				float scale = 1f - (Main.rand.NextFloat() * .01f);
+				float scale = (1f - (Main.rand.NextFloat() * .01f))*(player.thrownVelocity);
 				perturbedSpeed = perturbedSpeed * scale; 
 				speedX=perturbedSpeed.X; speedY=perturbedSpeed.Y;		
 			return true;

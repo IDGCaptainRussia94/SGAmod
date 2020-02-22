@@ -34,6 +34,11 @@ namespace SGAmod.NPCs.Sharkvern
             npc.HitSound = SoundID.NPCHit1;
         }
 
+        public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            damage = (int)(damage*0.25f);
+        }
+
         public virtual void KeepUpright(float dirX, float dirY)
         {
         localdist=new Vector2(dirX,dirY);

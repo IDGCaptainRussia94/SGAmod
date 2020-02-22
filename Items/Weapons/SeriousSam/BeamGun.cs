@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,39 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
+
+	public class SeriousSamWeapon : ModItem
+	{
+
+		public override bool Autoload(ref string name)
+		{
+			return GetType() != typeof(SeriousSamWeapon);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			// Get the vanilla damage tooltip
+			TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
+			if (tt != null)
+			{
+				string[] thetext = tt.text.Split(' ');
+				string newline = "";
+				List<string> valuez = new List<string>();
+				foreach (string text2 in thetext)
+				{
+					valuez.Add(text2 + " ");
+				}
+				valuez.Insert(1, "technological ");
+				foreach (string text3 in valuez)
+				{
+					newline += text3;
+				}
+				tt.text = newline;
+			}
+		}
+	}
+
+
 	public class BeamGun : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()

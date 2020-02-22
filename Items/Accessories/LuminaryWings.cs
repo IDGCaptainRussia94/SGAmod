@@ -27,7 +27,7 @@ namespace SGAmod.Items.Accessories
 			item.CloneDefaults(ItemID.WingsVortex);
 			item.width = 26;
 			item.height = 38;
-			item.value = 1000000;
+			item.value = 2500000;
 			item.accessory = true;
 			item.rare = 11;
 			item.expert = true;

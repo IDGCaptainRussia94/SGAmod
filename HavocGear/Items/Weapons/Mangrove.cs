@@ -70,7 +70,8 @@ namespace SGAmod.HavocGear.Items.Weapons
         	public override void AddRecipes()
         	{
             		ModRecipe recipe = new ModRecipe(mod);
-            		recipe.AddIngredient(null, "BiomassBar", 8);
+			recipe.AddIngredient(null, "DankWoodBow", 1);
+			recipe.AddIngredient(null, "BiomassBar", 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
             		recipe.AddRecipe();
@@ -123,6 +124,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "DankWoodSword", 1);
 			recipe.AddIngredient(null, "BiomassBar", 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
@@ -135,7 +137,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mangrove Staff");
-			Tooltip.SetDefault("Shoots 1 fast moving homing mangrove orb");
+			Tooltip.SetDefault("Shoots 3 fast moving homing mangrove orbs");
 		}
 
 		public override void SetDefaults()
@@ -187,9 +189,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 12;
-			item.useAnimation = 12;
-			item.useStyle = 0;
+			item.useTime = 10;
+			item.useAnimation = 20;
+			item.useStyle = 3;
 			item.knockBack = 6;
 			item.value = 10000;
 			item.rare = 3;

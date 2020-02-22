@@ -31,10 +31,15 @@ namespace SGAmod
         public static bool downedSharkvern = false;
         public static bool downedCirno = false;
         public static int downedMurk = 0;
+        public static int downedCaliburnGuardians = 0;
+        public static int downedCaliburnGuardiansPoints = 0;
+        public static int[] CaliburnAlterCoordsX = {0,0,0};
+        public static int[] CaliburnAlterCoordsY = { 0, 0, 0 };
         public static bool downedMurklegacy = false;
         public static bool tf2cratedrops = false;
         public static int downedWraiths = 0;
         public static int overalldamagedone = 0;
+        public static int MoistStonecount = 0;
         public static int tf2quest = 0;
         public static int bossprgressor = 0;
         public static int tf2questcounter = 0;
@@ -47,6 +52,7 @@ namespace SGAmod
         public static int modtimer = 0;
         public static bool GennedVirulent=false;
         public static int NightmareHardcore=0;
+        public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
 
         //Initialize all variables to their default values
         public override void Initialize()
@@ -61,6 +67,8 @@ namespace SGAmod
             downedWraiths = 0;
             downedMurk = 0;
             downedMurklegacy = false;
+            downedCaliburnGuardians = 0;
+            downedCaliburnGuardiansPoints = 0;
             downedCirno = false;
             downedSharkvern = false;
             overalldamagedone = 0;
@@ -69,7 +77,12 @@ namespace SGAmod
             tf2quest = 0;
             bossprgressor = 0;
             modtimer = 0;
-            WorldIsTin = WorldGen.oreTier1 == TileID.Tin;
+            for (int f = 0; f < CaliburnAlterCoordsX.Length; f++)
+            {
+                CaliburnAlterCoordsX[f] = 0;
+                CaliburnAlterCoordsY[f] = 0;
+            }
+        WorldIsTin = WorldGen.oreTier1 != TileID.Copper;
             int x = 0;
             for (x = 0; x < questvars.Length; x++) {
                 questvars[x] = 0;
@@ -136,7 +149,7 @@ namespace SGAmod
                 if (harbingercounter == 5) {
                     if (Main.rand.Next(0, 10) < 5 && bossprgressor == 1 && downedHarbinger == false && DD2Event.DownedInvasionT3 && NPC.downedMartians) {
                         harbingercounter = -600;
-                        SgaLib.Chat("You feel a darker presence watching over you...", 0, 0, 75);
+                        Idglib.Chat("You feel a darker presence watching over you...", 0, 0, 75);
                     } }
                 if (harbingercounter == -5) {
                     harbingercounter = 6;
@@ -211,6 +224,8 @@ namespace SGAmod
             tag["bossprgressor"] = bossprgressor;
             tag["GennedVirulent"] = GennedVirulent; 
             tag["downedSpiderQueen"] = downedSpiderQueen; 
+            tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
+            tag["downedCaliburnGuardiansPoints"] = downedCaliburnGuardiansPoints;
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
@@ -218,6 +233,18 @@ namespace SGAmod
                 tag[tagname] = questvars[x];
             }
             tag["tf2cratedrops"] = tf2cratedrops;
+            for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
+            {
+                string tagname = "CaliburnAlterCoordsX_" + ((string)x.ToString());
+                tag[tagname] = CaliburnAlterCoordsX[x];
+                string tagname2 = "CaliburnAlterCoordsY_" + ((string)x.ToString());
+                tag[tagname2] = CaliburnAlterCoordsY[x];
+            }
+            for (x = 0; x < oretypesprehardmode.Length; x++)
+            {
+                string tagname = "oretypesprehardmode" + ((string)x.ToString());
+                tag[tagname] = oretypesprehardmode[x];
+            }           
             return tag;
             //return new TagCompound {
             //    {"downed", downed}
@@ -227,6 +254,7 @@ namespace SGAmod
         //Load downed data
         public override void Load(TagCompound tag)
         {
+            WorldIsTin = WorldGen.oreTier1 == TileID.Tin;
             //var downed = tag.GetList<string>("downed");
             downedCustomInvasion = tag.GetBool("customInvasion");
             downedSPinky = tag.GetBool("downedSPinky");
@@ -239,7 +267,9 @@ namespace SGAmod
             downedMurklegacy = tag.GetBool("downedMurk");
             downedMurk = tag.GetInt("downedMurk2");
             downedSpiderQueen = tag.GetBool("downedSpiderQueen");
-           if (tag.ContainsKey("downedWraiths")) { downedWraiths = tag.GetInt("downedWraiths"); }
+            downedCaliburnGuardians = tag.GetInt("downedCaliburnGuardians");
+            downedCaliburnGuardiansPoints = tag.GetInt("downedCaliburnGuardiansPoints");
+            if (tag.ContainsKey("downedWraiths")) { downedWraiths = tag.GetInt("downedWraiths"); }
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
@@ -250,6 +280,19 @@ namespace SGAmod
                 if (tag.ContainsKey(tagname)) { questvars[x] = tag.GetInt(tagname); }
             }
             tf2cratedrops = tag.GetBool("tf2cratedrops");
+            for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
+            {
+                string tagname = "CaliburnAlterCoordsX_" + ((string)x.ToString());
+                if (tag.ContainsKey(tagname)) { CaliburnAlterCoordsX[x] = tag.GetInt(tagname); }
+                tagname = "CaliburnAlterCoordsY_" + ((string)x.ToString());
+                if (tag.ContainsKey(tagname)) { CaliburnAlterCoordsY[x] = tag.GetInt(tagname); }
+            }
+            for (x = 0; x < oretypesprehardmode.Length; x++)
+            {
+                string tagname = "oretypesprehardmode" + ((string)x.ToString());
+                if (tag.ContainsKey(tagname)) { oretypesprehardmode[x] = tag.GetInt(tagname); }
+            }
+
         }
 
         //Sync downed data
@@ -260,18 +303,28 @@ namespace SGAmod
             writer.Write(overalldamagedone);
             writer.Write(downedWraiths);
             writer.Write(downedMurk);
+            writer.Write(downedCaliburnGuardians);
+            writer.Write(downedCaliburnGuardiansPoints);
             writer.Write(tf2quest);
             writer.Write(bossprgressor);
             writer.Write(tf2cratedrops);
             writer.Write(modtimer);
-            writer.Write(downedMurk);
-            BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen;
+             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen;
             writer.Write(flags2);
             int x = 0;
 
             for (x = 0; x < questvars.Length; x++)
             {
                 writer.Write(questvars[x]);
+            }
+            for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
+            {
+                writer.Write(CaliburnAlterCoordsX[x]);
+                writer.Write(CaliburnAlterCoordsY[x]);
+            }
+            for (x = 0; x < oretypesprehardmode.Length; x++)
+            {
+                writer.Write(oretypesprehardmode[x]);
             }
         }
 
@@ -283,16 +336,26 @@ namespace SGAmod
             overalldamagedone = reader.ReadInt32();
             downedWraiths = reader.ReadInt32();
             downedMurk = reader.ReadInt32();
+            downedCaliburnGuardians = reader.ReadInt32();
+            downedCaliburnGuardiansPoints = reader.ReadInt32();
             tf2quest = reader.ReadInt32();
             bossprgressor = reader.ReadInt32();
             tf2cratedrops = reader.ReadBoolean();
             modtimer = reader.ReadInt32();
-            downedMurk = reader.ReadInt32();
-            BitsByte flags2 = reader.ReadByte(); downedCustomInvasion = flags2[0];
+            BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0];
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
                 tf2quest = reader.ReadInt32();
+            }
+            for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
+            {
+                CaliburnAlterCoordsX[x] = reader.ReadInt32();
+                CaliburnAlterCoordsY[x] = reader.ReadInt32();
+            }
+            for (x = 0; x < oretypesprehardmode.Length; x++)
+            {
+                oretypesprehardmode[x] = reader.ReadInt32();
             }
         }
 
@@ -380,6 +443,18 @@ namespace SGAmod
             return y;
         }
 
+
+        public override void ResetNearbyTileEffects()
+        {
+            MoistStonecount = 0;
+        }
+
+        public override void TileCountsAvailable(int[] tileCounts)
+        {
+            SGAPlayer modPlayer = Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>();
+            MoistStonecount = tileCounts[mod.TileType("MoistStone")];
+        }
+
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
             if (Main.worldName == "Mannhattan") {
@@ -400,12 +475,23 @@ namespace SGAmod
                       progress.Message = "Hiding Secret Chambers";
                       Generation.NormalWorldGeneration.TempleChambers();
                   }));
+                int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Pots"));
+                tasks.Add(new PassLegacy("Caliburn Shrines", delegate (GenerationProgress progress)
+                  {
+                      progress.Message = "Hiding Caliburn's Gifts";
+                      Generation.NormalWorldGeneration.GenAllCaliburnShrine();
+                  }));       
+            
             }
 
         }
 
         public override void PostWorldGen()
         {
+            oretypesprehardmode[0]= WorldGen.CopperTierOre;
+            oretypesprehardmode[1] = WorldGen.IronTierOre;
+            oretypesprehardmode[2] = WorldGen.SilverTierOre;
+            oretypesprehardmode[3] = WorldGen.GoldTierOre;
 
             for (int ii = 0; ii < Main.rand.Next(1, 2); ii++)
             {
@@ -414,7 +500,7 @@ namespace SGAmod
                 for (int chestIndexx = 0; chestIndexx < 1000; chestIndexx++)
                 {
                     Chest chest = Main.chest[chestIndexx];
-                    if (chest != null && WorldGen.genRand.Next(0, 100) < 20)
+                    if (chest != null && (WorldGen.genRand.Next(0, 100) < 20 || Main.tile[chest.x, chest.y - 1].wall == mod.TileType("SwampWall")))
                     {
                         for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                         {
@@ -436,7 +522,7 @@ namespace SGAmod
                 for (int chestIndex = 0; chestIndex < 1000; chestIndex++)
                 {
                     Chest chest = Main.chest[chestIndex];
-                    if (chest != null && WorldGen.genRand.Next(0,100)<10)
+                    if (chest != null && (WorldGen.genRand.Next(0,100)<10 || Main.tile[chest.x, chest.y-1].wall == mod.TileType("SwampWall")))
                     {
                         for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                         {

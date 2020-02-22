@@ -33,7 +33,6 @@ namespace SGAmod.Items.Accessories
 			for (int x = 3; x < 8 + player.extraAccessorySlots; x++)
 			{
 				if (player.armor[x].modItem != null) {
-					int myType = (player.armor[x]).type;
 					Type myclass = player.armor[x].modItem.GetType();
 					if (myclass.BaseType == typeof(MiningCharmlv1) || myclass == typeof(MiningCharmlv1)) {
 
@@ -751,6 +750,41 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().lunarSlimeHeart = true;
+		}
+	}
+
+	public class PrimordialSkull : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Primordial Skull");
+			Tooltip.SetDefault("While you have On-Fire!, you gain the Inferno buff and resist 50% contact damage\nFurthermore, enemies who also are on fire will take 25% increased damage from you during this\nA most sinister looking skull, I wonder what else it's for?");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/PrimordialSkull"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.HasBuff(BuffID.OnFire))
+			{
+				player.AddBuff(BuffID.Inferno, 2);
+				player.GetModPlayer<SGAPlayer>().PrimordialSkull = true;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 26;
+			item.defense = 5;
+			item.accessory = true;
+			item.height = 14;
+			item.value = 500000;
+			item.rare = 6;
+			item.expert = false;
 		}
 	}
 

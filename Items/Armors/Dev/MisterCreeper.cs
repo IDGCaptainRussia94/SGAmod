@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -21,7 +22,6 @@ namespace SGAmod.Items.Armors.Dev
 			item.defense = 35;
 			item.rare = 10;
 		}
-
 		public override TagCompound Save()
 		{
 			TagCompound tag = new TagCompound();
@@ -37,6 +37,24 @@ namespace SGAmod.Items.Armors.Dev
 				InitEffects();
 			}
 		}
+		public override void NetSend(BinaryWriter writer)
+		{
+			BitsByte flags = new BitsByte();
+			flags[0] = item.vanity;
+			writer.Write(flags);
+		}
+
+		public override void NetRecieve(BinaryReader reader)
+		{
+			bool beforevanity = item.vanity;
+			item.vanity = reader.ReadBoolean();
+			if (beforevanity != item.vanity && item.vanity==false)
+			{
+			InitEffects();
+			}
+
+		}
+
 		public virtual void AddEffects(Player player)
 		{
 			player.thrownCost33 = true;
@@ -60,8 +78,12 @@ namespace SGAmod.Items.Armors.Dev
 				if (player.GetModPlayer<SGAPlayer>().devpower>0)
 				{
 					item.vanity = false;
-					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Orange, "???!!!", false, false);
-					Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
+					//Client Side
+					if (Main.myPlayer == player.whoAmI)
+					{
+						CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Orange, "???!!!", false, false);
+						Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
+					}
 					InitEffects();
 
 

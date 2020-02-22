@@ -260,14 +260,10 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("What is it?");
 				chat.Add("My glowing flank? Even I don't know how I came to have this, I've had it for as long as I can remember.");
 				chat.Add("Is there no true peace for any of us?");
-				chat.Add("I wondered away from the last group of people and suddenly I'm here, and you have a house for me too.");
 				chat.Add("Do you know what it's like to be hunted? Depite doing nothing wrong at all?");
-				chat.Add("The shelter you provided it far better than what the town of Torch made for me.");
 				chat.Add("I do not wish to be slain, please don't let anyone kill me :(");
 				chat.Add("I've heard stories of how Dragons slept on massive piles of gold, that both sounds very unconfortable and I would never steal from anyone.");
 				chat.Add("I may be a dragon, but I feel... Different. I don't understand why our most of kind is so greedy and selfish. Worse yet, I'm judged no different...");
-				chat.Add("While I am grateful for the place to stay, I often sleep on the floor as these beds were not made for someone my size; it's not real problem though.");
-				chat.Add("The dwelling you made is far better than being forced to sleep outside.");
 				chat.Add("I was often called a 'Dergon' by my former friends, I still don't get what it means.");
 				chat.Add("Please stop trying to climb me, I'm not a mount.");
 				chat.Add("Stop touching my tail, though the rubbing on my scales feels good... Rawr <3");
@@ -284,6 +280,13 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
 				chat.Add("A Discord Server? What's a Discord Server?");
 				chat.Add("No, there is no, what ever this Discord Server for whatever this 'mod' is, atleast not yet, I have no clue to be honest what this even means.");
+				if (!npc.homeless)
+				{
+					chat.Add("The dwelling you made is far better than being forced to sleep outside.");
+					chat.Add("I wondered away from the last group of people and suddenly I'm here, and you have a house for me too.");
+					chat.Add("The shelter you provided it far better than what the town of Torch made for me.");
+					chat.Add("While I am grateful for the place to stay, I often sleep on the floor as these beds were not made for someone my size; it's not real problem though.");
+				}
 				if (ModLoader.Mods.Length > 30)
 				{
 				chat.Add("I think you might be running too many mods, tone back the hot sauce, yeah? I know I don't like sauce.");
@@ -293,7 +296,7 @@ namespace SGAmod.NPCs.TownNPCs
 					chat.Add("Oh, I see you brought your notepad, nice!");
 					chat.Add("Need to keep a checklist handy? It's always good to be planned.");
 				}
-					if (ModLoader.GetMod("BossChecklist")!=null)
+					if (ModLoader.GetMod("CalamityMod")!=null)
 				{
 					chat.Add("I have no idea what this 'Calamity' your talking about is.");
 					chat.Add("I have no idea what this 'Yharim' your talking about is.");
@@ -361,6 +364,15 @@ namespace SGAmod.NPCs.TownNPCs
 						chat.Add("This is very concerning, these powerful foes were mearly messengers to their so called master, could their master be my enslaver? Please no!", 2.0);
 					}
 				}
+				if (SGAWorld.downedCaliburnGuardians > 0)
+				{
+					chat.Add("These Shrines are strange, they are so old and forgotten, yet yield a relic you now possess. It makes wonder what their purpose is...", 2.0);
+					if (SGAWorld.downedCaliburnGuardians > 1)
+					if (SGAWorld.downedCaliburnGuardians < 3)
+						chat.Add("Another shrine, only more questions...", 2.0);
+					if (SGAWorld.downedCaliburnGuardians > 2)
+						chat.Add("I am sensing no other Shrines left uncovered on this planet, you are already a powerful friend. But I must wonder... These... Swords, weapons. I don't want to think whoever they belonged to, were meant to kill our kind long ago...", 2.0);
+				}
 				chat.Add("I don't know how I so greatly upset Val, I just wanted what I felt was best for her...");
 				chat.Add("One day, they might find us... I surely hope not.");
 				if (!Main.dayTime)
@@ -411,13 +423,22 @@ namespace SGAmod.NPCs.TownNPCs
 					if (modplayer.ExpertisePointsFromBosses.Count > 0)
 					{
 
-						him2 = new NPC(); him2.SetDefaults(modplayer.ExpertisePointsFromBosses[0]);
-
-						 adder = " The very next target is a(n) " + him2.FullName;
+						him2 = new NPC();
+						if (modplayer.ExpertisePointsFromBossesModded[0]!="")
+						him2.SetDefaults(mod.NPCType(modplayer.ExpertisePointsFromBossesModded[0]));
+						else
+						him2.SetDefaults(modplayer.ExpertisePointsFromBosses[0]);
+						if (him2 != null)
+						{
+							adder = " The very next target is a(n) " + him2.FullName;
+						}
+						else
+						{
+							adder = " The very next target is... ugh.... (ERROR) 0_0";
+						}
 					}
 					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal+"." + adder;
 
-						;
 				}
 				else
 				{
@@ -457,6 +478,13 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			if (modplayer.ExpertiseCollectedTotal > 300)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("CaliburnCompess"));
+				shop.item[nextSlot].shopCustomPrice = 30;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}			
 			if (modplayer.ExpertiseCollectedTotal >= 500)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("RedManaStar"));
@@ -482,6 +510,13 @@ namespace SGAmod.NPCs.TownNPCs
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("PrimordialSkull"));
 				shop.item[nextSlot].shopCustomPrice = 100;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}			
+			if (modplayer.ExpertiseCollectedTotal > 5000 && SGAWorld.downedCratrosity)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("SOATT"));
+				shop.item[nextSlot].shopCustomPrice = 125;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}			
@@ -523,4 +558,47 @@ namespace SGAmod.NPCs.TownNPCs
 			randomOffset = 3f;
 		}
 	}
+
+	public class Expertise : ModItem
+	{
+		private float effect = 0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Expertise");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 12;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Extra_19"); }
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			effect += 0.1f;
+		Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
+
+			for (int i = 0; i < 360; i += 360/5)
+			{
+				Double Azngle = MathHelper.ToRadians(i)+ effect;
+				Vector2 here = new Vector2((float)Math.Cos(Azngle), (float)Math.Sin(Azngle));
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Draw(Main.itemTexture[item.type], (item.position + (here*12f))-Main.screenPosition, null, Color.White, 0, new Vector2(inner.Width / 2, inner.Height / 2), scale * 0.5f * Main.essScale, SpriteEffects.None, 0f);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			}
+			return false;
+		}
+
+	}
+
 }

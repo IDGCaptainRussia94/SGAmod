@@ -14,12 +14,12 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("F.S.R.G");
-			Tooltip.SetDefault("Furious Sting-Ray Gun\nRapidly fires flaming stingers");
+			Tooltip.SetDefault("Furious Sting-Ray Gun\nRapidly fires mutli-hitting flaming stingers that cause very few immunity frames");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 22;
+			item.damage = 25;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -63,6 +63,7 @@ namespace SGAmod.Items.Weapons
 				Main.projectile[proj].penetrate=3;
 				Main.projectile[proj].knockBack=item.knockBack;
 				IdgProjectile.AddOnHitBuff(proj,BuffID.OnFire,60*6);
+				IdgProjectile.AddOnHitBuff(proj, BuffID.Poisoned, 60 * 6);
 			}
 			return false;
 		}
@@ -70,9 +71,10 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.HallowedBar, 5);
-            recipe.AddIngredient(mod.ItemType("VirulentBar"), 5); 
-			recipe.AddIngredient(ItemID.SoulofFright, 25);
+			recipe.AddIngredient(mod.ItemType("Gatlipiller"), 1);
+			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
+			recipe.AddIngredient(ItemID.SoulofFright, 15);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
             recipe.AddRecipe();

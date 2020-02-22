@@ -41,14 +41,15 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.setBonus = "Crit throwing attacks grant dryad's blessing and spawn mangrove orbs from you that seek out enemies\nGreatly Increased regeneration while in the jungle";
 			player.GetModPlayer<SGAPlayer>().Mangroveset =true;
 			if (player.ZoneJungle)
-			player.lifeRegen = 10;
+			player.lifeRegen += 6;
 		}
 
         	public override void AddRecipes()
         	{
             		ModRecipe recipe = new ModRecipe(mod);
             		recipe.AddIngredient(null, "VirulentBar", 11);
-			recipe.AddTile(TileID.Anvils);
+					recipe.AddIngredient(null, "DankWoodChest", 1);
+			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
             		recipe.AddRecipe();
         	}
@@ -84,7 +85,8 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "VirulentBar", 7);
-			recipe.AddTile(TileID.Anvils);
+			recipe.AddIngredient(null, "DankWoodHelm", 1);
+			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
@@ -122,7 +124,8 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "VirulentBar", 9);
-			recipe.AddTile(TileID.Anvils);
+			recipe.AddIngredient(null, "DankLegs", 1);
+			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

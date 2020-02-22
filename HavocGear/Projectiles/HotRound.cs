@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -35,6 +36,15 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.timeLeft = 4*60;
 			projectile.scale = 0.75f;
 			aiType = 0;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(stickin);
+		}
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			stickin = reader.ReadInt32();
 		}
 
 		public override bool PreKill(int timeLeft)
@@ -95,6 +105,7 @@ namespace SGAmod.HavocGear.Projectiles
 					projectile.penetrate = 50;
 					offset = (target.Center - projectile.Center);
 						stickin = target.whoAmI;
+					projectile.netUpdate = true;
 					}
 				}
 		}

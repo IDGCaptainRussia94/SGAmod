@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -100,8 +101,8 @@ namespace SGAmod.Items.Weapons.Javelins
             else
             {
                 SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-                item.useTime = (int)((Usetimes[1] * player.meleeSpeed));
-                item.useAnimation = (int)((Usetimes[1] * player.meleeSpeed));
+                item.useTime = (int)((Usetimes[1] * (player.meleeSpeed)));
+                item.useAnimation = (int)((Usetimes[1] * (player.meleeSpeed)));
                 item.shootSpeed = (1f / player.meleeSpeed)*sgaply.UseTimeMultiplier(this.item);
             }
                 return true;
@@ -172,6 +173,16 @@ namespace SGAmod.Items.Weapons.Javelins
             DisplayName.SetDefault("Javelin");
         }
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(stickin);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            stickin = reader.ReadInt32();
+        }
+
         public override bool? CanHitNPC(NPC target)
         {
             if (stickin>-1)
@@ -218,6 +229,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
                 }
             }
+            projectile.netUpdate = true;
 
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -251,6 +263,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 {
                     offset = (target.Center - projectile.Center);
                     stickin = target.whoAmI;
+                    projectile.netUpdate = true;
                 }
             }
 

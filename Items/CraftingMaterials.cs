@@ -132,6 +132,43 @@ namespace SGAmod.HavocGear.Items
 		}
 
 	}
+	public class DankWood : ModItem
+	{
+		public override void SetDefaults()
+		{
+			item.value = 50;
+			item.rare = 1;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 999;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dank Wood");
+			Tooltip.SetDefault("It smells odd...");
+		}
+
+	}
+	public class DankCore : ModItem
+	{
+		public override void SetDefaults()
+		{
+			item.value = 2500;
+			item.rare = 2;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 999;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dank Core");
+			Tooltip.SetDefault("'Dark, Dank, Dangerous...'");
+		}
+
+	}
+
 	public class MurkyGel : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -683,25 +720,6 @@ public class LunarRoyalGel : ModItem
 		}
 
 	}
-
-	public class PrimordialSkull : ModItem
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Primordial Skull");
-			Tooltip.SetDefault("A most sinister looking skull, I wonder what it's for?");
-		}
-
-		public override void SetDefaults()
-		{
-			item.maxStack = 999;
-			item.width = 26;
-			item.height = 14;
-			item.value = 500000;
-			item.rare = 6;
-			item.expert = false;
-		}
-	}
 	public class OmegaSigil : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -719,6 +737,23 @@ public class LunarRoyalGel : ModItem
 			item.rare = 10;
 		}
 	}
+		public class CaliburnCompess : ModItem
+		{
+			private float effect = 0;
+			public override void SetStaticDefaults()
+			{
+				DisplayName.SetDefault("Caliburn Compess");
+			Tooltip.SetDefault("While held, it points to Caliburn Alters in your world");
+
+		}
+
+		public override void SetDefaults()
+			{
+				item.width = 24;
+				item.height = 24;
+				item.rare = 2;
+			}
+		}
 
 }
 

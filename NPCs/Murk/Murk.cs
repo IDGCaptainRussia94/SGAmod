@@ -93,7 +93,9 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mudmore"));
                 }
             }
-            SGAWorld.downedMurk = 2;
+            if (SGAWorld.downedMurk==0)
+                Idglib.Chat("The Moist Stone around Dank Shrines has weakened and can be broken.", 75, 225, 75);
+            SGAWorld.downedMurk = Main.hardMode ? 2 : 1;
             SGAWorld.GenVirulent();
     }
 
@@ -486,7 +488,7 @@ namespace SGAmod.NPCs.Murk
             if (Math.Abs(npc.velocity.Y) < 8f && npc.ai[1]==0 && npc.localAI[0]%2==0 && !touchingground && npc.localAI[0]<0)
             {
             double angle=((double)(npc.localAI[0]/13f))+ 2.0* Math.PI;
-            List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0,16),ProjectileID.Stinger,5,5f,0,1,true,(float)angle,true,300);
+            List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0,16),ProjectileID.Stinger,15,5f,0,1,true,(float)angle,true,300);
             itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0,16),ProjectileID.Stinger,15,5f,0,1,true,(float)-angle,true,300);
             }
             if (npc.localAI[0]<-3000)

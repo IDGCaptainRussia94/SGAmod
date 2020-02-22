@@ -35,8 +35,8 @@ namespace SGAmod.Items.Weapons
             item.channel = true;
             item.melee = true;
             item.knockBack = 2.5f;
-            item.value = 1000000;
-            item.rare = 11;
+			item.value = Item.sellPrice(0, 75, 0, 0);
+			item.rare = 11;
 			item.expert = true;
             item.noUseGraphic = true;
 			item.autoReuse = true;

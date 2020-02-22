@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 80;
+			item.damage = 100;
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
@@ -98,10 +98,11 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("DormantSupernova"), 1);
 			recipe.AddIngredient(mod.ItemType("ForagersBlade"), 1);
 			recipe.AddIngredient(mod.ItemType("IceScepter"), 1);
 			recipe.AddIngredient(mod.ItemType("RubiedBlade"), 1);
-			recipe.AddIngredient(mod.ItemType("DormantSupernova"), 1);
+			recipe.AddIngredient(mod.ItemType("MangroveStriker"), 1);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
 			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 10);

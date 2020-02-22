@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Idglibrary;
 
 namespace SGAmod.Items.Armors
 {
@@ -12,7 +14,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Helm");
-			Tooltip.SetDefault("You emit blue light while in water\nEffects of Arctic Diving Gear");
+			Tooltip.SetDefault("You emit blue light while in water\nEffects of Arctic Diving Gear\n" + Idglib.ColorText(Color.Red, "5 % less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -20,7 +22,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 6;
-			item.defense=20;
+			item.defense=8;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -29,6 +31,7 @@ namespace SGAmod.Items.Armors
 		Lighting.AddLight(player.Center, 0.2f, 0.0f, 0.5f);
 		}
 		player.arcticDivingGear = true;
+		player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
 		}
 		public override void AddRecipes()
 		{
@@ -47,7 +50,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Chestplate");
-			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times");
+			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red,"5 % less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -55,7 +58,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 6;
-			item.defense=30;
+			item.defense=16;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -66,7 +69,8 @@ namespace SGAmod.Items.Armors
 			player.iceSkate = true;
 			player.ignoreWater = true;
             sgaplayer.UseTimeMul+=0.10f;
-		}		
+			player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -83,7 +87,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Leggings");
-			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water");
+			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "5 % less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -91,7 +95,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 6;
-			item.defense=15;
+			item.defense=8;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -103,6 +107,7 @@ namespace SGAmod.Items.Armors
 			player.accRunSpeed *= 1.20f;
 			player.maxRunSpeed *= 1.20f;
 		}
+			player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
 		}
 		public override void AddRecipes()
 		{

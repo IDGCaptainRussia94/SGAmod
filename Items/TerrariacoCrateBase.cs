@@ -35,8 +35,6 @@ namespace SGAmod.Items
 			if (Main.expertMode)
 			{
 				ply.QuickSpawnItem(mod.ItemType("IdolOfMidas"), 1);
-				if (Main.rand.Next(0, 3) == 1)
-				ply.QuickSpawnItem(mod.ItemType("SOATT"), 1);
 			}
 			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
@@ -53,7 +51,7 @@ namespace SGAmod.Items
 
 		if (ply.CountItem(ItemID.TempleKey)+ply.CountItem(ItemID.ShadowKey)>0){
 		string akeyname=ply.CountItem(ItemID.TempleKey)>0 ? "Temple Key" : "Shadow Key";
-		SgaLib.Chat("this "+akeyname+" doesn't seem to fit the lock",244, 220, 46);
+		Main.NewText("this "+akeyname+" doesn't seem to fit the lock",244, 220, 46);
 		ply.QuickSpawnItem(item.type, 1);
 		return;
 		}
@@ -71,7 +69,25 @@ namespace SGAmod.Items
 		if (ply.CountItem(ItemID.LightKey)>0){whatkey=ItemID.LightKey;}
 		if (ply.CountItem(ItemID.NightKey)>0){whatkey=ItemID.NightKey;}
 		if (!NPC.AnyNPCs(mod.NPCType("Cratrosity"))){
-		NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType(whatkey==ItemID.LightKey ? "CratrosityLight" : (whatkey==ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
+
+					if (Main.netMode >0)
+					{
+						ModPacket packet = mod.GetPacket();
+						packet.Write((byte)MessageType.CratrosityNetSpawn);
+						packet.Write(mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
+						packet.Write((int)(-9999));
+						packet.Write(-9999);
+						packet.Write(ply.whoAmI);
+						packet.Send();
+						//packet.Send(-1, ply.whoAmI);
+					}
+					else
+					{
+
+
+						NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
+
+					}
 		Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
 		}
 		}

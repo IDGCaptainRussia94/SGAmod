@@ -27,6 +27,11 @@ namespace SGAmod.Buffs
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			if (npc.buffImmune[BuffID.Bleeding])
+			{
+				npc.buffType[buffIndex] = 1;
+				return;
+			}
 			npc.GetGlobalNPC<SGAnpcs>().Gourged = true;
 		}
 	}

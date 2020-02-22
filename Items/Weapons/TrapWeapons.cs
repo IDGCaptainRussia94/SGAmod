@@ -5,11 +5,16 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.Enums;
+using SGAmod.Items.Weapons;
 using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
+	
+
+
 	public class TrapWeapon : ModItem
 	{
 
@@ -20,11 +25,14 @@ namespace SGAmod.Items.Weapons
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (GetType() != typeof(SuperDartTrapGun))
+
+			if (GetType() != typeof(SuperDartTrapGun) && item.accessory != true && item.damage > 0)
 			{
 				tooltips.RemoveAt(2);
 			}
+
 		}
+
 	}
 
 	public class DartTrapGun : TrapWeapon
@@ -217,7 +225,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 60;
+			item.damage = 85;
 			item.ranged = true;
 			item.width = 40;
 			item.height = 20;
@@ -229,7 +237,7 @@ namespace SGAmod.Items.Weapons
 			item.value = 100000;
 			item.rare = 9;
 			item.autoReuse = true;
-			item.UseSound = SoundID.Item11;
+			item.UseSound = SoundID.Item99;
 			item.shootSpeed = 15f;
 			item.shoot = ProjectileID.PoisonDart;
 			item.useAmmo = AmmoID.Dart;
@@ -297,7 +305,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 70;
+			item.damage = 60;
 			item.ranged = true;
 			item.width = 40;
 			item.height = 20;
@@ -745,7 +753,7 @@ namespace SGAmod.Items.Weapons
 namespace SGAmod.Items.Accessories
 {
 
-	public class JaggedOvergrownSpike : ModItem
+	public class JaggedOvergrownSpike : TrapWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -764,6 +772,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			base.UpdateAccessory(player, hideVisual);
 			player.GetModPlayer<SGAPlayer>().JaggedWoodenSpike = true;
 		}
 		public override void AddRecipes()
@@ -776,7 +785,7 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-	public class JuryRiggedSpikeBuckler : ModItem
+	public class JuryRiggedSpikeBuckler : TrapWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -796,7 +805,9 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			base.UpdateAccessory(player, hideVisual);
 			player.GetModPlayer<SGAPlayer>().JuryRiggedSpikeBuckler = true;
+			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
 			player.thorns += 2f;
 		}
 		public override void AddRecipes()

@@ -24,34 +24,39 @@ namespace SGAmod
 	public bool raindown=false;
 	public Vector2 splithere=new Vector2(0,0);
 
-	/*private List<int> debuffs=new List<int>();
-	private List<int> debufftime=new List<int>();
+		/*private List<int> debuffs=new List<int>();
+		private List<int> debufftime=new List<int>();
 
-		public void AddDebuff(int debuff,int time) 
+			public void AddDebuff(int debuff,int time) 
+			{
+			debuffs.Insert(debuffs.Count+1,debuff);
+			debufftime.Insert(debufftime.Count+1,time);
+			}
+
+			public override void ModifyHitNPC(Projectile prog,NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection){
+				applydebuffs(target,null);
+			}
+			public override void ModifyHitPlayer(Projectile prog,Player target, ref int damage, ref bool crit){
+				applydebuffs(null,target);
+			}
+
+			private void applydebuffs(NPC target,Player ply){
+			for (int i = 0; i < debuffs.Count;i++ )
+			 {
+			 if (target!=null){target.AddBuff(debuffs[i], debufftime[i], true);}
+			 if (ply!=null){ply.AddBuff(debuffs[i], debufftime[i], true);}
+		}
+		}*/
+		//for (x = 0; x < questvars.Length; x++)
+		//{
+
+
+		public override bool? CanHitNPC(Projectile projectile, NPC target)
 		{
-		debuffs.Insert(debuffs.Count+1,debuff);
-		debufftime.Insert(debufftime.Count+1,time);
+			if (projectile.type == ProjectileID.FlamethrowerTrap && projectile.owner > -1)
+				return false;
+			return base.CanHitNPC(projectile, target);
 		}
-
-		public override void ModifyHitNPC(Projectile prog,NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection){
-			applydebuffs(target,null);
-		}
-		public override void ModifyHitPlayer(Projectile prog,Player target, ref int damage, ref bool crit){
-			applydebuffs(null,target);
-		}
-
-		private void applydebuffs(NPC target,Player ply){
-        for (int i = 0; i < debuffs.Count;i++ )
-         {
-         if (target!=null){target.AddBuff(debuffs[i], debufftime[i], true);}
-         if (ply!=null){ply.AddBuff(debuffs[i], debufftime[i], true);}
-	}
-	}*/
-            //for (x = 0; x < questvars.Length; x++)
-                //{
-
-
-
 		public override bool PreAI(Projectile projectile)
 		{
 		SGAprojectile modeproj=projectile.GetGlobalProjectile<SGAprojectile>();

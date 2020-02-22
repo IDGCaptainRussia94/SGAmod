@@ -397,7 +397,6 @@ namespace SGAmod.NPCs.Wraiths
 		public Vector2 OffsetPoints=new Vector2(0f,0f);
 		public float speed=0.2f;
 		public bool coreonlymode=false;
-		public int shardtype=-1;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Copper Wraith");
@@ -421,12 +420,6 @@ namespace SGAmod.NPCs.Wraiths
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = Item.buyPrice(0,2,0,0);
-			shardtype=mod.ItemType("WraithFragment2");
-			if (SGAWorld.WorldIsTin)
-			{
-				shardtype = mod.ItemType("WraithFragment");
-				//npc.GivenName = "Tin Wraith";
-			}
 		}
 				public override string Texture
 		{
@@ -472,11 +465,18 @@ namespace SGAmod.NPCs.Wraiths
 			WorldGen.SilverTierOre = 9;
 			WorldGen.GoldTierOre = 8;*/
 
+			int shardtype = mod.ItemType("WraithFragment");
+			if (SGAWorld.WorldIsTin)
+			{
+				shardtype = mod.ItemType("WraithFragment2");
+				//npc.GivenName = "Tin Wraith";
+			}
+
 			types.Insert(types.Count, shardtype);
-			types.Insert(types.Count,SGAmod.WorldOres[0,WorldGen.CopperTierOre==7 ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[0,WorldGen.CopperTierOre==7 ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[1,WorldGen.IronTierOre==6 ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[1,WorldGen.IronTierOre==6 ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[2,WorldGen.SilverTierOre==9 ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[2,WorldGen.SilverTierOre==9 ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[3,WorldGen.GoldTierOre==8 ? 1 : 0]);
+			types.Insert(types.Count,SGAmod.WorldOres[0,WorldGen.CopperTierOre==TileID.Copper ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[0,WorldGen.CopperTierOre== TileID.Copper ? 1 : 0]);
+			types.Insert(types.Count,SGAmod.WorldOres[1,WorldGen.IronTierOre== TileID.Iron ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[1,WorldGen.IronTierOre== TileID.Iron ? 1 : 0]);
+			types.Insert(types.Count,SGAmod.WorldOres[2,WorldGen.SilverTierOre== TileID.Silver ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[2,WorldGen.SilverTierOre== TileID.Silver ? 1 : 0]);
+			types.Insert(types.Count,SGAmod.WorldOres[3,WorldGen.GoldTierOre== TileID.Gold ? 1 : 0]);
 
 
 		if (shardtype>0){

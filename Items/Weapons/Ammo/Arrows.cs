@@ -203,6 +203,39 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipe();
 		}
 	}
+	public class DankArrow : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dank Arrow");
+			Tooltip.SetDefault("Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slow stronger, but this soft caps after a point\nDoes not effect Bosses and enemies who are immune to poisoned are also immune to Dank Slow");
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 5;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 0f;
+			item.value = 50;
+			item.rare = 1;
+			item.shoot = mod.ProjectileType("DankArrow");   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 5f;                  //The speed of the projectile
+			item.ammo = AmmoID.Arrow;              //The ammo class this ammo belongs to.
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ShadowJavelinRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("DarkWood"), 15);
+			recipe.AddIngredient(mod.ItemType("DankCore"), 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
 	public class PrismicArrow : PrismicBullet
 	{
 		public override void SetStaticDefaults()

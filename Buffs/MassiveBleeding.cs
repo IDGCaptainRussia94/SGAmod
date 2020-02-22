@@ -1,4 +1,5 @@
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.NPCs;
 
@@ -23,6 +24,11 @@ namespace SGAmod.Buffs
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			if (npc.buffImmune[BuffID.Bleeding])
+			{
+				npc.buffType[buffIndex] = 1;
+				return;
+			}
 			npc.GetGlobalNPC<SGAnpcs>().MassiveBleeding=true;
 		}
 
