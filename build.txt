@@ -1,5 +1,5 @@
 author = IDGCaptainRussia
-version = 1.1
+version = 2.0
 displayName = [i:2730][i:2718][i:2712]mod - [i:3368] [c/c0e9eb:Caliburn's Gifts] [i:3725]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true

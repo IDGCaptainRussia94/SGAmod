@@ -3,7 +3,7 @@ check the forum page for more info as well as a complete list of credits for eve
 
 Changelog:
 
-Changelog 1.1-Caliburn's Gifts:
+Changelog 2.0-Caliburn's Gifts:
 --A majorish-sorta update for you! 3 Caliburn Alters can now be found on new worlds, they each contain a strong pre-hardmode sword, at a price... But it will be worth it for their true form.
 
 --Added the Dank Shrines-a series of 3 mini dungeons brimmed with traps, but with great rewards for those willing to take the challange, can you find all 3 in your world? (Hint-entry point is near the tops, swords are near the bottom, usually)
