@@ -1,7 +1,7 @@
 SGA mod is a content mod mostly based around less mundane gameplay, more interesting items from weaponized traps to more techical creations, and tough as nails boss fights; the Dergon will show you the way.
 check the forum page for more info as well as a complete list of credits for everyone involved:
-Due to the changelog cutting off, be sure to visit the forums and the github, where you can find the full changelog
 
+Changelog:
 
 Changelog:
 
@@ -73,23 +73,3 @@ Changelog:
 -Murk being marked as beaten in hardmode the first time you kill him
 -Netcode related stuff, your javelins shouldn't be desyncing so badly now
 -Rebalanced some other things
-
-
--Known Bugs
--Netcode not 100% guaranteed to work, I have done some tests here and there to iron out the major issues, but still, problems may arise; be aware.
--FlameTrap Thrower bugs out in Enigma's Etherial; the particles are invisible; this is coming from their side, not mine. As to why I have no idea.
--Dank Shrines can sometimes not grow large enough to have any entrances, also they can generate only the center if they generate inside the temple/dungeon (this has happened, quite alot, thou it's rare and I'll fix it later :/)
--When Caliburn Spirits summon traps, they can possibly break the Sword Alter, now I have added 2 extra blocks on both sides to help buffer this, but it might still happen, so try to not be fighting near the alter in this case.
--Wraiths don't seem to drop the proper materials atm per world
-
-1.02-(2/14/20)-Hot Fix #1:
-
---Added 'technological' to the beginning of all Sam weapons, this is cosmetic for the time being, but I felt they needed their own special damage text
-
---Changed the tooltips for all trap weapons that cannot crit: the crit chances doesn't show up
---Removed Hammer Editor, for now
---Fixed a nasty bug that would cause null exception errors when making a new character, whoops!
-
-1.01-(2/13/20)-Changed the mod title to try to make it sound more exciting
-
-1.0-(2/13/20)- Released!

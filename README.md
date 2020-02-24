@@ -3,7 +3,11 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
-2.01-(2/24/20)-Patch #1:
+2.11-(2/24/20)-Patch #1b:
+
+This version is the same as below, but I was running into a MarioDB error that kept me from posting, and was debugging it.
+
+2.10-(2/24/20)-Patch #1:
 
 --Changed:
 -When Calamity is installed-Doom Harbinger and Surpreme Pinky will automatically force Revengence and Death mode off, this is due to a critical conflict between the mods during these fights
