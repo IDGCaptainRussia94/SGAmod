@@ -101,7 +101,7 @@ namespace SGAmod.HavocGear.Projectiles
 					Player owner = Main.player[projectile.owner];
 					//if (owner.active)
 					//owner.ApplyDamageToNPC(target, (int)(projectile.damage * damagefalloff), 0f, 1, false);
-					target.StrikeNPC((int)(projectile.damage*damagefalloff), 0f,0,false,true,true);
+					target.StrikeNPC((int)(Main.DamageVar((float)projectile.damage) * damagefalloff), 0f,0,false,true,true);
 				}
 			}
 

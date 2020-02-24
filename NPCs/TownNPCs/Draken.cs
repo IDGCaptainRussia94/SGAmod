@@ -247,7 +247,6 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("It seems like everywhere I go people are always trying to attack me.");
 				chat.Add("The others... are giving me strange looks.");
 				chat.Add("It's been uneasy, but I'll manage.");
-				chat.Add("I'm sorry Val...");
 				chat.Add("I am not weak...");
 				chat.Add("People are wrong about our kind...");
 				chat.Add("Where did my keys go?");
@@ -373,7 +372,6 @@ namespace SGAmod.NPCs.TownNPCs
 					if (SGAWorld.downedCaliburnGuardians > 2)
 						chat.Add("I am sensing no other Shrines left uncovered on this planet, you are already a powerful friend. But I must wonder... These... Swords, weapons. I don't want to think whoever they belonged to, were meant to kill our kind long ago...", 2.0);
 				}
-				chat.Add("I don't know how I so greatly upset Val, I just wanted what I felt was best for her...");
 				chat.Add("One day, they might find us... I surely hope not.");
 				if (!Main.dayTime)
 				{

@@ -26,7 +26,11 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.rare = 6;
 	        item.UseSound = SoundID.Item1;		
 			item.autoReuse = true;
-		    
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/ThermalBlade_Glow");
+			}
+
 		}
 
         public override void AddRecipes()

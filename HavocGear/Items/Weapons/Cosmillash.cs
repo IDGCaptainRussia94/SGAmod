@@ -36,7 +36,11 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.autoReuse = true;
 			item.shoot = 10;
 			item.shootSpeed = 30;
-			Item.staff[item.type] = true; 
+			Item.staff[item.type] = true;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/Cosmillash_Glow");
+			}
 		}
 		public override bool Shoot (Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{

@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,18 @@ namespace SGAmod.HavocGear.Projectiles
 		{
 			DisplayName.SetDefault("Thermal Pike");
 		}
+
+        public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+        {
+            bool facingleft = projectile.Center.X < Main.player[projectile.owner].Center.X;
+            Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D glow = mod.GetTexture("Items/GlowMasks/ThermalPike_Glow");
+            Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+            Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, new Rectangle?(), Color.White, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
+            return false;
+        }
 
         public override void SetDefaults()
         {

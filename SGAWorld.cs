@@ -153,6 +153,7 @@ namespace SGAmod
                     } }
                 if (harbingercounter == -5) {
                     harbingercounter = 6;
+                    SGAmod.CalamityNoRevengenceNoDeathNoU();
                     NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
                 } }
 

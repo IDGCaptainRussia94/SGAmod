@@ -240,6 +240,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 
 			Texture2D tex = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProj");
+			Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProjGlow");
 			SpriteEffects effects = SpriteEffects.FlipHorizontally;
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 2) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 0f);
@@ -248,6 +249,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			timing %= 2;
 			timing *= ((tex.Height) / 2);
 			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 2), color, projectile.rotation, drawOrigin, projectile.scale, projectile.direction<1 ? effects : (SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally), 0f);
+			spriteBatch.Draw(texGlow, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 2), Color.White, projectile.rotation, drawOrigin, projectile.scale, projectile.direction < 1 ? effects : (SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally), 0f);
 
 			return false;
 		}
@@ -386,7 +388,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 						Main.projectile[prog2].netUpdate = true;
 						if (him.immune[projectile.owner] < 1)
 						{
-							Main.player[projectile.owner].ApplyDamageToNPC(him, projectile.damage, projectile.knockBack, him.Center.X > lastpos.X ? 1 : -1, false);
+							Main.player[projectile.owner].ApplyDamageToNPC(him, Main.DamageVar((float)projectile.damage), projectile.knockBack, him.Center.X > lastpos.X ? 1 : -1, false);
 							//him.StrikeNPC(projectile.damage, projectile.knockBack, (him.Center.X > lastpos.X ? 1 : -1));
 							him.immune[projectile.owner] = 8;
 						}

@@ -86,12 +86,28 @@ namespace SGAmod.NPCs
 			}
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+		public Matrix TransformationMatrix(Texture2D tex, Vector2 DrawPosition, float Rotation,Vector2 Scale, bool FlipHorizontally= false,Vector2 Origin = default(Vector2))
+		{
+			if (Origin == default(Vector2))
+				Origin = new Vector2(tex.Width, tex.Height) / 2;
+
+				return Matrix.CreateTranslation(-new Vector3(tex.Width * Scale.X / 2, 0, 0))
+					* Matrix.CreateScale(new Vector3(FlipHorizontally ? -1 : 1, 1, 1))
+					* Matrix.CreateTranslation(new Vector3(tex.Width * Scale.X / 2, 0, 0))
+					* Matrix.CreateTranslation(-new Vector3(Origin, 0))
+					* Matrix.CreateScale(new Vector3(Scale, 0))
+					* Matrix.CreateRotationZ(Rotation)
+					* Matrix.CreateTranslation(new Vector3(DrawPosition, 0));
+
+		}
+
+	public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = npc.Center - Main.screenPosition;
 			if (GetType()!=typeof(SPinky) || !(drawdist>0f))
 				return;
 			float inrc = Main.GlobalTime / 30f;
+
 			for (int i = 0; i < 720; i += 1)
 			{
 				//double angle = ((1f + i / 10f)) + 2.0 * Math.PI * (i / ((double)10f));

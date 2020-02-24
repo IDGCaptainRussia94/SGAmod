@@ -291,7 +291,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("FlameTrap 'Thrower'");
-			Tooltip.SetDefault("'Of course the hottest flames are found within the temple dedicated to the sun', Sprays fire that remains in place for a couple of seconds" +
+			Tooltip.SetDefault("'Of course the hottest flames are found within the temple dedicated to the sun'\nSprays fire that remains in place for a couple of seconds" +
 				"\nUses Gel as ammo, 50% chance to not consume gel\nPress altfire to spray the flames in a wide arc instead\nCounts as trap damage, Pierce infinitely, but don't crit");
 		}
 

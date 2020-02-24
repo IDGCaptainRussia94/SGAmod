@@ -42,7 +42,7 @@ namespace SGAmod
 						bool flip = Vecd.X > 0;
 
 						spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f)+(pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(),0.9)/50), null, Color.White, pointthere + MathHelper.ToRadians(45)+(flip ? MathHelper.ToRadians(-90)*3f : 0), drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
-						spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+						//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
 					}
 				}

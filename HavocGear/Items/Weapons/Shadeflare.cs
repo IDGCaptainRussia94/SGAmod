@@ -33,6 +33,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.shoot = 10;
 			item.shootSpeed = 50f;
 			item.useAmmo = AmmoID.Arrow;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/Shadeflare_Glow");
+			}
 		}
 
         	public override void AddRecipes()

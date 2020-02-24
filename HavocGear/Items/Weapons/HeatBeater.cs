@@ -31,6 +31,10 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.shoot = 10;
             item.shootSpeed = 16f;
             item.useAmmo = AmmoID.Bullet;
+            if (!Main.dedServ)
+            {
+                item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/HeatBeater_Glow");
+            }
         }
 
         public override Vector2? HoldoutOffset()

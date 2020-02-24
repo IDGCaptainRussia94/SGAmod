@@ -742,7 +742,7 @@ public class LunarRoyalGel : ModItem
 			private float effect = 0;
 			public override void SetStaticDefaults()
 			{
-				DisplayName.SetDefault("Caliburn Compess");
+				DisplayName.SetDefault("Caliburn Compass");
 			Tooltip.SetDefault("While held, it points to Caliburn Alters in your world");
 
 		}

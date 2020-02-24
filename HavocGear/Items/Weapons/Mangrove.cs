@@ -185,12 +185,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 27;
+			item.damage = 16;
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 10;
-			item.useAnimation = 20;
+			item.useTime = 3;
+			item.useAnimation = 6;
 			item.useStyle = 3;
 			item.knockBack = 6;
 			item.value = 10000;

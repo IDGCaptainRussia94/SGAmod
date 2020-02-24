@@ -50,7 +50,8 @@ namespace SGAmod.Items.Weapons.Javelins
             foreach( string line in Normaltext){
             tooltips.Add(new TooltipLine(mod, "JavaLine", line));
             }
-            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Recives damage boosts from both melee and throwing and benefits from melee attack speed, thrown javelins stick into foes and do extra damage"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Recives damage boosts from both melee and throwing and benefits from melee attack speed"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1b", "Thrown javelins stick into foes and do extra damage"));
             tooltips.Add(new TooltipLine(mod, "JavaLine2", "Left click to quickly jab (melee damage done, breaks after using)"));
             tooltips.Add(new TooltipLine(mod, "JavaLine3", "Right click to more slowly throw (throwing damage done, benefits from throwing velocity)"));
         }

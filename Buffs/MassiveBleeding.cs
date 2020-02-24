@@ -26,7 +26,7 @@ namespace SGAmod.Buffs
 		{
 			if (npc.buffImmune[BuffID.Bleeding])
 			{
-				npc.buffType[buffIndex] = 1;
+				npc.buffType[buffIndex] = 0;
 				return;
 			}
 			npc.GetGlobalNPC<SGAnpcs>().MassiveBleeding=true;

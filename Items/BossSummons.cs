@@ -350,9 +350,17 @@ namespace SGAmod.Items
 			return false;
 			}
 		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (SGAmod.Calamity)
+			tooltips.Add(new TooltipLine(mod, "NoU", "Summoning this boss with automatically disable Revengence and Death Modes"));
+		}
+
 		public override bool UseItem(Player player)
 		{
 		if (item.consumable==true && !Main.dayTime){
+				SGAmod.CalamityNoRevengenceNoDeathNoU();
 			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SPinky"));
 			Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
 			//player.GetModPlayer<SGAPlayer>().Locked=new Vector2(player.Center.X-2000,4000);

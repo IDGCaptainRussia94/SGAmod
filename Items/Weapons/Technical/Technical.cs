@@ -266,6 +266,10 @@ namespace SGAmod.Items.Weapons.Technical
 			item.autoReuse = true;
 			item.consumable = false;
 			item.UseSound = SoundID.Item1;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CircuitBreakerBlade_Glow");
+			}
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
@@ -297,6 +301,7 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddIngredient(mod.ItemType("TeslaStaff"), 1);
 			recipe.AddIngredient(ItemID.BreakerBlade, 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 10);
+			recipe.AddIngredient(ItemID.Cog, 50);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 10);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);

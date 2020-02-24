@@ -29,7 +29,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 	        item.UseSound = SoundID.Item1;		
 			item.autoReuse = true;
 			item.useTurn = false;
-		    
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CelestialFlare_Glow");
+			}
 		}
 
         public override void AddRecipes()

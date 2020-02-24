@@ -68,7 +68,7 @@ namespace SGAmod.Items.Weapons
 			item.noMelee = true;
 			item.autoReuse = true;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook>();
-			item.value = Item.buyPrice(0, 0, 50, 0);
+			item.value = Item.buyPrice(0, 1, 50, 0);
 			item.rare = 3;
 		}
 
@@ -89,10 +89,10 @@ namespace SGAmod.Items.Weapons
 
 			Item basetype2 = new Item();
 			basetype2.SetDefaults(basetype);
-			float baseumtli = item.useTime/60f;
+			float baseumtli = (item.useTime/player.GetModPlayer<SGAPlayer>().ThrowingSpeed) /60f;
 			player.itemAnimation = (int)(basetype2.useAnimation* baseumtli);
 			player.itemAnimationMax = (int)(basetype2.useAnimation* baseumtli);
-			player.itemTime = basetype2.useTime;
+			player.itemTime = (int)(basetype2.useTime* baseumtli);
 			type = basetype2.shoot;
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;

@@ -1,6 +1,7 @@
 using System.IO;
 using System;
 using Terraria;
+using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -13,6 +14,10 @@ using Terraria.UI;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI;
 using Idglibrary;
+using CalamityMod;
+using CalamityMod.CalPlayer;
+using CalamityMod.World;
+
 
 namespace SGAmod
 {
@@ -28,7 +33,7 @@ namespace SGAmod
 		public static Dictionary<int, int> UsesClips;
 		public static Dictionary<int, int> UsesPlasma;
 		public static int[] otherimmunes = new int[3];
-		public bool Calamity = false;
+		public static bool Calamity = false;
 
 		public SGAmod()
 		{
@@ -121,7 +126,32 @@ namespace SGAmod
 
 		}
 
-			public override void PostSetupContent()
+		public static void CalamityNoRevengenceNoDeathNoU()
+		{
+			if (SGAmod.Calamity)
+			{
+				bool nothing = CalamityFlipoffRevengence;
+			}
+		}
+
+		public static bool CalamityFlipoffRevengence
+		{
+			get { Player player = Main.player[Main.myPlayer];
+
+				if (!SGAmod.Calamity)
+					return false;
+				
+				CalamityPlayer calply = player.GetModPlayer<CalamityPlayer>();
+				if (CalamityMod.World.CalamityWorld.revenge)
+				ModContent.GetInstance<CalamityMod.Items.DifficultyItems.Revenge>().UseItem(player);
+				if (CalamityMod.World.CalamityWorld.death)
+					ModContent.GetInstance<CalamityMod.Items.DifficultyItems.Death>().UseItem(player);
+
+				return true;
+			}
+		}
+
+		public override void PostSetupContent()
 			{
 
 			Calamity=ModLoader.GetMod("CalamityMod")!=null;
@@ -258,10 +288,12 @@ namespace SGAmod
 			ItemID.YellowPressurePlate
 			});
 			RecipeGroup.RegisterGroup("SGAmod:PressurePlates", group6);
-			group6 = new RecipeGroup(() => "a" + " Presserator or Wrench", new int[]
+			group6 = new RecipeGroup(() => "a" + " Presserator, Wrench, MetalDetector, or Detonator", new int[]
 			{
 			ItemID.ActuationAccessory,
-			ItemID.Wrench
+			ItemID.Wrench,
+			ItemID.Detonator,
+			ItemID.MetalDetector
 			});
 			RecipeGroup.RegisterGroup("SGAmod:TechStuff", group6);
 

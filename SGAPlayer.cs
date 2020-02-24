@@ -402,7 +402,7 @@ namespace SGAmod
 
 			if (EnhancingCharm > 0)
 			{
-				if (SGAWorld.modtimer % (5 - EnhancingCharm) == 0)
+				if (SGAWorld.modtimer % (11 - EnhancingCharm*2) == 0)
 				{
 					//longerExpertDebuff
 					for (int i = 0; i < Player.MaxBuffs; i += 1)
@@ -413,7 +413,7 @@ namespace SGAmod
 							bool isdebuff = Main.debuff[player.buffType[i]];
 							if (player.buffTime[i] > 10 && ((buff != null && ((buff.longerExpertDebuff && isdebuff) || !isdebuff)) || buff == null))
 							{
-								player.buffTime[i] += isdebuff ? -2 : 1;
+								player.buffTime[i] += isdebuff ? -2 : 2;
 							}
 						}
 					}
@@ -603,8 +603,8 @@ sufficate=(int)MathHelper.Clamp(sufficate+1,-200,player.breathMax-1);
 
 			bool isbreathing=true;
 
-if (SGAmod.Instance.Calamity && modcheckdelay){ isbreathing=CalamityAbyss;
-}
+//if (SGAmod.Calamity && modcheckdelay){ isbreathing=CalamityAbyss;
+//}
 
 if (isbreathing)
 player.breath=(int)MathHelper.Clamp(sufficate,-5,player.breathMax-1);
@@ -1330,11 +1330,18 @@ modeproj.enhancedbees=true;
 
 			int? found = FindBossEXP(npcid, npc);
 
-			if (found!=null && found > -1)
+			if (found != null && found > -1)
 			{
 				int collected = ExpertisePointsFromBossesPoints[(int)found];
-				if (SGAWorld.NightmareHardcore > 0)
-				collected = (int)(collected * (SGAWorld.NightmareHardcore==1 ? 1.15f : 1.25f));
+				if (Main.expertMode)
+				{
+					if (SGAWorld.NightmareHardcore > 0)
+						collected = (int)(collected * (SGAWorld.NightmareHardcore == 1 ? 1.15f : 1.25f));
+				}
+				else
+				{
+					collected = (int)(collected * 0.80);
+				}
 
 				ExpertiseCollected += collected;
 				ExpertiseCollectedTotal += collected;

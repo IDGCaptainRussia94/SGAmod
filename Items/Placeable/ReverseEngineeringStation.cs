@@ -33,8 +33,8 @@ namespace SGAmod.Items.Placeable
 			recipe.AddIngredient(ItemID.MeteoriteBar, 15);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 15);
 			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
-			recipe.AddIngredient(ItemID.CopperBar, 8);
-			recipe.AddRecipeGroup("SGAmod:TechStuff", 1);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddRecipeGroup("SGAmod:TechStuff", 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

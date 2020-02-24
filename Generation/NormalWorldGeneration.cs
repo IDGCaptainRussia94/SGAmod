@@ -317,6 +317,7 @@ namespace SGAmod.Generation
             {
                 Tile tile = Framing.GetTileSafely((int)dewaysMainroom[aaa].X, (int)dewaysMainroom[aaa].Y);
                 Chest.DestroyChest((int)deways[aaa].X, (int)deways[aaa].Y);
+                WorldGen.KillTile((int)deways[aaa].X, (int)deways[aaa].Y);
                 tile.active(false);
             }
 
@@ -334,7 +335,12 @@ namespace SGAmod.Generation
             Main.tile[(int)placementspot.X+1, (int)placementspot.Y + buffersizey - 1].active(true);
             Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 1].active(true);
             Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 1].active(true);
-            WorldGen.PlaceObject((int)placementspot.X, (int)placementspot.Y + buffersizey - 2, type==0 ? SGAmod.Instance.TileType("CaliburnAltar")
+
+            Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true);
+
+            WorldGen.PlaceObject((int)placementspot.X, (int)placementspot.Y + buffersizey - 3, type==0 ? SGAmod.Instance.TileType("CaliburnAltar")
                 : (type==1 ? SGAmod.Instance.TileType("CaliburnAltarB") : SGAmod.Instance.TileType("CaliburnAltarC")), false, 0);
             SGAWorld.CaliburnAlterCoordsX[type] = (int)placementspot.X*16;
             SGAWorld.CaliburnAlterCoordsY[type] = (int)placementspot.Y*16;

@@ -49,7 +49,7 @@ namespace SGAmod.Items.Pets
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.HeartLantern, 1);
             recipe.AddIngredient(ItemID.DemonWings, 1);
-            recipe.AddIngredient(ItemID.HallowedBar, 5);
+            recipe.AddIngredient(ItemID.SoulofNight, 5);
             recipe.AddIngredient(null, "VirulentBar", 8);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
@@ -169,7 +169,7 @@ namespace SGAmod.Items.Pets
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.StarinaBottle, 1);
             recipe.AddIngredient(ItemID.AngelWings, 1);
-            recipe.AddIngredient(ItemID.HallowedBar, 5);
+            recipe.AddIngredient(ItemID.SoulofLight, 5);
             recipe.AddIngredient(null, "VirulentBar", 8);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);

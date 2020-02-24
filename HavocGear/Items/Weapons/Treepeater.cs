@@ -69,9 +69,9 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.VineRopeCoil, 2);
-            recipe.AddIngredient(ItemID.RichMahogany, 15);
+            recipe.AddIngredient(null, "DankWood", 25);
             recipe.AddIngredient(null, "VirulentBar", 12);
+            recipe.AddIngredient(ItemID.VineRopeCoil, 2);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
