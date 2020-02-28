@@ -3,7 +3,7 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
-2.2-(2/27/20)-Patch #2:
+2.20-(2/27/20)-Patch #2:
 
 --Added:
 -Acid Scepter, Flail-O-Nades,Demon Steppers, Bundle of Javelin Spear Heads and Javelin Parts, Corroded Shield and Amber Glow Skull (Spider Queen Expert Drop and bonus Drop respectively), Cursed Hail, Massacre Prototype, Heartreach/Booster/Omni Magnets
@@ -127,3 +127,4 @@ This version is the same as below, but I was running into a MariaDB error that k
 1.01-(2/13/20)-Changed the mod title to try to make it sound more exciting
 
 1.0-(2/13/20)- Released!
+
