@@ -6,9 +6,9 @@ Changelog:
 2.20-(2/27/20)-Patch #2:
 
 --Added:
--Acid Scepter, Flail-O-Nades,Demon Steppers, Bundle of Javelin Spear Heads and Javelin Parts, Corroded Shield and Amber Glow Skull (Spider Queen Expert Drop and bonus Drop respectively), Cursed Hail, Massacre Prototype, Heartreach/Booster/Omni Magnets
--A few more chat lines, as well as a hint to how to easily get more of the custom ammo types
--Crafting recipes for the SandStorm in a Bottle, Flying Carpet, Slime Staff, and Shark Tooth Necklace
+Acid Scepter, Flail-O-Nades,Demon Steppers, Bundle of Javelin Spear Heads and Javelin Parts, Corroded Shield and Amber Glow Skull (Spider Queen Expert Drop and bonus Drop respectively), Cursed Hail, Massacre Prototype, Heartreach/Booster/Omni Magnets
+A few more chat lines, as well as a hint to how to easily get more of the custom ammo types
+Crafting recipes for the SandStorm in a Bottle, Flying Carpet, Slime Staff, and Shark Tooth Necklace
 
 --Changed:
 -Opening a Terraria Co Supply Crate now has a chance to drop a Gold Ring, Lucky Coin, and Discount Card
