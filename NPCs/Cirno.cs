@@ -537,6 +537,8 @@ attacktype=0;//(int)Main.rand.Next(0,2);
 
 		public virtual int projectileid => ProjectileID.SnowBallFriendly;
 		public virtual Color colorcloud => Main.hslToRgb(0.6f, 0.8f, 0.8f);
+		public virtual int rate => 5;
+
 
 		public override void SetDefaults()
 		{
@@ -596,7 +598,7 @@ attacktype=0;//(int)Main.rand.Next(0,2);
 
 		Vector2 dist=target.Center-projectile.position;
 		if (System.Math.Abs(dist.X)<250){
-		if (projectile.ai[0]%5==0){
+		if (projectile.ai[0]%rate==0){
 		List<Projectile> itz=Idglib.Shattershots(projectile.Center+new Vector2(Main.rand.Next(-100,100),0),projectile.Center+new Vector2(Main.rand.Next(-200,200),500),new Vector2(0,0), projectileid, (int)projectile.damage,8f,0,1,true,0,true,220);
 		itz[0].friendly=projectile.friendly;
 		itz[0].hostile=projectile.hostile;

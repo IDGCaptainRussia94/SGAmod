@@ -46,6 +46,7 @@ namespace SGAmod.Items.Consumable
 
 		public override void OnConsumeItem(Player player)
 		{
+			//SGAmod.FileTest();
 			//NormalWorldGeneration.PlaceCaiburnShrine(player.Center / 16f);
 			//WorldGen.placeTrap((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)+1, 0);
 		}

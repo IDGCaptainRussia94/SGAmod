@@ -28,7 +28,9 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.timeLeft = 2000;  
             projectile.light = 0.75f;   
             projectile.extraUpdates = 1;
-   		    projectile.ignoreWater = true;   
+   		    projectile.ignoreWater = true;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = 6;
         }
         public override void AI()         
         {                                                    
@@ -49,7 +51,6 @@ namespace SGAmod.HavocGear.Projectiles
 
     public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-        target.immune[projectile.owner] = 2;
         target.AddBuff(mod.BuffType("ThermalBlaze"), 120);
         }
 

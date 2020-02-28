@@ -3,9 +3,41 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
+2.2-(2/27/20)-Patch #2:
+
+--Added:
+-Acid Scepter, Flail-O-Nades,Demon Steppers, Bundle of Javelin Spear Heads and Javelin Parts, Corroded Shield and Amber Glow Skull (Spider Queen Expert Drop and bonus Drop respectively), Cursed Hail, Massacre Prototype, Heartreach/Booster/Omni Magnets
+-A few more chat lines, as well as a hint to how to easily get more of the custom ammo types
+-Crafting recipes for the SandStorm in a Bottle, Flying Carpet, Slime Staff, and Shark Tooth Necklace
+
+--Changed:
+-Opening a Terraria Co Supply Crate now has a chance to drop a Gold Ring, Lucky Coin, and Discount Card
+-recipe changes for Bundle of Javelin Bases, Prismal Ore, and Luminary Wings
+-Blazewyrm's set bonus explosion has been changed, mostly nerfed
+-Omega Sigil is now an accessory, might be overpowered, let me know
+-Buffed XOP FlameThrower: Does not cause immunity frames with other projectiles
+-Buffed Mudrock Crasher: which got a rework-Nerfed SBC Cannon/Mk2: SBC Cannonballs don't crit, crits on the SBC Cannon and MK2 were honestly way too overpowered given the weapons' low rate of fire and very high damage, however, they ignore enemy immunity frames and the explosion CAN crit
+-Spider Queen's Acid Venom has been buffed to do a type of debuff splash damage, this applies to player projectiles too
+-Cosmic Cocktail has been reworked-it now ignores immunity frames, projectiles do variable damage, and is slower and does less base damage
+-True Moonlight's projectiles hit slightly slower and penetrate less, the movement speed of said projectiles doesn't change, and the weapon charges faster with a quick melee swing speed, Lv3 Slashwave hits less often and homes from a greater distance
+-Assassin and Elite Emblem have been reworked as the Omni-Magnet now uses the grab bonus
+-Novus, Notchvus, and Dosed arrows have had their homing adjusted
+-Starfish Burster's and Starfish Blaster's Starfish projectiles all hit on a target
+
+--Fixed:
+-Spider Queen not dropping any Gold
+-Accessories that were stackable
+-Not really a fix, but updating framework for 1.4, so grenades don't end up doing ranged damage when the update comes
+-Being able to Dos enemies in gas who were already combusted
+-The F.S.R.G not being able to get crits
+-True Moonlight and Surt, the projectiles don't interfer with the melee hits anymore
+-Star Burster and Starfish-Burster taking mana when you have no ammo left
+-Optimized Homing Arrow code a bit, should lead to better FPS with alot of enemies on screen
+-Other smaller bugs
+
 2.11-(2/24/20)-Patch #1b:
 
-This version is the same as below, but I was running into a MarioDB error that kept me from posting, and was debugging it.
+This version is the same as below, but I was running into a MariaDB error that kept me from posting, and was debugging it.
 
 2.10-(2/24/20)-Patch #1:
 

@@ -25,12 +25,14 @@ namespace SGAmod.Projectiles
             projectile.friendly = true;     
             projectile.melee = true;        
             projectile.tileCollide = false;   
-            projectile.penetrate = 10;
+            projectile.penetrate = 8;
             projectile.alpha = 40;     
             projectile.timeLeft = 500;  
             projectile.light = 0.75f;   
             projectile.extraUpdates = 1;
-   		    projectile.ignoreWater = true;   
+   		    projectile.ignoreWater = true;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = 6;
         }
 
             public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -111,12 +113,11 @@ namespace SGAmod.Projectiles
 	public override void OnHitPlayer(Player target, int damage, bool crit)
         {
 		target.AddBuff(mod.BuffType("MoonLightCurse"), 60*8);
-    	}	
+    	}
 
-    public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-        target.immune[projectile.owner] = 2;
-        if (this.GetType()==typeof(MoonlightWaveLv2))
+            if (this.GetType()==typeof(MoonlightWaveLv2))
         target.AddBuff(mod.BuffType("MoonLightCurse"), 60*5);
         }
 
@@ -137,12 +138,14 @@ namespace SGAmod.Projectiles
             projectile.friendly = true;     
             projectile.melee = true;        
             projectile.tileCollide = false;   
-            projectile.penetrate = 15;
+            projectile.penetrate = 12;
             projectile.alpha = 40;     
             projectile.timeLeft = 500;
             projectile.light = 1.15f;
             projectile.extraUpdates = 1;
             projectile.ignoreWater = true;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = 6;
         }
 
         public override void AI()
@@ -178,6 +181,8 @@ namespace SGAmod.Projectiles
             projectile.light = 1.5f;
             projectile.extraUpdates = 1;
             projectile.ignoreWater = true;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = 30;
             Main.PlaySound(SoundID.Item119,projectile.Center);
         }
 
@@ -201,7 +206,7 @@ namespace SGAmod.Projectiles
 
         NPC target=Main.npc[Idglib.FindClosestTarget(0,projectile.Center,new Vector2(0f,0f),true,true,true,projectile)];
         if (target!=null){
-        if ((target.Center-projectile.Center).Length()<500f){
+        if ((target.Center-projectile.Center).Length()<1000f){
         projectile.velocity=projectile.velocity+(projectile.DirectionTo(target.Center)*((float)keepspeed*homing));
         projectile.velocity.Normalize();
         projectile.velocity=projectile.velocity*(float)keepspeed;

@@ -76,6 +76,7 @@ namespace SGAmod.Projectiles
                         Rectangle rectangle2 = new Rectangle((int)Main.npc[index].position.X - Main.npc[index].width, (int)Main.npc[index].position.Y - Main.npc[index].height, Main.npc[index].height * 2, Main.npc[index].width*2);
                         if (rectangle1.Intersects(rectangle2))
                         {
+						if (Main.npc[index].GetGlobalNPC<SGAnpcs>().Combusted<1)
 						IdgNPC.AddBuffBypass(index,mod.BuffType("DosedInGas"), 60*8, true);
                         }
                     }

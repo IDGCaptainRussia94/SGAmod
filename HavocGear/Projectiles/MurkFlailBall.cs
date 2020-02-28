@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Idglibrary;
+using SGAmod.Projectiles;
 
 namespace SGAmod.HavocGear.Projectiles
 {
@@ -19,12 +21,32 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.aiStyle = 15; 
         }
 
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+
+            if (oldVelocity.Length() > 12)
+            {
+                for (int num315 = 1; num315 < 13; num315 = num315 + 1)
+                {
+                    Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+                    float velincrease = ((float)(num315 + 8) / 2f);
+                    int thisone = Projectile.NewProjectile(projectile.Center.X - projectile.velocity.X, projectile.Center.Y - projectile.velocity.Y, randomcircle.X * velincrease, randomcircle.Y * velincrease, ModContent.ProjectileType<DankBlast>(), (int)(projectile.damage * 0.50), 0f, projectile.owner, 0.0f, 0f);
+                    Main.projectile[thisone].friendly = projectile.friendly;
+                    Main.projectile[thisone].hostile = projectile.hostile;
+                    Main.projectile[thisone].netUpdate = true;
+                    IdgProjectile.Sync(thisone);
+                }
+
+            }
+            return true;
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Mudrock Spikeball");
         }
 
-        public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D texture = ModContent.GetTexture("SGAmod/HavocGear/Projectiles/MurkFlailChain");
  
@@ -60,4 +82,47 @@ namespace SGAmod.HavocGear.Projectiles
             return true;
         }
 	}
-}
+
+    public class DankBlast : DankArrow
+    {
+
+        double keepspeed = 0.0;
+        float homing = 0.06f;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Dank Blast");
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            if (Main.rand.Next(0, 100) < 50 && !target.boss && !target.buffImmune[BuffID.Poisoned])
+                target.AddBuff(mod.BuffType("DankSlow"), (int)(60 * 2.5f));
+        }
+
+        public override string Texture
+        {
+            get { return ("Terraria/Projectile_" + 14); }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            return false;
+        }
+
+        public override void SetDefaults()
+        {
+            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+            projectile.width = 16;
+            projectile.height = 16;
+            projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = false;
+            projectile.friendly = true;
+            projectile.tileCollide = true;
+            projectile.melee = true;
+            projectile.arrow = false;
+            projectile.timeLeft = 300;
+            aiType = ProjectileID.WoodenArrowFriendly;
+        }
+
+    }
+    }

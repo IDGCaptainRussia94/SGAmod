@@ -179,7 +179,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Assassin Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 35% increased throwing velocity\n50 increased Max HP\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
+			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 35% increased throwing velocity\n75 increased Max HP\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
 		}
 
 		public override void SetDefaults()
@@ -204,6 +204,7 @@ namespace SGAmod.Items.Accessories
 			player.thrownDamage += 0.15f;
 			player.thrownVelocity += 0.1f;
 			player.manaCost -= 0.025f;
+			player.statLifeMax2 += 25;
 			base.UpdateAccessory(player, hideVisual);
 		}
 
@@ -212,6 +213,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemCommando"), 1);
 			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
+			recipe.AddIngredient(ItemID.CrystalBall, 1);
+			recipe.AddIngredient(ItemID.LifeFruit, 5);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -225,7 +228,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elite Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n50 increased Max HP\n100 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nIncreased grab range for mana stars and restored mana when hit");
+			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nRestored mana when hit");
 		}
 
 		public override void SetDefaults()
@@ -246,7 +249,8 @@ namespace SGAmod.Items.Accessories
 			player.thrownDamage += 0.10f;
 			player.thrownVelocity += 0.15f;
 			player.magicCuffs = true;
-			player.manaMagnet = true;
+			player.statManaMax2 += 20;
+			player.statLifeMax2 += 25;
 			player.manaCost -= 0.025f;
 			//mod.GetItem("LifeforceQuintessence").UpdateAccessory(player, hideVisual);
 			base.UpdateAccessory(player, hideVisual);
@@ -256,7 +260,8 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemAssassin"), 1);
-			recipe.AddIngredient(ItemID.CelestialCuffs, 1);
+			recipe.AddIngredient(ItemID.MagicCuffs, 1);
+			recipe.AddIngredient(ItemID.LifeCrystal, 5);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);

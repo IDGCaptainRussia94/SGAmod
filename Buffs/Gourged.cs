@@ -29,7 +29,7 @@ namespace SGAmod.Buffs
 		{
 			if (npc.buffImmune[BuffID.Bleeding])
 			{
-				npc.buffType[buffIndex] = 0;
+				npc.DelBuff(buffIndex);
 				return;
 			}
 			npc.GetGlobalNPC<SGAnpcs>().Gourged = true;

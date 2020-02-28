@@ -97,11 +97,19 @@ namespace SGAmod.Items.Weapons
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;
 			speedY = basespeed.Y;
+			if (type!=mod.ProjectileType("CelestialCocktailProj"))
 			damage += (int)(basetype2.damage * player.thrownDamage);
+			else
+			damage = (int)(basetype2.damage * player.thrownDamage);
 
 			player.ConsumeItem(basetype);
 
-			return true;
+			Projectile proj = Main.projectile[Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI)];
+			proj.thrown = true;
+			proj.ranged = false;
+			proj.netUpdate = true;
+
+			return false;
 		}
 
 		public override string Texture
@@ -418,9 +426,9 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.MolotovCocktail);
 			item.useStyle = 1;
 			item.thrown = true;
-			item.damage = 60;
-			item.useTime = 20;
-			item.useAnimation = 20;
+			item.damage = 55;
+			item.useTime = 40;
+			item.useAnimation = 40;
 			item.maxStack = 999;
 			item.shootSpeed = 8f;
 			item.shoot = mod.ProjectileType("CelestialCocktailProj");
@@ -467,7 +475,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
-			DisplayName.SetDefault("Acid Grenade");
+			DisplayName.SetDefault("Celestial Cocktail");
 		}
 
 		public override void SetDefaults()
@@ -480,6 +488,12 @@ namespace SGAmod.Items.Weapons
 		public override string Texture
 		{
 			get { return ("SGAmod/Projectiles/CelestialCocktail"); }
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			int player = projectile.owner;
+			return base.CanHitNPC(target);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -501,12 +515,14 @@ namespace SGAmod.Items.Weapons
 			gotohere.Normalize();
 
 			int[] projectiletype = { ProjectileID.NebulaBlaze1, ProjectileID.VortexBeaterRocket, ProjectileID.HeatRay, ProjectileID.DD2LightningBugZap };
+			float[] projectiledamage = { 1f, 1f, 2.5f, 0.25f };
+			int[] projectilecount = { 5, 5,10,6 };
 			for (int zz = 0; zz < 4; zz += 1)
 			{
-				for (int i = 0; i < 10; i += 1)
+				for (int i = 0; i < projectilecount[zz]; i += 1)
 				{
 					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(120)) * Main.rand.NextFloat(6, 12);
-					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), projectiletype[zz], (int)(projectile.damage * 0.75f), projectile.knockBack / 10f, projectile.owner);
+					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), projectiletype[zz], (int)((projectile.damage * 1f)* projectiledamage[zz]), projectile.knockBack / 10f, projectile.owner);
 					Main.projectile[proj].thrown = true;
 					Main.projectile[proj].magic = false;
 					Main.projectile[proj].friendly = true;
@@ -514,12 +530,15 @@ namespace SGAmod.Items.Weapons
 					Main.projectile[proj].hostile = false;
 					Main.projectile[proj].timeLeft = 300;
 					Main.projectile[proj].penetrate = 4;
+					if (zz==3)
+					Main.projectile[proj].penetrate = 15;
+					projectile.netUpdate = true;
 					IdgProjectile.Sync(proj);
 				}
 
 			}
 
-			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("SlimeBlast"), (int)((double)projectile.damage * 1f), projectile.knockBack, projectile.owner, 0f, 0f);
+			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("SlimeBlast"), (int)((double)projectile.damage * 1.5f), projectile.knockBack, projectile.owner, 0f, 0f);
 			Main.projectile[theproj].thrown = true;
 
 			projectile.velocity = default(Vector2);
@@ -527,9 +546,32 @@ namespace SGAmod.Items.Weapons
 			return true;
 		}
 
+		public override bool PreAI()
+		{
+			
+				for (int zz = 0; zz < Main.maxNPCs; zz += 1)
+				{
+				NPC npc = Main.npc[zz];
+				if (!npc.dontTakeDamage && !npc.townNPC  && npc.active && npc.life>0)
+				{
+					Rectangle rech = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
+					Rectangle rech2 = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
+					if (rech.Intersects(rech2))
+					{
+						projectile.Damage();
+						projectile.Kill();
+
+					}
+				}
+			}
+
+			return true;
+		}
+
 		public override void AI()
 		{
-			int[] dustype = { mod.DustType("AcidDust"), mod.DustType("HotDust"), mod.DustType("MangroveDust"), mod.DustType("TornadoDust") };
+
+				int[] dustype = { mod.DustType("AcidDust"), mod.DustType("HotDust"), mod.DustType("MangroveDust"), mod.DustType("TornadoDust") };
 			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, dustype[Main.rand.Next(0,4)]);
 			Main.dust[dust].scale = 0.75f;
 			Main.dust[dust].noGravity = false;

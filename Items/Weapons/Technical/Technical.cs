@@ -449,9 +449,120 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddIngredient(mod.ItemType("UnmanedStaff"), 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
+		}
+	}
+
+	public class Massacre : SeriousSamWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Massacre Prototype");
+			Tooltip.SetDefault("Fires a chain of Stardust Explosions\nFiring this weapon throws you back\n'Ansaksie would not approve'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 250;
+			item.magic = true;
+			item.width = 56;
+			item.height = 28;
+			item.useTime = 90;
+			item.useAnimation = 90;
+			item.useStyle = 5;
+			item.noMelee = true;
+			item.knockBack = 5;
+			item.value = 1000000;
+			item.rare = 11;
+			item.UseSound = SoundID.Item122;
+			item.autoReuse = true;
+			item.shoot = 10;
+			item.shootSpeed = 200f;
+		}
+
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-6, -4);
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "PrismalLauncher", 1);
+			recipe.AddIngredient(ItemID.ProximityMineLauncher,1);
+			recipe.AddIngredient(ItemID.Stynger, 1);
+			recipe.AddIngredient(ItemID.FragmentStardust, 10);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
+			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			player.velocity += new Vector2(Math.Sign(-player.direction) * 20, (-10f-(speedY / 15f)));
+			int numberProjectiles = 4;// + Main.rand.Next(2);
+			for (int i = 0; i < numberProjectiles; i++)
+			{
+				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));
+				float scale = 1f - (Main.rand.NextFloat() * .3f);
+				perturbedSpeed = perturbedSpeed * scale;
+				int prog = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<MassacreShot>(), damage, knockBack, player.whoAmI);
+				IdgProjectile.Sync(prog);
+			}
+			return false;
+		}
+	}
+
+	public class MassacreShot : ModProjectile
+	{
+		public override void SetDefaults()
+		{
+			projectile.width = 4;
+			projectile.height = 4;
+			projectile.aiStyle = -1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.timeLeft = 10;
+			projectile.light = 0.1f;
+			projectile.extraUpdates = 0;
+			projectile.tileCollide = false;
+			aiType = -1;
+			Main.projFrames[projectile.type] = 1;
+		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/HavocGear/Projectiles/BoulderBlast"; }
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Massa proj");
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return false;
+		}
+
+
+		public override void AI()
+		{
+			projectile.velocity = projectile.velocity.RotatedByRandom(MathHelper.ToRadians(25));
+			Vector2 vex = Main.rand.NextVector2Circular(160, 160);
+			int prog = Projectile.NewProjectile(projectile.Center.X+ vex.X, projectile.Center.Y+ vex.Y, 0,0, ProjectileID.StardustGuardianExplosion, projectile.damage, projectile.knockBack, projectile.owner,0f,8f);
+			Main.projectile[prog].scale = 3f;
+			Main.projectile[prog].usesLocalNPCImmunity = true;
+			Main.projectile[prog].localNPCHitCooldown = -1;
+			Main.projectile[prog].magic = true;
+			Main.projectile[prog].minion = false;
+			Main.projectile[prog].netUpdate = true;
+			IdgProjectile.Sync(prog);
 		}
 	}
 

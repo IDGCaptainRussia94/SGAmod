@@ -14,12 +14,12 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("XOP Flamethrower");
-            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
+            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls\n as well as don't intefere with your other weapons, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
 		}
 
         public override void SetDefaults()
         {
-            item.damage = 30;
+            item.damage = 25;
             item.ranged = true;
             item.width = 48;
             item.height = 28;
@@ -114,6 +114,8 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			projectile.penetrate = -1;
 			aiType = ProjectileID.WoodenArrowFriendly;
 			projectile.scale = 0.5f;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 5;
 		}
 
 		public override string Texture
@@ -123,7 +125,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.immune[projectile.owner] = 5;
+			//target.immune[projectile.owner] = 5;
 			IdgNPC.AddBuffBypass(target.whoAmI, ModContent.BuffType<NapalmBurn>(), 60 * 8);
 		}
 

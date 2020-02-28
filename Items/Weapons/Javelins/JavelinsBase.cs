@@ -82,7 +82,8 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
-            add += player.GetModPlayer<SGAPlayer>().JavelinBaseBundle ? 0.15f : 0f;
+            add += player.GetModPlayer<SGAPlayer>().JavelinBaseBundle ? 0.10f : 0f;
+            add += player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle ? 0.15f : 0f;
             add += (player.thrownDamage + player.meleeDamage) - 2;
         }
         public override bool AltFunctionUse(Player player)
@@ -144,6 +145,10 @@ namespace SGAmod.Items.Weapons.Javelins
             Main.projectile[thisoned].thrown = !melee;
             if (player.altFunctionUse == 2 && Speartype==7)
             Main.projectile[thisoned].aiStyle = 18;
+            if (player.altFunctionUse == 2)
+            {
+                (Main.projectile[thisoned].modProjectile as JavelinProj).maxstick += (player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle ? 1 : 0);
+            }
 
             Main.projectile[thisoned].netUpdate = true;
             if (!melee)
@@ -159,6 +164,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public int stickin = -1;
         public Player P;
         public Vector2 offset;
+        public int maxstick = 1;
         static public string[] tex =
     {"SGAmod/Items/Weapons/Javelins/StoneJavelin",
         "SGAmod/Items/Weapons/Javelins/IceJavelin",
@@ -177,11 +183,13 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(stickin);
+            writer.Write(maxstick);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             stickin = reader.ReadInt32();
+            maxstick = reader.ReadInt32();
         }
 
         public override bool? CanHitNPC(NPC target)
@@ -238,7 +246,7 @@ namespace SGAmod.Items.Weapons.Javelins
             projectile.aiStyle = -1;
             JavelinProj.JavelinOnHit(target,projectile);
 
-            bool foundsticker = false;
+            int foundsticker = 0;
 
             for (int i = 0; i < Main.maxProjectiles; i++) // Loop all projectiles
             {
@@ -250,14 +258,13 @@ namespace SGAmod.Items.Weapons.Javelins
                     && currentProjectile.modProjectile is JavelinProj JavelinProjz // Use a pattern match cast so we can access the projectile like an ExampleJavelinProjectile
                     && JavelinProjz.stickin == target.whoAmI)
                 {
-                    foundsticker = true;
+                    foundsticker += 1;
                    //projectile.Kill();
-                    break;
                 }
 
             }
 
-            if (!foundsticker)
+            if (foundsticker<maxstick)
             {
 
                 if (projectile.penetrate > 1)

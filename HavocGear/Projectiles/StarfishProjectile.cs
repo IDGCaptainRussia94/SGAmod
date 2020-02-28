@@ -20,6 +20,8 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.ignoreWater = true;
             projectile.tileCollide = true;
             projectile.penetrate = 3;
+            projectile.localNPCHitCooldown = 15;
+            projectile.usesLocalNPCImmunity = true;
             aiType = ProjectileID.Bullet;
         }
 

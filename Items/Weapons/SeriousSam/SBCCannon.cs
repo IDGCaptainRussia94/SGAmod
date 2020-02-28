@@ -17,7 +17,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("SBC Cannon");
-            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pase though, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
+            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -270,7 +270,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			DisplayName.SetDefault("Cannon Ball");
 		}
 
-
 		public override void SetDefaults()
 		{
 			projectile.CloneDefaults(ProjectileID.SpikyBall);
@@ -285,6 +284,10 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			projectile.extraUpdates = 1;
 			projectile.penetrate = -1;
 			aiType = ProjectileID.WoodenArrowFriendly;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 10;
 		}
 
 		public override string Texture
@@ -303,8 +306,35 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			return false;
 		}
 
+		public override bool PreAI()
+		{
+
+			for (int zz = 0; zz < Main.maxNPCs; zz += 1)
+			{
+				NPC npc = Main.npc[zz];
+				if (!npc.dontTakeDamage && !npc.townNPC && npc.active && npc.life > 0)
+				{
+					Rectangle rech = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
+					Rectangle rech2 = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
+					if (rech.Intersects(rech2))
+					{
+						if (projectile.localNPCImmunity[npc.whoAmI] < 1)
+							npc.immune[projectile.owner] = 0;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			projectile.localNPCImmunity[target.whoAmI] = 90;
+		}
+
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
+			crit = false;
 			projectile.damage -= target.life;
 			if (projectile.damage < 1)
 				projectile.Kill();
@@ -498,7 +528,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SBC Cannon MK2");
-			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials; it charges and recovers after firing faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pass though, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
+			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials; it charges and recovers after firing faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
 		}
 
 		public override bool CanUseItem(Player player)

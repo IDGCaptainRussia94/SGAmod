@@ -62,11 +62,11 @@ namespace SGAmod.Projectiles
 				float velincrease=((float)(num315+8)/2f);
                 int thisone=Projectile.NewProjectile(projectile.Center.X-projectile.velocity.X, projectile.Center.Y-projectile.velocity.Y, randomcircle.X*velincrease, randomcircle.Y*velincrease, types[2], (int)(projectile.damage*0.25), projectile.knockBack, projectile.owner, 0.0f, 0f);
                 Main.projectile[thisone].ranged=true;
-                Main.projectile[thisone].netUpdate=true;
                 Main.projectile[thisone].friendly=projectile.friendly;
                 Main.projectile[thisone].hostile=projectile.hostile;
                 IdgProjectile.AddOnHitBuff(thisone,BuffID.Midas,60*10);
-                IdgProjectile.Sync(thisone);
+				Main.projectile[thisone].netUpdate = true;
+				IdgProjectile.Sync(thisone);
             }
 
             int theproj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 0.75f), projectile.knockBack, projectile.owner, 0f, 0f);

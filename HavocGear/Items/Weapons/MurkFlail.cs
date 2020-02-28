@@ -22,7 +22,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.useAnimation = 20; 
             item.useTime = 44;
             item.knockBack = 8f;
-            item.damage = 40;
+            item.damage = 35;
             item.scale = 2f;
             item.noUseGraphic = true; 
             item.shoot = mod.ProjectileType("MurkFlailBall");
@@ -34,8 +34,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 
     public override void SetStaticDefaults()
     {
-      DisplayName.SetDefault("Mudrock Crasher");
-    }
+            DisplayName.SetDefault("Mudrock Crasher");
+            Tooltip.SetDefault("Impacts against walls at high enough speeds unleash several dank blasts which inflict Dank Slow\nEnemies who are immune to poison are also immune to Dank Slow");
+        }
 
     }
+
 }

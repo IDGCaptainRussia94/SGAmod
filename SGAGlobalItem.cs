@@ -102,8 +102,8 @@ namespace SGAmod
             }
             if (set == "Blazewyrm")
             {
-                player.setBonus = "When you Crit with a non-projectile melee hit you create a very powerful explosion equal to double the damage dealt; hurting everything nearby\nthis however gives you the action cooldown debuff for 15 seconds which this ability will not activate" +
-                        "\nImmune to fireblocks as well as immunity to OnFire! and Thermal Blaze";
+                player.setBonus = "When you Crit with a non-projectile melee hit you create a very powerful explosion equal to triple the damage dealt; hurting everything nearby\nthis however gives you the action cooldown debuff for 10 seconds which this ability will not activate" +
+                        "\nImmune to fireblocks as well as immunity to On Fire! and Thermal Blaze";
                 player.fireWalk = true;
                 player.buffImmune[BuffID.OnFire] = true;
                 player.buffImmune[mod.BuffType("ThermalBlaze")] = true;
@@ -147,6 +147,35 @@ namespace SGAmod
 
         }
 
+        public override void GrabRange(Item item, Player player, ref int grabRange)
+        {
+            if (item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3)
+            {
+                if (player.GetModPlayer<SGAPlayer>().BoosterMagnet)
+                {
+                    grabRange = 400;
+                }
+            }
+        }
+
+        public override bool GrabStyle(Item item,Player player)
+        {
+            if (item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3)
+            {
+                if (player.GetModPlayer<SGAPlayer>().BoosterMagnet)
+                {
+                    Vector2 vectorItemToPlayer = player.Center - item.Center;
+                    Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.1f;
+                    item.velocity = item.velocity + movement;
+                    item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+
+                }
+            }
+
+
+            return false;
+        }
+
         public override bool UseItem(Item item, Player player)
         {
             if (item.healLife > 0)
@@ -158,6 +187,7 @@ namespace SGAmod
                         Vector2 myspeed = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f)).ToRotationVector2();
                         myspeed *= Main.rand.NextFloat(14f, 22f);
                         int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, myspeed.X, myspeed.Y, ProjectileID.BouncyGrenade, 1000, 10f, player.whoAmI);
+                        Main.projectile[prog].thrown = true; Main.projectile[prog].ranged = false; Main.projectile[prog].netUpdate = true;
                         IdgProjectile.Sync(prog);
                     }
 

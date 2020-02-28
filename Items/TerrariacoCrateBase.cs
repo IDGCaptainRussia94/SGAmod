@@ -36,8 +36,11 @@ namespace SGAmod.Items
 			{
 				ply.QuickSpawnItem(mod.ItemType("IdolOfMidas"), 1);
 			}
+			int[] typeofloot = {ItemID.GoldRing,ItemID.LuckyCoin,ItemID.DiscountCard};
 			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
+			if (Main.rand.Next(0, 2) == 1)
+				ply.QuickSpawnItem(typeofloot[Main.rand.Next(0, typeofloot.Length)], 1);
 		}
 
 		public override bool CanRightClick()

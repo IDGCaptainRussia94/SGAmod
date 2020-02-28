@@ -623,5 +623,211 @@ namespace SGAmod.Items.Weapons.Caliburn
 	}
 
 
+	public class CorrodedShield : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Corroded Shield");
+			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematural after the 5th\nCan be held out like a torch and used normally by holding shift");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 25;
+			item.crit = 15;
+			item.melee = true;
+			item.width = 54;
+			item.height = 32;
+			item.useTime = 70;
+			item.useAnimation = 70;
+			item.reuseDelay = 60;
+			item.useStyle = 1;
+			item.knockBack = 5;
+			item.noUseGraphic = true;
+			Item.sellPrice(0, 5, 0, 0);
+			item.rare = 3;
+			item.UseSound = SoundID.Item7;
+			item.shoot = 10;
+			item.shootSpeed = 10f;
+			item.useTurn = false;
+			item.expert = true;
+			item.noMelee = true;
+		}
+
+		public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
+		{
+			glowstick = true;
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			type = mod.ProjectileType("CorrodedShieldProjDash");
+			return true;
+		}
+
+
+	}
+
+	public class CorrodedShieldProj : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("CorrodedShieldProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 10;
+			projectile.hostile = false;
+			projectile.penetrate = 10;
+			projectile.light = 0.5f;
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.melee = true;
+			projectile.tileCollide = false;
+			drawHeldProjInFrontOfHeldItemAndArms = true;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+
+			Player player = Main.player[projectile.owner];
+			if (projectile.ai[0] > 0 || (player.HeldItem == null || player.HeldItem.type != mod.ItemType("CorrodedShield")) || player.dead)
+			{
+				projectile.Kill();
+			}
+			else
+			{
+				if (projectile.timeLeft < 3)
+					projectile.timeLeft = 3;
+				Vector2 mousePos = Main.MouseWorld;
+
+				if (projectile.owner == Main.myPlayer)
+				{
+					Vector2 diff = mousePos - player.Center;
+					projectile.velocity = diff;
+					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+					projectile.netUpdate = true;
+					projectile.Center = mousePos;
+				}
+				int dir = projectile.direction;
+				player.ChangeDir(dir);
+
+				Vector2 direction = (projectile.velocity);
+				Vector2 directionmeasure = direction;
+
+				player.heldProj = projectile.whoAmI;
+
+				projectile.velocity.Normalize();
+
+				player.bodyFrame.Y = player.bodyFrame.Height * 3;
+				if (directionmeasure.Y - Math.Abs(directionmeasure.X) > 25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 4;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 2;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -160)
+					player.bodyFrame.Y = player.bodyFrame.Height * 5;
+				player.direction = (directionmeasure.X > 0).ToDirectionInt();
+
+				projectile.Center = player.Center + (projectile.velocity * 10f);
+				projectile.velocity *= 8f;
+
+			}
+		}
+		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		{
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.velocity.ToRotation() + (facingleft ? MathHelper.ToRadians(0) : MathHelper.ToRadians(180)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			return false;
+		}
+
+	}
+
+	public class CorrodedShieldProjDash : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("CorrodedShieldProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 30;
+			projectile.hostile = false;
+			projectile.penetrate = 5;
+			projectile.light = 0.5f;
+			projectile.width = 64;
+			projectile.height = 64;
+			projectile.melee = true;
+			projectile.tileCollide = false;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
+		}
+
+		public override void AI()
+		{
+
+			Player player = Main.player[projectile.owner];
+			if (projectile.ai[0] > 0 || (player.HeldItem == null || player.HeldItem.type != mod.ItemType("CorrodedShield")) || player.dead)
+			{
+				projectile.Kill();
+			}
+			else
+			{
+				Vector2 mousePos = Main.MouseWorld;
+
+				if (projectile.ai[1] < 1)
+				{
+				int dir = projectile.direction;
+				player.ChangeDir(dir);
+					player.velocity = projectile.velocity;
+					player.velocity.Y /= 2f;
+					player.immune = true;
+					player.immuneTime = 30;
+
+				}
+				player.velocity.X = projectile.velocity.X;
+				projectile.Center = player.Center;
+
+
+
+				projectile.ai[1] += 1;
+
+			}
+		}
+		public override string Texture
+		{
+			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB"; }
+		}
+
+		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		{
+			return false;
+		}
+
+	}
+
 
 }

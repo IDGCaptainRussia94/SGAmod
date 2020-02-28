@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("True Moonlight");
-			Tooltip.SetDefault("Hold left click to raise your sword to the stars and power up your slash!\nLv2 Slash inflicts Moon Light Curse on enemies, reducing their defense and taking damage over time\nLv3 slash does massive damage and homes in nearby enemies\nHold right click to auto swing basic slash waves at less accuracy");
+			Tooltip.SetDefault("Hold left click to raise your sword to the stars and power up your slash!\nLv2 Slash inflicts Moon Light Curse on enemies, massively reducing their defense and taking damage over time\nLv3 slash does massive damage and homes in nearby enemies\nHold right click to auto swing basic slash waves at less accuracy\nHaving a faster Melee Swing Speed charges the blade faster");
 			Item.staff[item.type] = true; 
 		}
 		
@@ -38,7 +39,7 @@ namespace SGAmod.Items.Weapons
 		    
 		}
 
-        public override bool AltFunctionUse(Player player)
+		public override bool AltFunctionUse(Player player)
         {
             return true;
         }
@@ -52,8 +53,8 @@ namespace SGAmod.Items.Weapons
 	    item.autoReuse = true;
 	    item.channel = true;
 	    item.useStyle = 5;
-	    item.useTime = 30;
-		item.useAnimation = 30;
+	    item.useTime = 60;
+		item.useAnimation = 60;
 		item.noMelee=true;
         }else{
 	    item.autoReuse = false;
@@ -68,10 +69,15 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			Vector2 speedz = new Vector2(speedX, speedY);
+			speedz.Normalize(); speedz *= 30f; speedX = speedz.X; speedY = speedz.Y;
 
-		if (!altfired){
+
+			if (!altfired){
 		int proj=Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("TrueMoonlightCharging"), damage, knockBack, player.whoAmI);
-		return false;
+				//Main.projectile[proj].localAI[2] = 60f/(float)player.itemAnimation;
+				//Main.projectile[proj].netUpdate = true;
+				return false;
 		}
 
 			float speed=1.5f;
@@ -165,9 +171,17 @@ namespace SGAmod.Items.Weapons
 		return false;
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((double)projectile.localAI[2]);
+		}
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			projectile.localAI[2] = (float)reader.ReadDouble();
+		}
+
 		public override void SetDefaults()
 		{
-			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
 			projectile.width = 8;
 			projectile.height = 8;
 			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
@@ -187,7 +201,7 @@ namespace SGAmod.Items.Weapons
 			{
 				projectile.Kill();
 			}
-			projectile.ai[1]+=1f;
+			projectile.ai[1] += Math.Max(0.75f,(player.GetModPlayer<SGAPlayer>().mspeed*1f)-0.00f);
 			projectile.localAI[1]+=0.2f;
 			if ((!player.channel || projectile.ai[0]>0)){
 			projectile.ai[0]+=1;

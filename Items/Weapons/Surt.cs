@@ -108,11 +108,14 @@ namespace SGAmod.Items.Weapons
 				float speed = 1.5f;
 				float numberProjectiles = 1;
 				float rotation = MathHelper.ToRadians(8);
-				position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
+				Vector2 speedz = new Vector2(speedX, speedY);
+				speedz.Normalize(); speedz *= 30f; speedX = speedz.X; speedY = speedz.Y;
+
+				position += Vector2.Normalize(speedz) * 45f;
 				Main.PlaySound(SoundID.Item, player.Center,45);
 				for (int i = 0; i < numberProjectiles; i++)
 				{
-					Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+					Vector2 perturbedSpeed = (speedz * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
 					int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("HeatWave"), (int)((float)damage * 0.20f), knockBack / 3f, player.whoAmI);
 					Main.projectile[proj].melee = true;
 					Main.projectile[proj].magic = false;

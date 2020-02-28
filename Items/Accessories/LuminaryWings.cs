@@ -18,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminary Wings");
-			Tooltip.SetDefault("A gift from the heavens for a worthy vessel, grants superior wingtime and speed!\nEffects of FrostSpark Boots, Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is greatly increased and your max fall speed is doubled");
+			Tooltip.SetDefault("A gift from the heavens for a worthy vessel, grants superior wingtime and speed!\nEffects of Demon Steppers, Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is greatly increased and your max fall speed is doubled");
 		}
 
 		public override void SetDefaults()
@@ -54,14 +54,14 @@ namespace SGAmod.Items.Accessories
 
 			Tile mytile = Framing.GetTileSafely(x_edge, y_bottom_edge);
 
+			ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, hideVisual);
+
 			if (mytile.active() || player.velocity.Y==0)
 			{
-				player.maxRunSpeed += 3f;
-				player.accRunSpeed += 10f;
-				player.runAcceleration += 0.75f;
-				player.rocketBoots = 3;
-				player.moveSpeed += 0.25f;
-				player.iceSkate = true;
+				player.maxRunSpeed += 2.5f;
+				player.accRunSpeed += 3f;
+				player.runAcceleration += 0.50f;
+				player.rocketBoots = 2;
 			}
 			player.maxFallSpeed *= 2f;
 			player.wingTimeMax = 300;
@@ -101,6 +101,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CirnoWings"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
+			recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(ItemID.WingsNebula, 1);
 			recipe.AddIngredient(ItemID.WingsSolar, 1);

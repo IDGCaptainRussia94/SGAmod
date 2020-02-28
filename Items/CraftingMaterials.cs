@@ -187,7 +187,7 @@ namespace SGAmod.HavocGear.Items
 			item.width = 14;
 			item.height = 14;
 			item.value = 50;
-			item.rare = 2;
+			item.rare = 3;
 		}
 	}
 }
@@ -333,7 +333,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0, 3, 0, 0);
+			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.rare = 11;
 		}
 	}
@@ -351,7 +351,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 16;
 			item.height = 16;
-			item.value = 10000;
+			item.value = 100000;
 			item.rare = 9;
 		}
 	}
@@ -682,7 +682,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Ore");
-			Tooltip.SetDefault("The power inside is cracked open, ready to be used");
+			Tooltip.SetDefault("The power inside is cracked wide open, ready to be used");
 		}
 	public override void SetDefaults()
         {
@@ -709,33 +709,22 @@ public class LunarRoyalGel : ModItem
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedOre"), 5);
-			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 3);
+			recipe.AddIngredient(mod.ItemType("UnmanedOre"), 15);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 1);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 1);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
 			recipe.AddIngredient(mod.ItemType("IceFairyDust"), 1);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 3);
+			recipe.AddIngredient(ItemID.CrystalShard, 3);
+			recipe.AddIngredient(ItemID.SoulofLight, 1);
+			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(ItemID.SoulofFright, 1);
+			recipe.AddIngredient(ItemID.SoulofSight, 1);
+			recipe.AddIngredient(ItemID.SoulofMight, 1);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
-			recipe.SetResult(this, 5);
+			recipe.SetResult(this, 15);
 			recipe.AddRecipe();
 		}
 
-	}
-	public class OmegaSigil : ModItem
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Omega Sigil");
-			Tooltip.SetDefault("Proof of one having beaten one of Terraria's strongest foes\nIs not consumed when making Wrath Arrows");
-		}
-
-		public override void SetDefaults()
-		{
-			item.maxStack = 999;
-			item.width = 32;
-			item.height = 32;
-			item.value = 1500000;
-			item.rare = 10;
-		}
 	}
 		public class CaliburnCompess : ModItem
 		{

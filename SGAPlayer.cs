@@ -29,6 +29,7 @@ namespace SGAmod
 	{
 
 		public int beefield = 0;
+		public float mspeed = 1f;
 		public int beefieldtoggle = 0;
 		public int beefieldcounter = 0;
 		public bool HeavyCrates = false;
@@ -39,8 +40,8 @@ namespace SGAmod
 		public bool MassiveBleeding = false;
 		public bool ActionCooldown = false;
 		public bool thermalblaze = false; public bool acidburn = false;
-		public bool LifeFlower = false; public bool GeyserInABottle=false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool PrimordialSkull = false;
-		public bool Matrix = false;
+		public bool LifeFlower = false; public bool GeyserInABottle=false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
+		public bool Matrix = false; public bool BoosterMagnet = false;
 		public int EnhancingCharm = 0;
 		public int FieryheartBuff = 0;
 		public int creeperexplosion = 0;
@@ -57,6 +58,7 @@ namespace SGAmod
 		public int Novusset = 0;	public bool Blazewyrmset = false;	public bool SpaceDiverset = false;	public bool MisterCreeperset = false;	public bool Mangroveset = false; public int Dankset = 0;
 		public float SpaceDiverWings = 0f;
 		public int Havoc = 0;
+		public int NoFireBurn = 0;
 		public int breathingdelay = 0;
 		public int sufficate = 200;
 		public float UseTimeMul = 1f;
@@ -75,7 +77,7 @@ namespace SGAmod
 		public float beedamagemul = 1f;
 		public bool JaggedWoodenSpike = false;		public bool JuryRiggedSpikeBuckler = false;
 		public bool devpowerbool = false; public int Redmanastar = 0;
-		public int MidasIdol = 0;
+		public int MidasIdol = 0; public bool OmegaSigil = false;
 		public bool MurkyDepths=false;
 		public int[] ammoinboxes = new int[4];
 		public int anticipation = 0; public int anticipationLevel = 0;
@@ -211,7 +213,8 @@ namespace SGAmod
 			lunarSlimeHeart = false;
 			TrapDamageMul = 1f; TrapDamageAP = 0f;
 			Thrownsavingchance = 0f;
-			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false;
+			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false; JavelinSpearHeadBundle = false;
+			BoosterMagnet = false;
 			EnhancingCharm = 0;
 			if (devpower>0)
 			devpower -= 1;
@@ -220,12 +223,14 @@ namespace SGAmod
 			Noselfdamage = false;
 			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false;
 			MidasIdol = 0;
+			OmegaSigil = false;
 			MurkyDepths = false;
 			Matrix = false;
 			plasmaLeftInClipMax = 1000;
 			beedamagemul = 1f;
 			anticipationLevel = -1;
 			PrimordialSkull = false;
+			NoFireBurn = Math.Max(NoFireBurn-1,0);
 			if (player.itemTime < 1)
 			recoil = Math.Max(recoil - 0.5f, 0f);
 			greandethrowcooldown = Math.Max(greandethrowcooldown - 1, 0);
@@ -331,6 +336,14 @@ namespace SGAmod
 
 		public override void UpdateBadLifeRegen()
 		{
+
+			if (NoFireBurn > 0)
+			{
+				if (player.HasBuff(BuffID.OnFire))
+				{
+					player.lifeRegen += 15;
+				}
+			}
 
 			if (MassiveBleeding) {
 				if (player.lifeRegen > 0)
@@ -496,7 +509,7 @@ namespace SGAmod
 
 
 			}
-
+			
 			if (creeperexplosion < 9798 && creeperexplosion > 2000)
 			{
 				creeperexplosion = 0;
@@ -774,13 +787,28 @@ modeproj.enhancedbees=true;
 				}
 
 
-			}
+			}		
+			
 			if (player.ownedProjectileCounts[mod.ProjectileType("TimeEffect")] < 1 && Matrix)
 			{
 				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("TimeEffect"), 1, 0, player.whoAmI);
 			}
 
+			if (OmegaSigil)
+			{
+				if (player.statLife > player.statLifeMax2 - 1)
+					player.statDefense += 100;
+			}
 
+			if (player.HeldItem != null)
+			{
+				if (player.HeldItem.type == mod.ItemType("CorrodedShield"))
+				{
+					int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("CorrodedShieldProj"), (int)25, 0f, player.whoAmI);
+				}
+			}
+
+			mspeed = player.meleeSpeed;
 			modcheckdelay =true;
 		}
 
@@ -833,11 +861,18 @@ modeproj.enhancedbees=true;
 			damage=OnHit(ref damage,crit,null,projectile);
 		}
 
-		public override bool PreHurt (bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 
 			if (damageSource.SourceCustomReason == (player.name + " went Kamikaze, but failed to blow up enemies"))
 			return true;
+
+			if (OmegaSigil && player.statLife-damage<1 && Main.rand.Next(100) <= 10)
+			{
+				damage = 0;
+				player.NinjaDodge();
+				return false;
+			}
 
 			if (anticipation > 0)
 			{
@@ -886,6 +921,50 @@ modeproj.enhancedbees=true;
 			return true;
 		}
 
+		private void damagecheck(Vector2 where,ref int damage)
+		{
+			Vector2 itavect = where - player.Center;
+			itavect.Normalize();
+
+
+			if (player.HeldItem != null)
+			{
+				if (player.HeldItem.type == mod.ItemType("CorrodedShield"))
+				{
+					int foundhim = -1;
+
+					for (int xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
+					{
+						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == mod.ProjectileType("CorrodedShield") && Main.projectile[xxxz].owner == player.whoAmI)
+						{
+						foundhim = xxxz;
+						break;
+
+						}
+						if (xxxz > -1)
+						{
+							Vector2 itavect2 = Main.projectile[xxxz].Center - player.Center;
+							itavect2.Normalize();
+							float ang1 = itavect.ToRotation();
+							float ang2 = itavect2.ToRotation();
+							float diff = ang1.AngleLerp(ang2,MathHelper.ToRadians(60));
+
+							if (Math.Abs(((diff.ToRotationVector2()*16f)-(itavect2 * 16f)).Length())<0.25f)
+							{
+								damage = (int)(damage * 0.75);
+								Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
+								return;
+							}
+
+						}
+					}
+
+				}
+
+			}
+
+		}
+
 		private int OnHit(ref int damage, bool crit,NPC npc, Projectile projectile)
 		{
 
@@ -909,7 +988,16 @@ modeproj.enhancedbees=true;
 
 			}
 
-		if (MisterCreeperset)
+		if (projectile != null)
+			{
+				damagecheck(projectile.Center,ref damage);
+			}
+			if (npc != null)
+			{
+				damagecheck(npc.Center, ref damage);
+			}
+
+			if (MisterCreeperset)
 			{
 				Vector2 myspeed = new Vector2(0, 0);
 				if (npc != null)
@@ -924,7 +1012,8 @@ modeproj.enhancedbees=true;
 				}
 				myspeed *= 20f;
 				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, myspeed.X, myspeed.Y, ProjectileID.Grenade, 1000, 10f, player.whoAmI);
-				IdgProjectile.Sync(prog);
+				Main.projectile[prog].thrown = true; Main.projectile[prog].ranged = false; Main.projectile[prog].netUpdate = true;
+				 IdgProjectile.Sync(prog);
 
 			}
 

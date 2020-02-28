@@ -628,7 +628,7 @@ return true;
 			if (Gourged)
 				damage += npc.defense / 2;
 			if (MoonLightCurse)
-				damage += (int)(Math.Min(npc.defense, 30)/2);
+				damage += (int)(Math.Min(npc.defense, 50)/2);
 			if (Sodden)
 				damage = (int)((float)damage * 1.33f);
 
@@ -817,9 +817,9 @@ if (crit && ((item != null && item.melee && item.pick+ item.axe+item.hammer<1)))
 				{
 	if (!player.HasBuff(mod.BuffType("ActionCooldown")))
 					{
-	player.AddBuff(mod.BuffType("ActionCooldown"), 60 * 15);
+	player.AddBuff(mod.BuffType("ActionCooldown"), 60 * 10);
 			Main.PlaySound(SoundID.Item45, npc.Center);
-			Projectile.NewProjectile(npc.Center.X, npc.Center.Y, 0f, 0f, mod.ProjectileType("SlimeBlast"), damage*2, knockback * 3f, player.whoAmI, 0f, 0f);
+			Projectile.NewProjectile(npc.Center.X, npc.Center.Y, 0f, 0f, mod.ProjectileType("BoulderBlast"), damage*3, knockback * 3f, player.whoAmI, 0f, 0f);
 
 
 
@@ -849,7 +849,7 @@ if (DosedInGas && hasabuff){
 Combusted=60*10;
 int buff=npc.FindBuffIndex(mod.BuffType("DosedInGas"));
 if (buff>-1){
-npc.buffTime[buff]=0;
+npc.DelBuff(buff);
 IdgNPC.AddBuffBypass(npc.whoAmI,BuffID.OnFire,60*10);
 }
 
@@ -877,6 +877,20 @@ return true;
 					{
 						string[] lines = { "A dragon is the last person I'd expect to move in to be honest.",
 						"Draken seems upset over his past, I feel sorry for his past."};
+						chat = lines[Main.rand.Next(lines.Length)];
+					}
+					break;
+				case NPCID.ArmsDealer:
+					if (Main.rand.Next(0, 5) == 0)
+					{
+						chat = "Somewhere along the way I got all these Starfish and Shark Teeth, now if only you could find guns that use them I could sell them to you";
+						return;
+
+					}
+						if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
+					{
+						string[] lines = { "I'm sure the dragon is worth alot on the black market, just need to find the right person",
+						"How much do you think he could get for selling the dragon? People would pay well for beasts like him."};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;

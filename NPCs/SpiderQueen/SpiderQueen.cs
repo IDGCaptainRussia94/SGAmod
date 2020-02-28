@@ -14,7 +14,6 @@ namespace SGAmod.NPCs.SpiderQueen
 	[AutoloadBossHead]
 	public class SpiderQueen : ModNPC
 	{
-		int shooting=0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spider Queen");
@@ -29,7 +28,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			npc.lifeMax = 5000;
 			npc.HitSound = SoundID.NPCHit1;
 			npc.DeathSound = SoundID.NPCDeath1;
-			npc.value = 0f;
+			npc.value = 50000f;
 			npc.knockBackResist = 0f;
 			npc.aiStyle = -1;
 			aiType = 0;
@@ -37,7 +36,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			npc.value = 10000f;
+			npc.value = 50000f;
 		}
 
 		public override void NPCLoot()
@@ -46,8 +45,12 @@ namespace SGAmod.NPCs.SpiderQueen
 				for (int i = 0; i <= Main.rand.Next(25,45)*(Main.expertMode ? 2 : 1); i++){
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VialofAcid"));
 				}
-		
-        }
+				if (Main.expertMode)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CorrodedShield"));
+				if (Main.rand.Next(0,3)==0)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AmberGlowSkull"));
+
+		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -167,6 +170,7 @@ namespace SGAmod.NPCs.SpiderQueen
 				}
 			}
 
+			//Spinning Trap Webs
 			if (npc.ai[0] > 2999 && npc.ai[0] < 4000) {
 				if (npc.ai[0]== 3005)
 				Main.PlaySound(3, (int)npc.Center.X, (int)npc.Center.Y, 56, 0.25f, -0.25f);
@@ -420,30 +424,55 @@ namespace SGAmod.NPCs.SpiderQueen
 			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
 			projectile.width = 12;
 			projectile.height = 12;
-			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = true;
-			projectile.ranged = true;
+			projectile.magic = true;
 			projectile.timeLeft = 1200;
+			projectile.penetrate = 1;
 			projectile.extraUpdates = 5;
 			aiType = ProjectileID.Bullet;
 		}
 
 		public override bool PreKill(int timeLeft)
 		{
-			projectile.type = ProjectileID.CursedBullet;
+			projectile.type = ProjectileID.CursedFlameFriendly;
 
 			for(int i = 0; i < 20; i++) {
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 				randomcircle *= Main.rand.NextFloat(0f, 2f);
 				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"));
-				Main.dust[dust].scale = 0.75f;
+				Main.dust[dust].scale = 1f;
 				Main.dust[dust].noGravity = false;
 				Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
 				Main.dust[dust].velocity += new Vector2(randomcircle.X, randomcircle.Y);
 			}
 			Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 111, 0.33f, 0.25f);
+
+			if (projectile.hostile)
+			{
+				for (int pro = 0; pro < Main.maxPlayers; pro += 1)
+				{
+					Player ply = Main.player[pro];
+					if (ply.active && (ply.Center - projectile.Center).Length() < 48)
+					{
+						ply.AddBuff(mod.BuffType("AcidBurn"), 45);
+					}
+				}
+			}
+
+			if (projectile.friendly)
+			{
+				for (int pro = 0; pro < Main.maxNPCs; pro += 1)
+				{
+					NPC ply = Main.npc[pro];
+					if (ply.active && !ply.friendly && (ply.Center - projectile.Center).Length() < 48)
+					{
+						ply.AddBuff(mod.BuffType("AcidBurn"), 45);
+					}
+				}
+			}
 
 			return true;
 		}
@@ -456,15 +485,15 @@ namespace SGAmod.NPCs.SpiderQueen
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + 51);
+			Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderVenom");
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1
 			for (int k = oldPos.Length - 1; k >= 0; k -= 1)
 			{
 				Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
-				Color color = Color.Lerp(Color.Lime, lightColor, (float)k / (oldPos.Length + 1));
-				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * 1f;
+				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
+				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * 0.25f;
 				spriteBatch.Draw(tex, drawPos, null, color * alphaz, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			}
 			return false;
@@ -489,13 +518,21 @@ namespace SGAmod.NPCs.SpiderQueen
 			}
 			oldPos[0] = projectile.Center;
 
-			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+			projectile.rotation = projectile.velocity.ToRotation();
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (Main.rand.Next(0, 3) < 2)
+				target.AddBuff(mod.BuffType("AcidBurn"), 60 * (Main.rand.Next(0, 3) == 1 ? 2 : 1));
+			projectile.Kill();
 		}
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
 			if (Main.rand.Next(0, 3) < 2)
 				target.AddBuff(mod.BuffType("AcidBurn"), 60 * (Main.rand.Next(0, 3) == 1 ? 2 : 1));
+			projectile.Kill();
 		}
 
 

@@ -33,6 +33,11 @@ namespace SGAmod.Items.Weapons
 			item.useAmmo = AmmoID.FallenStar;
 		}
 
+		public override bool CanUseItem(Player player)
+		{
+			return (player.CountItem(ItemID.FallenStar)>0);
+		}
+
 		public override bool ConsumeAmmo(Player player)
 		{
 			if (player.itemAnimation > 6)
@@ -64,6 +69,10 @@ namespace SGAmod.Items.Weapons
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
 			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small ammount of mana\nStarfish bounce off walls and pierce\nuses Starfish as ammo");
+		}
+		public override bool CanUseItem(Player player)
+		{
+			return (player.CountItem(ItemID.Starfish) > 0);
 		}
 		public override void SetDefaults()
 		{

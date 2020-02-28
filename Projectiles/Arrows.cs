@@ -13,9 +13,9 @@ namespace SGAmod.Projectiles
 
 	public class UnmanedArrow : ModProjectile
 	{
-
-		double keepspeed = 0.0;
-		float homing = 0.03f;
+		protected double keepspeed = 0.0;
+		protected virtual float homing => 0.03f;
+		protected virtual float homingdist => 400f;
 		public Player P;
 		public override void SetStaticDefaults()
 		{
@@ -103,18 +103,36 @@ namespace SGAmod.Projectiles
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
 
-
-			float previousspeed = projectile.velocity.Length();
 			if (projectile.ai[0] < (beginhoming))
+			{
+				projectile.localAI[0] = -1;
 				return;
-			NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
-			if (target != null) {
-				if ((target.Center - projectile.Center).Length() < 400f) {
-					if (projectile.ai[0] < (250f)) {
+			}
+			NPC target = null;
+			if (projectile.localAI[0]>-1)
+			target = Main.npc[(int)projectile.localAI[0]];
+
+			projectile.localAI[1] += 1;
+			float previousspeed = projectile.velocity.Length();
+			if (projectile.localAI[0] < 0 || projectile.localAI[1]%30==0 || ((!target.active || target.dontTakeDamage || target.life<1) && projectile.localAI[1] % 10 == 0))
+			{
+					NPC target2 = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
+					projectile.localAI[0] = target2.whoAmI;
+					target = target2;
+			}
+
+			if (target != null)
+				{
+				if ((target.Center - projectile.Center).Length() < homingdist)
+				{
+					if (projectile.ai[0] < (250f))
+					{
 						projectile.velocity = projectile.velocity + (projectile.DirectionTo(target.Center) * ((float)previousspeed * homing));
 						projectile.velocity.Normalize();
 						projectile.velocity = projectile.velocity * previousspeed;
-					} } }
+					}
+				}
+				}
 
 
 		}
@@ -127,9 +145,7 @@ namespace SGAmod.Projectiles
 	}
 	public class UnmanedArrow2 : UnmanedArrow
 	{
-
-		double keepspeed = 0.0;
-		float homing = 0.12f;
+		protected override float homing => 0.06f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Notchvos Arrow");
@@ -194,8 +210,6 @@ namespace SGAmod.Projectiles
 	public class PitchArrow : UnmanedArrow
 	{
 
-		double keepspeed = 0.0;
-		float homing = 0.06f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("pitched Arrow");
@@ -267,8 +281,7 @@ namespace SGAmod.Projectiles
 	public class DosedArrow : UnmanedArrow2
 	{
 
-		double keepspeed = 0.0;
-		float homing = 0.5f;
+		protected override float homing => 0.09f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dosed Arrow");
@@ -300,7 +313,8 @@ namespace SGAmod.Projectiles
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.rand.Next(0, 100) < 50)
-			target.AddBuff(mod.BuffType("DosedInGas"), 60 * 5);
+				if (target.GetGlobalNPC<SGAnpcs>().Combusted < 1)
+					target.AddBuff(mod.BuffType("DosedInGas"), 60 * 5);
 			if (Main.rand.Next(0, 100) < 20)
 			IdgNPC.AddBuffBypass(target.whoAmI, BuffID.Oiled, 60 * 10);
 			base.OnHitNPC(target, damage, knockback, crit);
@@ -359,8 +373,6 @@ namespace SGAmod.Projectiles
 	public class DankArrow : PitchArrow
 	{
 
-		double keepspeed = 0.0;
-		float homing = 0.06f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dank Arrow");

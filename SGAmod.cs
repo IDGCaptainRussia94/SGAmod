@@ -14,6 +14,7 @@ using Terraria.UI;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI;
 using Idglibrary;
+using System.Diagnostics;
 using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.World;
@@ -34,6 +35,9 @@ namespace SGAmod
 		public static Dictionary<int, int> UsesPlasma;
 		public static int[] otherimmunes = new int[3];
 		public static bool Calamity = false;
+		public static bool NightmareUnlocked = false;
+		static string userName = Environment.UserName;
+		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 
 		public SGAmod()
 		{
@@ -46,6 +50,27 @@ namespace SGAmod
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
+		}
+
+		public static void FileTest()
+		{
+
+			if (!Directory.Exists(filePath))
+			{
+				Directory.CreateDirectory(filePath);
+
+			}
+				File.WriteAllLines(filePath+"/It's not over yet.txt",new string[]
+				{"Congrats, you beat me, saved Draken, and this world... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated you and as such was only using a fraction of my power.",
+				"If you really want to save him and yourself, you'll find the key on a new character, I could just 'delete' you if I wanted to, but that wouldn't gain either of us anything now would it?",
+				"Come now, lets see if your up for a REAL challenge and if your really his worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
+				"See you soon, I'll be waiting... "+userName,
+				"#Helen 'Helion' Weygold"
+
+			
+			});
+			Process.Start(@"" + filePath + "");
+
 		}
 
 		public override void PreSaveAndQuit()
@@ -65,7 +90,12 @@ namespace SGAmod
 			SGAmod.ScrapCustomCurrencySystem = new ScrapMetalCurrency(ModContent.ItemType<Items.Scrapmetal>(), 999L);
 			SGAmod.ScrapCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(SGAmod.ScrapCustomCurrencySystem);
 
-			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
+			if (Directory.Exists(filePath))
+			{
+				SGAmod.NightmareUnlocked = true;
+			}
+
+				Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
 		}
@@ -77,6 +107,7 @@ namespace SGAmod
 			SGAmod.UsesClips = null;
 			SGAmod.UsesPlasma = null;
 			SGAmod.ScrapCustomCurrencySystem = null;
+			NightmareUnlocked = false;
 			Instance = null;
 			Calamity = false;
 			otherimmunes = null;
@@ -99,6 +130,36 @@ namespace SGAmod
 			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(ItemID.RodofDiscord);
 			recipe.AddRecipe();*/
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(null,"SharkTooth", 5);
+			recipe.AddIngredient(ItemID.Chain, 1);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.SharkToothNecklace);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
+			recipe.AddIngredient(ItemID.SandBlock, 50);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.SandstorminaBottle);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.SilkRope, 30);
+			recipe.AddIngredient(ItemID.AncientCloth, 3);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.FlyingCarpet);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.Gel, 500);
+			recipe.AddIngredient(null, "DankWood", 15);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.SlimeStaff);
+			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AdvancedPlating"), 5);
@@ -169,7 +230,7 @@ namespace SGAmod
 				bossList.Call("AddBossWithInfo", "Cirno", 6.5f, (Func<bool>)(() => SGAWorld.downedCirno), string.Format("Use a [i:{0}] in the snow biome during the day", ItemType("Nineball")));
 				bossList.Call("AddBossWithInfo", "Cobalt Wraith", 6.6f, (Func<bool>)(() => (SGAWorld.downedWraiths>1)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting a hardmode anvil", ItemType("WraithCoreFragment2")));
 				bossList.Call("AddBossWithInfo", "Sharkvern", 9.5f, (Func<bool>)(() => SGAWorld.downedSharkvern), string.Format("Use a [i:{0}] at the ocean", ItemType("ConchHorn")));
-				bossList.Call("AddBossWithInfo", "Cratrosity", 10.5f, (Func<bool>)(() => SGAWorld.downedCratrosity), string.Format("Use any key that is not a [i:{1}] with a [i:{0}] at night, get a contracker from the merchant to allow enemies to drop [i:{0}]", ItemType("TerrariacoCrateBase"), ItemType("TerrariacoCrateKey")));
+				bossList.Call("AddBossWithInfo", "Cratrosity", 10.5f, (Func<bool>)(() => SGAWorld.downedCratrosity), string.Format("Use any key that is not a [i:{1}] with a [i:{0}] at night, get a [i:{2}] from the merchant to allow enemies to drop [i:{0}], you can use different keys to get a customized boss", ItemType("TerrariacoCrateBase"), ItemType("TerrariacoCrateKey"), ItemType("PremiumUpgrade")));
 				bossList.Call("AddBossWithInfo", "Twin Prime Destroyers", 11.25f, (Func<bool>)(() => SGAWorld.downedTPD), string.Format("Use a [i:{0}] anywhere at night", ItemType("Mechacluskerf")));
 				bossList.Call("AddBossWithInfo", "Doom Harbinger", 11.33, (Func<bool>)(() => SGAWorld.downedHarbinger), string.Format("Can spawn randomly at the start of night after golem is beaten, the DD2 event is finished on tier 3, and the Martians are beaten, defeating him will allow the cultists to spawn (Single Player Only)", ItemType("Prettygel")));
 				bossList.Call("AddBossWithInfo", "Luminite Wraith", 12.5f, (Func<bool>)(() => (SGAWorld.downedWraiths>2)), string.Format("Use a [i:{0}], defeat this boss to get the Ancient Manipulator", ItemType("WraithCoreFragment3")));

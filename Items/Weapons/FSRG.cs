@@ -28,7 +28,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 2;
-			item.value = 10000;
+			item.value = 200000;
 			item.rare = 11;
 			item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
@@ -96,6 +96,7 @@ namespace SGAmod.Items.Weapons
 			base.SetDefaults();
 			projectile.width = 8;
 			projectile.height = 8;
+			projectile.ranged = true;
 		}
 
 		public override string Texture
