@@ -7,11 +7,8 @@ Changelog:
 
 --Added:
 -Acid Scepter, Flail-O-Nades,Demon Steppers, Bundle of Javelin Spear Heads and Javelin Parts, Corroded Shield and Amber Glow Skull
-
 (Spider Queen Expert Drop and bonus Drop respectively), Cursed Hail, Massacre Prototype, Heartreach/Booster/Omni Magnets
-
 -A few more chat lines, as well as a hint to how to easily get more of the custom ammo types
-
 -Crafting recipes for the SandStorm in a Bottle, Flying Carpet, Slime Staff, and Shark Tooth Necklace
 
 
