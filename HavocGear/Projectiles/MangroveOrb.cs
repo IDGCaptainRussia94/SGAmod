@@ -16,6 +16,7 @@ namespace SGAmod.HavocGear.Projectiles
 		float homing = 0.15f;
 		public float beginhoming = 20f;
 		public Player P;
+		public NPC target2;
 
 		public override void SetStaticDefaults()
 		{
@@ -78,7 +79,7 @@ namespace SGAmod.HavocGear.Projectiles
 		public override void AI()
 		{
 			if (projectile.timeLeft < 200)
-			projectile.aiStyle = 1;
+				projectile.aiStyle = 1;
 			Lighting.AddLight(projectile.position, 0.0f, 0.3f, 0.1f);
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
@@ -94,14 +95,15 @@ namespace SGAmod.HavocGear.Projectiles
 			{
 				keepspeed = (projectile.velocity).Length();
 			}
-			NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
-			if (target != null)
+			if (target2 == null || !target2.active)
+				target2 = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
+			if (target2 != null)
 			{
-				if ((target.Center - projectile.Center).Length() < 800f)
+				if ((target2.Center - projectile.Center).Length() < 800f)
 				{
 					if (projectile.ai[0] > (beginhoming))
 					{
-						projectile.velocity = projectile.velocity + (projectile.DirectionTo(target.Center) * ((float)keepspeed * homing));
+						projectile.velocity = projectile.velocity + (projectile.DirectionTo(target2.Center) * ((float)keepspeed * homing));
 						projectile.velocity.Normalize();
 						projectile.velocity = projectile.velocity * (float)keepspeed;
 					}

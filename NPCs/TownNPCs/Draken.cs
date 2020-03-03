@@ -557,12 +557,42 @@ namespace SGAmod.NPCs.TownNPCs
 		}
 	}
 
-	public class Expertise : ModItem
+	public class Nightmare : ModItem
 	{
 		private float effect = 0;
+		public static ModItem instance;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Expertise");
+			DisplayName.SetDefault("Hellion's Gift");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			instance = this;
+			return false;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "Nmxx", "'I have provided you with one of my chromatic mirrors, and it will keep returning to your hand as you keep returning to "+Main.worldName+"'"));
+			tooltips.Add(new TooltipLine(mod, "Nmxx", "You just might go far " + SGAmod.userName + ", just might..."));
+			tooltips.Add(new TooltipLine(mod, "Nmxx", Idglib.ColorText(Color.OrangeRed, "By being granted this item your character is in Nightmare Mode, which does the following:")));
+
+			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red,"Enemies have 20% more HP")));
+			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
+			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
+			tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 15%")));
+			tooltips.Add(new TooltipLine(mod, "Nm1", "Using this item will enable Nightmare Hardcore, which ups the challenge even further for more Expertise"));
+
+
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Main.hslToRgb((Main.GlobalTime/3f)%1f, 0.50f, 0.3f);
+				}
+			}
+
 		}
 
 		public override void SetDefaults()
@@ -577,23 +607,75 @@ namespace SGAmod.NPCs.TownNPCs
 			get { return ("Terraria/Extra_19"); }
 		}
 
-		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		private void drawit(Vector2 where, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI, Matrix zoomitz)
 		{
-			effect += 0.1f;
-		Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
 
-			for (int i = 0; i < 360; i += 360/5)
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
+
+			int width = 32; int height = 32;
+
+			Texture2D beam = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+			var dataColors = new Color[width * height];
+
+
+			///
+
+
+			for (int y = 0; y < height; y++)
 			{
-				Double Azngle = MathHelper.ToRadians(i)+ effect;
+				for (int x = 0; x < width; x++)
+				{
+					if ((new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length() < width / 3)
+					{
+						dataColors[x + y * width] = Main.hslToRgb(((Main.GlobalTime + ((float)(x + y) / 50f)) / 3f)%1f, 0.75f, 0.5f);
+					}
+				}
+			}
+
+
+			///
+
+
+			beam.SetData(0, null, dataColors, 0, width * height);
+			spriteBatch.Draw(beam, where, null, Color.White, 0, new Vector2(beam.Width / 2, beam.Height / 2), scale * 2f * Main.essScale, SpriteEffects.None, 0f);
+
+
+			effect += 0.1f;
+			Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
+
+			for (int i = 0; i < 360; i += 360 / 12)
+			{
+				Double Azngle = MathHelper.ToRadians(i) + effect;
 				Vector2 here = new Vector2((float)Math.Cos(Azngle), (float)Math.Sin(Azngle));
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-				spriteBatch.Draw(Main.itemTexture[item.type], (item.position + (here*12f))-Main.screenPosition, null, Color.White, 0, new Vector2(inner.Width / 2, inner.Height / 2), scale * 0.5f * Main.essScale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
+				spriteBatch.Draw(inner, (where+new Vector2(2,2) + ((here * 18f)* Main.essScale)), null, Color.White, 0, new Vector2(inner.Width / 2, inner.Height / 2), scale * 0.25f, SpriteEffects.None, 0f);
 				Main.spriteBatch.End();
+				if (zoomitz==Main.UIScaleMatrix)
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+				else
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 			}
+
+
+
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			float gg = 0f;
+			drawit(position+ new Vector2(11,11), spriteBatch, drawColor, drawColor,ref gg, ref scale,1, Main.UIScaleMatrix);
+			return false;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+
+
+			drawit(item.Center- Main.screenPosition, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI, Main.GameViewMatrix.ZoomMatrix);
 			return false;
 		}
 

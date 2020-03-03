@@ -49,7 +49,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 21;
+			item.damage = 22;
 			item.ranged = true;
 			item.width = 20;
 			item.height = 32;
@@ -101,7 +101,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 32;
 			item.melee = true;
 			item.width = 36;
 			item.height = 36;
@@ -185,7 +185,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 16;
+			item.damage = 20;
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;

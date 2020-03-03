@@ -5,6 +5,27 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+2.21-(3/2/20)-Patch #3:
+
+--Changed:
+
+-Lunar Cascade costs slightly more mana
+-Adjusted prices of alot of items
+-Because of some changed code, Cirno's homing bolts behave differently
+-Damage on some weapons
+-Removed most bonus damage off the Grenadier's Glove, this weapon is already very strong for its uses especially now that you can get powerful speed prefixes on thrower items
+-Nerfed some of the Dank gear
+
+--Fixed:
+
+-Issues with the Corroded Shield
+-Cursed Flame blocks being used in crafting recipes instead of Cursed Flames
+-Improving FPS on various projectiles that use nearby enemy/player detection
+-Massacre Prototype didn't cost any mana
+-Acid Scepter's shots staying in place when you died
+-Grenadier's Glove not reciving any bonus velocity from throwing velocity; I tend to forget this one isn't automatically added to throwing weapons
+
+
 2.2-(2/27/20)-Patch #2:
 
 --Added:

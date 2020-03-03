@@ -270,8 +270,12 @@ namespace SGAmod.NPCs.Wraiths
 		if (npc.ai[0]%50==0 && npc.ai[0]%900>650){
 
 
-		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),Math.Abs(npc.ai[1])<18 ? ProjectileID.DD2BetsyArrow : ProjectileID.WoodenArrowHostile, 7,12,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
-		}
+		List<Projectile> one = Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),Math.Abs(npc.ai[1])<18 ? ProjectileID.DD2BetsyArrow : (SGAWorld.NightmareHardcore>0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7,12,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
+							one[0].hostile = true;
+							one[0].friendly = false;
+							//one[0].localAI[0] = P.whoAmI;
+							one[0].netUpdate = true;
+						}
 		npc.spriteDirection=1;
 		}else{
 		if (Math.Abs(npc.velocity.X)>2){ npc.spriteDirection=npc.velocity.X>0 ? -1 : 1; }
@@ -335,8 +339,16 @@ namespace SGAmod.NPCs.Wraiths
 		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
 		float locspeed=0.25f;
 		if (npc.ai[0]%600>350){
+
 		npc.damage = (int)npc.defDamage*3;
 		itt=itt=(P.position-npc.position+new Vector2(npc.ai[1]*npc.spriteDirection,-8));
+
+					if (npc.ai[0] % 180 == 0 && SGAWorld.NightmareHardcore>0)
+					{
+						Vector2 zxx = itt;
+						zxx.Normalize();
+						npc.velocity += zxx*18;
+					}
 		npc.rotation=npc.rotation+(0.65f*npc.spriteDirection);
 		}else{
 		npc.damage = (int)npc.defDamage;

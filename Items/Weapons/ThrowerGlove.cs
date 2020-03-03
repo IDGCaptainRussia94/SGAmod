@@ -51,8 +51,8 @@ namespace SGAmod.Items.Weapons
 		{
 			item.useStyle = 1;
 			item.thrown = true;
-			item.damage = 10;
-			item.shootSpeed = 10f;
+			item.damage = 4;
+			item.shootSpeed = 5f;
 			item.shoot = ProjectileID.Grenade;
 			item.useTurn = true;
 			//ProjectileID.CultistBossLightningOrbArc
@@ -84,7 +84,7 @@ namespace SGAmod.Items.Weapons
 			//basetype = mod.ItemType("AcidGrenade");
 
 			Vector2 basespeed = new Vector2(speedX, speedY);
-			float speedbase = basespeed.Length();
+			float speedbase = basespeed.Length()*player.thrownVelocity;
 			basespeed.Normalize();
 
 			Item basetype2 = new Item();
@@ -156,8 +156,8 @@ namespace SGAmod.Items.Weapons
 			//if (player.CountItem(mod.ItemType("AcidGrenade"))>0)
 			//basetype = mod.ItemType("AcidGrenade");
 
-			Vector2 basespeed = projectile.velocity/4f;
-			float speedbase = basespeed.Length();
+			Vector2 basespeed = (projectile.velocity/2f);
+			float speedbase = basespeed.Length() * player.thrownVelocity;
 			basespeed.Normalize();
 
 			Item basetype2 = new Item();
@@ -177,7 +177,7 @@ namespace SGAmod.Items.Weapons
 		// Use this hook for hooks that can have multiple hooks mid-flight: Dual Hook, Web Slinger, Fish Hook, Static Hook, Lunar Hook
 		public override bool? CanUseGrapple(Player player)
 		{
-			return player.GetModPlayer<SGAPlayer>().greandethrowcooldown<1;
+			return (player.GetModPlayer<SGAPlayer>().greandethrowcooldown<1 && ThrowerGlove.FindGrenadeToThrow(mod, player)>-1);
 		}
 
 	}
@@ -197,7 +197,8 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.Grenade);
 			item.useStyle = 1;
 			item.thrown = true;
-			item.damage = 70;
+			item.damage = 65;
+			item.shootSpeed = 3f;
 			item.shoot = mod.ProjectileType("AcidGrenadeProj");
 			item.value = Item.buyPrice(0, 0, 2, 0);
 			item.rare = 3;
@@ -237,7 +238,8 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.Grenade);
 			item.useStyle = 1;
 			item.thrown = true;
-			item.damage = 80;
+			item.damage = 72;
+			item.shootSpeed = 3f;
 			item.shoot = mod.ProjectileType("ThermalGrenadeProj");
 			item.value = Item.buyPrice(0, 0, 2, 0);
 			item.rare = 5;

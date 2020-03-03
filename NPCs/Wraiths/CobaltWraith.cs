@@ -258,7 +258,7 @@ namespace SGAmod.NPCs.Wraiths
 		npc.rotation=rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
 		npc.velocity=npc.velocity*0.86f;
 		if (npc.ai[0]%20==0 && npc.ai[0]%900>650){
-		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),ProjectileID.WoodenArrowHostile,20,20,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
+		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0), SGAWorld.NightmareHardcore > 0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile,20,20,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
 		}
 		npc.spriteDirection=1;
 		}else{

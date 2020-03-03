@@ -454,7 +454,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class Massacre : SeriousSamWeapon
+		public class Massacre : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -473,11 +473,12 @@ namespace SGAmod.Items.Weapons.Technical
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 5;
-			item.value = 1000000;
+			item.value = Item.sellPrice(platinum: 2);
 			item.rare = 11;
 			item.UseSound = SoundID.Item122;
 			item.autoReuse = true;
 			item.shoot = 10;
+			item.mana = 150;
 			item.shootSpeed = 200f;
 		}
 

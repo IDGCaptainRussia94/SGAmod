@@ -105,7 +105,7 @@ namespace SGAmod.Items.Weapons
 		{
 			item.damage = 60;
 			item.magic = true;
-			item.mana = 25;
+			item.mana = 30;
 			item.width = 40;
 			item.height = 40;
 			item.useTime = 5;

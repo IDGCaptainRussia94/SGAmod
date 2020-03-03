@@ -241,10 +241,14 @@ namespace SGAmod.Items.Weapons
             }
             else { projectile.ai[0] += 1; }
 
-            if (projectile.ai[0] == 2)
+            if (projectile.ai[0] == 2 || Main.player[projectile.owner].dead)
             {
                 Player player = Main.player[projectile.owner];
-                Vector2 toit = Main.MouseWorld;
+                Vector2 toit;
+                if (Main.player[projectile.owner].dead)
+                    toit = projectile.velocity;
+                else
+                    toit = Main.MouseWorld;
                 if (projectile.owner == Main.myPlayer)
                 {
                     Vector2 norm = toit- projectile.Center;

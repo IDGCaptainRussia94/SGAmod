@@ -13,7 +13,8 @@ namespace SGAmod.HavocGear.Projectiles
 		{
 			DisplayName.SetDefault("Quagmire");
 			ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 3f;
-			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 150f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 160f;
+			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 14f;
 		}
        
 	    public override void SetDefaults()

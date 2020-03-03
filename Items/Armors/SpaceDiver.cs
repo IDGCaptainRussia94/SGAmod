@@ -14,7 +14,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Helm");
-			Tooltip.SetDefault("You emit blue light while in water\nEffects of Arctic Diving Gear\n" + Idglib.ColorText(Color.Red, "5 % less damage"));
+			Tooltip.SetDefault("You emit blue light while in water\nEffects of Arctic Diving Gear\n" + Idglib.ColorText(Color.Red, "5% less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -50,7 +50,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Chestplate");
-			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red,"5 % less damage"));
+			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red,"5% less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -87,7 +87,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Leggings");
-			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "5 % less damage"));
+			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "5% less damage"));
 		}
 		public override void SetDefaults()
 		{

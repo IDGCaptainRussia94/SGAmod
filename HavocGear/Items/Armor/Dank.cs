@@ -100,7 +100,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
             player.maxRunSpeed += 0.2f;
             player.accRunSpeed += 0.2f;
-            player.runAcceleration += 0.15f;
+            player.runAcceleration += 0.05f;
         }
 
         public override void AddRecipes()

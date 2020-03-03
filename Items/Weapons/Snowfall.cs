@@ -195,7 +195,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("Snowfall"), 1);
-			recipe.AddIngredient(ItemID.CursedFlame, 25);
+			recipe.AddIngredient(ItemID.CursedFlames, 25);
 			recipe.AddIngredient(ItemID.BlizzardStaff, 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);

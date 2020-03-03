@@ -660,6 +660,11 @@ namespace SGAmod.Items.Weapons.Caliburn
 			glowstick = true;
 		}
 
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[mod.ProjectileType("CorrodedShieldProjDash")] < 1;
+		}
+
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			type = mod.ProjectileType("CorrodedShieldProjDash");

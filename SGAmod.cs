@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -36,7 +37,7 @@ namespace SGAmod
 		public static int[] otherimmunes = new int[3];
 		public static bool Calamity = false;
 		public static bool NightmareUnlocked = false;
-		static string userName = Environment.UserName;
+		public static string userName = Environment.UserName;
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 
 		public SGAmod()
@@ -61,10 +62,10 @@ namespace SGAmod
 
 			}
 				File.WriteAllLines(filePath+"/It's not over yet.txt",new string[]
-				{"Congrats, you beat me, saved Draken, and this world... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated you and as such was only using a fraction of my power.",
-				"If you really want to save him and yourself, you'll find the key on a new character, I could just 'delete' you if I wanted to, but that wouldn't gain either of us anything now would it?",
-				"Come now, lets see if your up for a REAL challenge and if your really his worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
-				"See you soon, I'll be waiting... "+userName,
+				{"Congrats, you beat me, and this world, and prevented me from getting the Dragon... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated the strength of your avatar "+Main.LocalPlayer.name+", but now I know who I'm really fighting against.",
+				"If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' "+Main.LocalPlayer.name+" if I wanted to, but that wouldn't gain either of us anything now would it?",
+				"Come now, lets see if your up for a REAL challenge and if your really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
+				"See you soon, I'll be waiting "+userName,
 				"#Helen 'Helion' Weygold"
 
 			
@@ -76,6 +77,8 @@ namespace SGAmod
 		public override void PreSaveAndQuit()
 		{
 			Overlays.Scene.Deactivate("SGAmod:SGAHUD");
+			Overlays.Scene.Deactivate("SGAmod:CirnoBlizzard");
+			Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
 		}
 
 		public override void Load()
@@ -93,11 +96,23 @@ namespace SGAmod
 			if (Directory.Exists(filePath))
 			{
 				SGAmod.NightmareUnlocked = true;
-			}
+				AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
+				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+				//{
+				//Main.PlaySound(29, -1,-1, 105, 1f, -0.6f);
+				//}
+				}
+
+			//The Blizzard Part here was snipped from Elements Awoken, which I'm sure came from somewhere else.
+			//Oh, and the Sky code was originally from Zokalon, so I'm mentioning that too! Thanks guys!
 
 				Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
+			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
+
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
+			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
+
 		}
 
 		public override uint ExtraPlayerBuffSlots => 14;
@@ -295,7 +310,7 @@ namespace SGAmod
 		RecipeGroup group6 = new RecipeGroup(() => "any" + " Evil hardmode drop", new int[]
 		{
 		ItemID.Ichor,
-		ItemID.CursedFlame
+		ItemID.CursedFlames
 		});
 
 			RecipeGroup.RegisterGroup("SGAmod:Tier1Ore", group);

@@ -11,6 +11,7 @@ using Terraria.GameContent.Generation;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.Graphics.Effects;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 using SGAmod.Tiles;
@@ -22,6 +23,7 @@ namespace SGAmod
     {
         //Setting up variables for invasion
         public static bool customInvasionUp = false;
+        public static int CirnoBlizzard=0;
         public static bool downedCustomInvasion = false;
         public static bool downedSPinky = false;
         public static bool downedTPD = false;
@@ -51,8 +53,10 @@ namespace SGAmod
         public static int stolecrafting = 0;
         public static int modtimer = 0;
         public static bool GennedVirulent=false;
-        public static int NightmareHardcore=0;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
+
+
+        public static int NightmareHardcore = 0;
 
         //Initialize all variables to their default values
         public override void Initialize()
@@ -127,6 +131,9 @@ namespace SGAmod
 
         public override void PostUpdate()
         {
+        if (Main.netMode<1)
+                NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
+
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true) ;
             SGAWorld.modtimer +=1;
             if (Main.dayTime == true) {
@@ -310,6 +317,7 @@ namespace SGAmod
             writer.Write(bossprgressor);
             writer.Write(tf2cratedrops);
             writer.Write(modtimer);
+            //writer.Write(NightmareHardcore);
              BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen;
             writer.Write(flags2);
             int x = 0;
@@ -343,6 +351,7 @@ namespace SGAmod
             bossprgressor = reader.ReadInt32();
             tf2cratedrops = reader.ReadBoolean();
             modtimer = reader.ReadInt32();
+            //NightmareHardcore = reader.ReadInt32();
             BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0];
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
@@ -485,6 +494,21 @@ namespace SGAmod
             
             }
 
+        }
+
+        public override void PreUpdate()
+        {
+            if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
+            SGAWorld.CirnoBlizzard = Math.Max(SGAWorld.CirnoBlizzard -3,0);
+            if (ModLoader.GetMod("Idglibrary")!=null)
+            {
+                Idglibrary.Idglib.nightmaremode = NightmareHardcore;
+            }
+            /*if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
+            {
+                Overlays.Scene["SGAmod:CirnoBlizzard"].Deactivate();
+                Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
+            }*/
         }
 
         public override void PostWorldGen()

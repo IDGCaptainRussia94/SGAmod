@@ -20,7 +20,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             Item refItem = new Item();
 			refItem.SetDefaults(ItemID.Amarok);                                 
-            item.damage = 30;
+            item.damage = 35;
             item.useTime = 24;
             item.useAnimation = 22;
             item.useStyle = 5;

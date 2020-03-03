@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +21,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Arrow");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public virtual float beginhoming
@@ -65,6 +67,16 @@ namespace SGAmod.Projectiles
 				projectile.Kill();
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((double)projectile.localAI[0]);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			projectile.localAI[0] = (float)reader.ReadDouble();
+		}
+
 		public virtual void effects(int type)
 		{
 			if (type == 0)
@@ -103,20 +115,32 @@ namespace SGAmod.Projectiles
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
 
-			if (projectile.ai[0] < (beginhoming))
+			if (projectile.ai[0] < (beginhoming) || projectile.hostile)
 			{
 				projectile.localAI[0] = -1;
 				return;
 			}
-			NPC target = null;
-			if (projectile.localAI[0]>-1)
-			target = Main.npc[(int)projectile.localAI[0]];
+			Entity target = null;
+
+			if (projectile.localAI[0] > -1)
+			{
+				if (projectile.hostile)
+				target = Main.player[(int)projectile.localAI[0]];
+				else
+				target = Main.npc[(int)projectile.localAI[0]];
+
+
+			}
 
 			projectile.localAI[1] += 1;
 			float previousspeed = projectile.velocity.Length();
-			if (projectile.localAI[0] < 0 || projectile.localAI[1]%30==0 || ((!target.active || target.dontTakeDamage || target.life<1) && projectile.localAI[1] % 10 == 0))
+			if (projectile.localAI[0] < 0 || projectile.localAI[1]%30==0 || ((!target.active || (target is NPC && ((target as NPC).dontTakeDamage || (target as NPC).life <1))) && projectile.localAI[1] % 10 == 0))
 			{
-					NPC target2 = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
+				Entity target2;
+				if (projectile.hostile)
+					target2 = Main.player[Idglib.FindClosestTarget(1, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
+				else
+					target2 = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
 					projectile.localAI[0] = target2.whoAmI;
 					target = target2;
 			}
@@ -149,6 +173,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Notchvos Arrow");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 
@@ -285,6 +310,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dosed Arrow");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override float beginhoming
@@ -544,9 +570,6 @@ namespace SGAmod.Projectiles
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-
-			if (projectile.ai[1] > 0)
-				return false;
 
 			Texture2D tex = Main.projectileTexture[projectile.type];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 10) / 2f;

@@ -84,6 +84,9 @@ namespace SGAmod
 		public float recoil = 0;
 		public int greandethrowcooldown = 0;
 		public int? resetver = 1;
+		public bool nightmareplayer = false;
+		public bool playercreated = false;
+		public bool granteditems = false;
 
 		public List<int> ExpertisePointsFromBosses;
 		public List<string> ExpertisePointsFromBossesModded;
@@ -384,6 +387,7 @@ namespace SGAmod
 
 		public override void PreUpdate()
 		{
+
 			for (int i = 54; i < 58; i++)
 			{
 
@@ -400,6 +404,16 @@ namespace SGAmod
 
 		public override void PostUpdateEquips()
 		{
+			if (!granteditems)
+			{
+				if (nightmareplayer && !player.HasItem(mod.ItemType("Nightmare")))
+				{
+					player.QuickSpawnItem(mod.ItemType("Nightmare"));
+				}
+				granteditems = true;
+			}
+
+
 			if (Dankset > 0)
 			{
 				bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
@@ -804,7 +818,8 @@ modeproj.enhancedbees=true;
 			{
 				if (player.HeldItem.type == mod.ItemType("CorrodedShield"))
 				{
-					int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("CorrodedShieldProj"), (int)25, 0f, player.whoAmI);
+					if (player.ownedProjectileCounts[mod.ProjectileType("CorrodedShieldProj")] < 1)
+					Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("CorrodedShieldProj"), (int)25, 0f, player.whoAmI);
 				}
 			}
 
@@ -933,31 +948,34 @@ modeproj.enhancedbees=true;
 				{
 					int foundhim = -1;
 
-					for (int xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
+					int xxxz = 0;
+					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
 					{
-						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == mod.ProjectileType("CorrodedShield") && Main.projectile[xxxz].owner == player.whoAmI)
+						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == mod.ProjectileType("CorrodedShieldProj") && Main.projectile[xxxz].owner == player.whoAmI)
 						{
-						foundhim = xxxz;
-						break;
+							foundhim = xxxz;
+							break;
 
 						}
-						if (xxxz > -1)
+					}
+						if (foundhim > -1)
 						{
-							Vector2 itavect2 = Main.projectile[xxxz].Center - player.Center;
+							Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
 							itavect2.Normalize();
 							float ang1 = itavect.ToRotation();
 							float ang2 = itavect2.ToRotation();
 							float diff = ang1.AngleLerp(ang2,MathHelper.ToRadians(60));
 
-							if (Math.Abs(((diff.ToRotationVector2()*16f)-(itavect2 * 16f)).Length())<0.25f)
+						float len = ((itavect) - (itavect2)).Length();
+
+							if (len < 0.7f)
 							{
-								damage = (int)(damage * 0.75);
+								damage = (int)(damage * 0.75f);
 								Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 								return;
 							}
 
 						}
-					}
 
 				}
 
@@ -990,7 +1008,7 @@ modeproj.enhancedbees=true;
 
 		if (projectile != null)
 			{
-				damagecheck(projectile.Center,ref damage);
+				damagecheck(projectile.Center-projectile.velocity,ref damage);
 			}
 			if (npc != null)
 			{
@@ -1249,16 +1267,48 @@ modeproj.enhancedbees=true;
 
 		}
 
+		public override void SendCustomBiomes(BinaryWriter writer)
+		{
+			BitsByte newbim = new BitsByte();
+			newbim[0] = DankShrineZone;
+			writer.Write(newbim);
+		}
+
+		public override void ReceiveCustomBiomes(BinaryReader reader)
+		{
+			BitsByte flags = reader.ReadByte();
+			DankShrineZone = flags[0];
+		}
+
 		public override void UpdateBiomeVisuals()
 		{
 			//TheProgrammer
 			player.ManageSpecialBiomeVisuals("SGAmod:ProgramSky",(SGAmod.ProgramSkyAlpha>0f || NPC.CountNPCS(mod.NPCType("SPinky"))>0) ? true : false, player.Center);
-
+			player.ManageSpecialBiomeVisuals("SGAmod:CirnoBlizzard", (SGAWorld.CirnoBlizzard>0) ? true : false, player.Center);
+			ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
+			if (SGAWorld.CirnoBlizzard > 0)
+				shad.UseOpacity((float)(SGAWorld.CirnoBlizzard / 1000f));
+			else
+				shad.UseOpacity(0f);
 		}
 
 		public override TagCompound Save()
 		{
 			TagCompound tag = new TagCompound();
+
+			if (playercreated == false)
+			{
+				if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+				{
+					if (SGAmod.NightmareUnlocked)
+					{
+						Main.PlaySound(29, -1, -1, 105, 1f, -0.6f);
+						nightmareplayer = true;
+					}
+				}
+			}
+			playercreated = true;
+			tag["playercreated"] = playercreated;
 			tag["gottf2"] = gottf2;
 			tag["devpower"] = devpowerbool;
 			tag["devpowerint"] = devpower;
@@ -1267,6 +1317,7 @@ modeproj.enhancedbees=true;
 			tag["ZZZExpertiseCollectedZZZ"] = ExpertiseCollected;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
 			tag["resetver"] = resetver;
+			tag["nightmareplayer"] = nightmareplayer;
 
 			if (ExpertisePointsFromBosses != null)
 			{
@@ -1292,6 +1343,8 @@ modeproj.enhancedbees=true;
 
 		public override void Load(TagCompound tag)
 		{
+			playercreated = true;
+
 			ExpertiseCollected = 0;
 			ExpertiseCollectedTotal = 0;
 			gottf2 = tag.GetBool("gottf2");
@@ -1300,6 +1353,8 @@ modeproj.enhancedbees=true;
 			Redmanastar = tag.GetInt("Redmanastar");
 			int? resetver2=null;
 			resetver = tag.GetInt("resetver");
+			if (tag.ContainsKey("nightmareplayer"))
+			nightmareplayer = tag.GetBool("nightmareplayer");
 
 			ExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedZZZ");
 			int maybeExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedTotalZZZ");

@@ -309,7 +309,7 @@ namespace SGAmod.Items.Accessories
 			item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 5, 0, 0); ;
+			item.value = Item.sellPrice(0, 2, 50, 0); ;
 			item.accessory = true;
 		}
 
@@ -345,7 +345,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = 6;
-			item.value = Item.sellPrice(0, 5, 0, 0); ;
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.accessory = true;
 		}
 
@@ -417,7 +417,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 28;
-			item.value = 100000;
+			item.value = Item.sellPrice(gold: 5);
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
@@ -489,7 +489,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = 12;
 			item.damage = 1;
 			item.summon = true;
-			item.value = Item.sellPrice(1, 0, 0, 0);
+			item.value = Item.sellPrice(3, 0, 0, 0);
 			item.accessory = true;
 			item.expert = true;
 			/*for (int i = 0; i < effects.Length; i += 1)
@@ -808,7 +808,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 28;
-			item.value = 1000000;
+			item.value = Item.sellPrice(platinum: 1);
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
@@ -929,7 +929,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lavawaders improved\nImmunity to Thermal Blaze and Acid Burn\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lavawaders improved\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -957,7 +957,7 @@ namespace SGAmod.Items.Accessories
 			item.defense = 0;
 			item.accessory = true;
 			item.height = 14;
-			item.value = 7500000;
+			item.value = Item.sellPrice(gold: 25);
 			item.rare = 7;
 			item.expert = false;
 		}
@@ -994,7 +994,7 @@ namespace SGAmod.Items.Accessories
 			item.maxStack = 1;
 			item.width = 32;
 			item.height = 32;
-			item.value = 750000;
+			item.value = Item.sellPrice(gold: 3);
 			item.rare = 8;
 			item.accessory = true;
 		}
@@ -1028,7 +1028,7 @@ namespace SGAmod.Items.Accessories
 			item.maxStack = 1;
 			item.width = 32;
 			item.height = 32;
-			item.value = 750000;
+			item.value = Item.sellPrice(gold: 2);
 			item.rare = 7;
 			item.accessory = true;
 		}
@@ -1067,7 +1067,7 @@ namespace SGAmod.Items.Accessories
 			item.maxStack = 1;
 			item.width = 32;
 			item.height = 32;
-			item.value = 150000;
+			item.value = Item.sellPrice(gold: 75);
 			item.rare = 10;
 			item.accessory = true;
 		}

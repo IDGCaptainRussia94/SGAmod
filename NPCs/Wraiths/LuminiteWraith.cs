@@ -635,7 +635,7 @@ public void DoAIStuff(Player P){
 		if (npc.ai[0]%600>200){
 
 		Vector2 distnormal= dist;
-		if (dist.Length() > 320 && dist.Length() < 2500 && addtocircle < 0.7f)
+		if (dist.Length() > 320 && dist.Length() < 2500 && addtocircle < 0.7f && SGAWorld.NightmareHardcore<1)
 		{
 		distnormal.Normalize();
 		distnormal *= 320;

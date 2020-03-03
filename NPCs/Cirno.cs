@@ -7,8 +7,10 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Graphics.Effects;
 using Idglibrary;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Events;
 
 
 namespace SGAmod.NPCs
@@ -24,7 +26,9 @@ namespace SGAmod.NPCs
 	int aistate=0;
 	int card=0;
 	int attacktype=0;
+		int nightmareprog = 0;
 	float damagetospellcard=0.9f;
+		bool nightmaremode => SGAWorld.NightmareHardcore>0;
 	int mixup=0;
 		public override void SetStaticDefaults()
 		{
@@ -130,6 +134,62 @@ bobbing=bobbing+1;
 npc.spriteDirection=-npc.direction;
 aicounter=aicounter+1;
 Vector2 dist=P.Center-npc.Center;
+
+	if (card > 0)
+	{
+					if (nightmaremode)
+					{
+						if (nightmareprog<card*400)
+						nightmareprog += 1;
+						/*if (nightmareprog == 1)
+						{
+							
+
+						}*/
+						if (SGAWorld.CirnoBlizzard< card*100 && nightmareprog%3==0)
+						SGAWorld.CirnoBlizzard += 1;
+						ScreenShaderData shad=Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
+						shad.UseColor(Color.Lerp(Color.Blue,Color.Turquoise,0.5f+(float)Math.Sin(Main.GlobalTime)));
+						Main.raining = true;
+						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * 0.002f, -0.4f, 0.4f);
+						Main.maxRaining = Math.Min(Main.maxRaining + 0.002f, 1f);
+						Main.rainTime = 5;
+						Main.UseStormEffects = true;
+
+						
+						nightmareprog = Math.Min(nightmareprog,2000);
+						
+
+						if (nightmareprog > 100)
+						{
+							for (int i = 0; i < Main.maxPlayers; i += 1)
+							{
+								if (Main.player[i].active && !Main.player[i].dead)
+								{
+									Main.player[i].AddBuff(BuffID.WindPushed, 2);
+								}
+							}
+						}
+						if (nightmareprog > 500)
+						{
+							ScreenObstruction.screenObstruction = Math.Min((nightmareprog-500)/600f,0.5f);
+							for (int i = 0; i < Main.maxPlayers; i += 1)
+							{
+								if (Main.player[i].active && !Main.player[i].dead)
+								{
+									//if (card>3)
+									//Main.player[i].AddBuff(BuffID.Obstructed, (int)((Main.maxRaining-0.5f)*120f));
+									Main.player[i].AddBuff(BuffID.Darkness, (int)((Main.maxRaining - 0.5f) * 60f));
+								}
+							}
+						}
+
+					}
+
+
+
+				}
+
 if (aistate==3){
 if (aicounter>49){
 aistate=0;
@@ -187,8 +247,9 @@ aicounter=aicounter-1;
 if (bobbing>220){
 float aimer=Main.rand.Next(-1000,1000);
 if (bobbing%25==0){
-Idglib.Shattershots(new Vector2(npc.Center.X,npc.Center.Y),P.position,new Vector2(P.width,P.height),ProjectileID.IceBolt,20,(float)Main.rand.Next(60,80)/5,25,3,true,(float)(aimer/8000),false,60);
-}}
+List<Projectile> bolts=Idglib.Shattershots(new Vector2(npc.Center.X,npc.Center.Y),P.position,new Vector2(P.width,P.height),ProjectileID.IceBolt,20,(float)Main.rand.Next(60,80)/5,25,3,true,(float)(aimer/8000),false,60);
+}
+						}
 if (aicounter>220){
 aistate=0;
 aicounter=40;
@@ -307,9 +368,13 @@ if (attacktype==1){
 if (aicounter>19 && aicounter<46 && aicounter%3==0){
 //Shattershots(new Vector2(npc.Center.X+(npc.direction*48),npc.Center.Y),P.position,new Vector2(P.width,P.height),118,15,Main.rand.Next(6,18),0,1,true,Main.rand.Next(-4,4));
 float aimer=Main.rand.Next(-1000,1000);
-Idglib.Shattershots(new Vector2(npc.Center.X+(npc.direction*48),npc.Center.Y),P.position,new Vector2(P.width,P.height),mod.ProjectileType("CirnoBolt"),80,(float)Main.rand.Next(60,80)/10f,0,1,true,(float)(aimer/8000),false,200);
+List<Projectile> bolts = Idglib.Shattershots(new Vector2(npc.Center.X+(npc.direction*48),npc.Center.Y),P.position,new Vector2(P.width,P.height),mod.ProjectileType("CirnoBolt"),80,(float)Main.rand.Next(60,80)/10f,0,1,true,(float)(aimer/8000),false,200);
+CirnoBolt Cbolt = bolts[0].modProjectile as CirnoBolt;
+Cbolt.homing = 0.04f;
+bolts[0].netUpdate = true;
+
 //Shattershots(npc.position,P.position,new Vector2(P.width,P.height),83,20,12,40,2,true,0);
-}
+								}
 }
 
 }
@@ -626,10 +691,12 @@ return false;
 	{
 
 		double keepspeed=0.0;
-		float homing=0.02f;
+		public float homing=0.02f;
+		Vector2 gothere;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Grace");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override string Texture
@@ -658,6 +725,20 @@ return false;
 			target.AddBuff(BuffID.Frostburn, 60 * 5);
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((double)gothere.X);
+			writer.Write((double)gothere.Y);
+			writer.Write((double)homing);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			gothere.X = (float)reader.ReadDouble();
+			gothere.Y = (float)reader.ReadDouble();
+			homing = (float)reader.ReadDouble();
+		}
+
 		public override bool PreKill(int timeLeft)
 		{
 			projectile.type=ProjectileID.IceBolt;
@@ -682,34 +763,41 @@ return false;
 				//dust3.shader = GameShaders.Armor.GetShaderFromItemId(ItemID.MidnightRainbowDye);
 			}
 
-		projectile.ai[0]=projectile.ai[0]+1;
+			if (projectile.ai[0] < 1)
+			{
+				if (projectile.hostile)
+					homing *= 1f;
+				projectile.ai[1] = -1;
+			}
+
+			projectile.ai[0]=projectile.ai[0]+1;
 		if (projectile.ai[0]<2){
 		keepspeed=(projectile.velocity).Length();
 		}
-		int target2=Idglib.FindClosestTarget(projectile.friendly ? 0 : 1,projectile.position,new Vector2(0,0),true,true,true,projectile);
-		//if (target2 > 0) {
-		Entity target;
-		target=Main.player[target2] as Player;
-		if (projectile.friendly){
-		target=Main.npc[target2] as NPC;
-		//target=Main.player[target2];
-		}
-				if (target != null && (target.Center - projectile.Center).Length() < 1000f)
+			if (gothere==null || projectile.ai[0] % 40 == 0 || projectile.ai[0] == 1)
+			{
+				int target3 = Idglib.FindClosestTarget(projectile.friendly ? 0 : 1, projectile.position, new Vector2(0, 0), true, true, true, projectile);
+
+				//if (target2 > 0) {
+				Entity target;
+				target = Main.player[target3] as Player;
+				if (projectile.friendly)
+				{
+					target = Main.npc[target3] as NPC;
+					//target=Main.player[target2];
+				}
+				gothere = target.Center;
+				projectile.netUpdate = true;
+			}
+				if (gothere != null && (gothere - projectile.Center).Length() < 1000f)
 				{
 					if (projectile.ai[0] < (Main.expertMode == true ? 150f : 50f) || projectile.friendly)
 					{
-
-
-						projectile.velocity = projectile.velocity + (projectile.DirectionTo(target.Center) * ((float)keepspeed * homing));
-						//if (projectile.velocity.Length()>keepspeed){
+						projectile.velocity = projectile.velocity + (projectile.DirectionTo(gothere) * ((float)keepspeed * homing));
 						projectile.velocity.Normalize();
 						projectile.velocity = projectile.velocity * (float)keepspeed;
-						//}
-
-
 					}
 				}
-			//}
 
 		}
 
