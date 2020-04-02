@@ -15,8 +15,8 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.ranged = true;
             item.width = 22;
             item.height = 56;
-            item.useTime = 36;
-            item.useAnimation = 36;
+            item.useTime = 26;
+            item.useAnimation = 26;
             item.useStyle = 5;
             item.noMelee = true;
             item.knockBack = 4;
@@ -25,7 +25,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.UseSound = SoundID.Item5;
             item.autoReuse = true;
             item.shoot = 10;
-            item.shootSpeed = 30f;
+            item.shootSpeed = 10f;
             item.useAmmo = AmmoID.Arrow;
         }
 
@@ -38,7 +38,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             float speed = 8f;
-            float rotation = MathHelper.ToRadians(8);
+            float rotation = MathHelper.ToRadians(2);
             position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
 
             //for (int i = 0; i < 2; i += 1)
@@ -52,6 +52,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             Main.projectile[proj].friendly = true;
             Main.projectile[proj].hostile = false;
             Main.projectile[proj].timeLeft = 600;
+            Main.projectile[proj].extraUpdates += 1;
             Main.projectile[proj].knockBack = item.knockBack;
 
            IdgProjectile.AddOnHitBuff(proj, BuffID.DryadsWardDebuff, 60 * 7);
@@ -70,6 +71,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(null, "DankWood", 25);
+            recipe.AddIngredient(null, "DankCore", 1);
             recipe.AddIngredient(null, "VirulentBar", 12);
             recipe.AddIngredient(ItemID.VineRopeCoil, 2);
             recipe.AddTile(TileID.MythrilAnvil);

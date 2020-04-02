@@ -22,6 +22,7 @@ namespace SGAmod
 	public bool enhancedbees=false;
 	public bool splittingcoins=false;
 	public bool raindown=false;
+		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
 
 		/*private List<int> debuffs=new List<int>();
@@ -56,6 +57,11 @@ namespace SGAmod
 			if (projectile.type == ProjectileID.FlamethrowerTrap && projectile.owner > -1)
 				return false;
 			return base.CanHitNPC(projectile, target);
+		}
+		public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+		{
+			if (onehit)
+				projectile.Kill();
 		}
 		public override bool PreAI(Projectile projectile)
 		{

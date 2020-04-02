@@ -270,7 +270,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Sometimes I can still hear the voices inside my head, talking in a deep directive voice...");
 				chat.Add("I don't feel up to talking much right now.");
 				chat.Add("What can I do to make people not hate me for what I am?");
-				chat.Add("Raw vension takes flavorless, is this how our kind always ate?");
+				chat.Add("Raw vension tastes flavorless, is this how our kind always ate?");
 				chat.Add("I hope you are not afraid, please don't be afraid of me.");
 				chat.Add("Please protect me, I feel the others want to mount my head like a trophy.");
 				chat.Add("All those trophies you have, of monsters... Am I monster?");
@@ -351,16 +351,24 @@ namespace SGAmod.NPCs.TownNPCs
 				{
 					chat.Add("While I feel safer that you struck down that cosmic abomination, I sense of fear this, was only the beginner...", 2.0);
 				}
-				if (SGAWorld.downedWraiths>0)
+				if (SGAWorld.downedHellion > 1)
 				{
-					if (SGAWorld.downedWraiths<2)
-					chat.Add("So they are called Wraiths? That first one was weak but I'm feeling... something, terrible...", 2.0);
-					else if (SGAWorld.downedWraiths<3)
-					chat.Add("An entire array of animated armor! I don't like this! (whining noises)", 2.0);
-					if (SGAWorld.downedWraiths > 3)
+					chat.Add("My god... You've done, you beat her... I don't know what to say other than thank you <3", 2.0);
+					chat.Add("So is this it? Am I finally free of Hellion's wrath? I don't hear her voice anymore", 2.0);
+				}
+				else
+				{
+					if (SGAWorld.downedWraiths > 0)
 					{
-						chat.Add("It's getting stronger, and closer, and whatever it is... It's not good! That last Wraith said something about a master and I'm very worried...", 2.0);
-						chat.Add("This is very concerning, these powerful foes were mearly messengers to their so called master, could their master be my enslaver? Please no!", 2.0);
+						if (SGAWorld.downedWraiths < 2)
+							chat.Add("So they are called Wraiths? That first one was weak but I'm feeling... something, terrible...", 2.0);
+						else if (SGAWorld.downedWraiths < 3)
+							chat.Add("An entire array of animated armor! I don't like this! (whining noises)", 2.0);
+						if (SGAWorld.downedWraiths > 3)
+						{
+							chat.Add("It's getting stronger, and closer, and whatever it is... It's not good! That last Wraith said something about a master and I'm very worried...", 2.0);
+							chat.Add("This is very concerning, these powerful foes were mearly messengers to their so called master, could their master be my enslaver? Please no!", 2.0);
+						}
 					}
 				}
 				if (SGAWorld.downedCaliburnGuardians > 0)
@@ -388,6 +396,23 @@ namespace SGAmod.NPCs.TownNPCs
 			}
 			//chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
 			//chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);
+
+			if (SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths>3)
+			{
+			if (SGAWorld.downedHellion == 0)
+				{
+					if (!Main.LocalPlayer.GetModPlayer<SGAPlayer>().gothellion && Main.expertMode)
+					{
+						Main.LocalPlayer.QuickSpawnItem(mod.ItemType("HellionSummon"));
+						Main.LocalPlayer.GetModPlayer<SGAPlayer>().gothellion = true;
+						return Main.LocalPlayer.name + "! Something bad happened! Something REALLY bad! She found us! I was in my place when suddenly this appeared... This is just what I saw manifest itself outside planets before they burned."+"\n" + Main.LocalPlayer.name+
+							" you need to stop her! You need to stop Hellion before she destroys you all and enslaves me again!";
+					}
+
+				}
+
+
+			}
 
 			return chat; // chat is implicitly cast to a string. You can also do "return chat.Get();" if that makes you feel better
 		}
@@ -469,7 +494,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
-			if (modplayer.ExpertiseCollectedTotal >= 125)
+			if (modplayer.ExpertiseCollectedTotal >= 50)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("EmptyCharm"));
 				shop.item[nextSlot].shopCustomPrice = 10;
@@ -561,6 +586,7 @@ namespace SGAmod.NPCs.TownNPCs
 	{
 		private float effect = 0;
 		public static ModItem instance;
+		public Func<float,int,int,float> colorgen = (dist,x,y) => ((-Main.GlobalTime + ((float)(dist) / 10f)) / 3f);
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Gift");
@@ -574,22 +600,36 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "Nmxx", "'I have provided you with one of my chromatic mirrors, and it will keep returning to your hand as you keep returning to "+Main.worldName+"'"));
-			tooltips.Add(new TooltipLine(mod, "Nmxx", "You just might go far " + SGAmod.userName + ", just might..."));
-			tooltips.Add(new TooltipLine(mod, "Nmxx", Idglib.ColorText(Color.OrangeRed, "By being granted this item your character is in Nightmare Mode, which does the following:")));
-
-			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red,"Enemies have 20% more HP")));
-			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
-			tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
-			tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 15%")));
-			tooltips.Add(new TooltipLine(mod, "Nm1", "Using this item will enable Nightmare Hardcore, which ups the challenge even further for more Expertise"));
-
-
-			foreach (TooltipLine line in tooltips)
+			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer)
 			{
-				if (line.mod == "Terraria" && line.Name == "ItemName")
+				if (Main.expertMode)
 				{
-					line.overrideColor = Main.hslToRgb((Main.GlobalTime/3f)%1f, 0.50f, 0.3f);
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "'I have provided you with one of my chromatic mirrors, and it will keep returning to your hand as you keep returning to " + Main.worldName + "'"));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "You just might go far " + SGAmod.userName + ", just might..."));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", Idglib.ColorText(Color.OrangeRed, "By being granted this item your character is in Nightmare Mode, which does the following:")));
+
+					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Enemies have 20% more HP")));
+					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
+					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 15%")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Enemy money dropped is increased by 50%")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 10% chance for enemies to drop double loot")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.DimGray, "Does not properly support online play, yet")));
+					//tooltips.Add(new TooltipLine(mod, "Nm1", "Using this item will enable Nightmare Hardcore, which ups the challenge even further for more Expertise"));
+
+
+					foreach (TooltipLine line in tooltips)
+					{
+						if (line.mod == "Terraria" && line.Name == "ItemName")
+						{
+							line.overrideColor = Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 0.50f, 0.3f);
+						}
+					}
+				}
+				else
+				{
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "Your not on an expert mode world Nub! Nightmare Mode NOT enabled"));
+
 				}
 			}
 
@@ -597,9 +637,18 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void SetDefaults()
 		{
+			item.rare = 12;
+			item.maxStack = 1;
+			item.consumable = false;
 			item.width = 24;
 			item.height = 24;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			item.useStyle = 4;
+			item.noMelee = true; //so the item's animation doesn't do damage
+			item.value = 0;
 			item.rare = 12;
+			item.UseSound = SoundID.Item8;
 		}
 
 		public override string Texture
@@ -607,7 +656,7 @@ namespace SGAmod.NPCs.TownNPCs
 			get { return ("Terraria/Extra_19"); }
 		}
 
-		private void drawit(Vector2 where, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI, Matrix zoomitz)
+		public static void drawit(Vector2 where, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI, Matrix zoomitz, Func<float, int, int, float> color2)
 		{
 
 			Main.spriteBatch.End();
@@ -626,9 +675,12 @@ namespace SGAmod.NPCs.TownNPCs
 			{
 				for (int x = 0; x < width; x++)
 				{
-					if ((new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length() < width / 3)
+					float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
+					if (dist < width / 3)
 					{
-						dataColors[x + y * width] = Main.hslToRgb(((Main.GlobalTime + ((float)(x + y) / 50f)) / 3f)%1f, 0.75f, 0.5f);
+						//float alg = ((-Main.GlobalTime + ((float)(dist) / 10f)) / 3f);
+						float alg = color2(dist,x,y);
+						dataColors[x + y * width] = Main.hslToRgb(alg%1f, 0.75f, 0.5f);
 					}
 				}
 			}
@@ -638,20 +690,20 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 			beam.SetData(0, null, dataColors, 0, width * height);
-			spriteBatch.Draw(beam, where, null, Color.White, 0, new Vector2(beam.Width / 2, beam.Height / 2), scale * 2f * Main.essScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(beam, where + new Vector2(0, 0), null, Color.White, 0, new Vector2(beam.Width / 2, beam.Height / 2), scale * 2f * Main.essScale, SpriteEffects.None, 0f);
 
 
-			effect += 0.1f;
+			//effect += 0.1f;
 			Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
 
 			for (int i = 0; i < 360; i += 360 / 12)
 			{
-				Double Azngle = MathHelper.ToRadians(i) + effect;
+				Double Azngle = MathHelper.ToRadians(i) + Main.GlobalTime;
 				Vector2 here = new Vector2((float)Math.Cos(Azngle), (float)Math.Sin(Azngle));
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
-				spriteBatch.Draw(inner, (where+new Vector2(2,2) + ((here * 18f)* Main.essScale)), null, Color.White, 0, new Vector2(inner.Width / 2, inner.Height / 2), scale * 0.25f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(inner, (where+ ((here * 18f)* Main.essScale)), null, Color.White, 0, new Vector2(inner.Width / 2, inner.Height / 2), scale * 0.25f, SpriteEffects.None, 0f);
 				Main.spriteBatch.End();
 				if (zoomitz==Main.UIScaleMatrix)
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -667,7 +719,7 @@ namespace SGAmod.NPCs.TownNPCs
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			float gg = 0f;
-			drawit(position+ new Vector2(11,11), spriteBatch, drawColor, drawColor,ref gg, ref scale,1, Main.UIScaleMatrix);
+			drawit(position+ new Vector2(11,11), spriteBatch, drawColor, drawColor,ref gg, ref scale,1, Main.UIScaleMatrix, colorgen);
 			return false;
 		}
 
@@ -675,7 +727,7 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 
 
-			drawit(item.Center- Main.screenPosition, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI, Main.GameViewMatrix.ZoomMatrix);
+			drawit(item.Center- Main.screenPosition, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI, Main.GameViewMatrix.ZoomMatrix, colorgen);
 			return false;
 		}
 

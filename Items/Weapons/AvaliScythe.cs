@@ -7,10 +7,11 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
+using SGAmod.Items.Weapons.SeriousSam;
 
 namespace SGAmod.Items.Weapons
 {
-	public class AvaliScythe : ModItem
+	public class AvaliScythe : SeriousSamWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -46,7 +47,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 10);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 8);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

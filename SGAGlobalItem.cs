@@ -21,6 +21,36 @@ namespace SGAmod
         public static string pboostertextbase2 = "While you have wing time, hold DOWN while flying to boost in a direction\nHold LEFT or RIGHT to cap your vertical speed and greatly increase horizontal fly speeds\nHold only DOWN to quickly fly upwards, else rapidly fall downwards with no wingtime left";
         public static string pboostertext = "";
         public static string pboostertextboost = "";
+        public static string apocalypticaltext
+        {
+            get
+            {
+                Player player = Main.LocalPlayer;
+                SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
+                int whichone = (int)Main.GlobalTime % 4;
+                string[] theones = { "Melee", "Ranged", "Magic", "Throwing" };
+                string text = modplayer.apocalypticalChance[whichone] +"% "+ theones[whichone] + " Apocalyptical Chance";
+
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
+                {
+                    text += "\nApocalyptical Strength: "+ (modplayer.apocalypticalStrength*100f)+"%";
+                    text += "\nAn Apocalyptical is when your crit-crits, resulting in massive damage";
+                    text += "\nItems and effects may add special effects on top of this";
+                    text += "\nApocalyptical Strength however only really boosts these effects rather than the damage of the crit";
+                    text += "\nStrength of 100% would only boost your damage increase up to 400% from 300%, but effects would be doubled";
+
+
+                }
+                else
+                {
+                    text += " (Hold LEFT CONTROL for more info)";
+
+                }
+                return text;
+
+            }
+
+        }
 
         public override bool CanUseItem(Item item, Player player)
         {
@@ -102,7 +132,7 @@ namespace SGAmod
             }
             if (set == "Blazewyrm")
             {
-                player.setBonus = "When you Crit with a non-projectile melee hit you create a very powerful explosion equal to triple the damage dealt; hurting everything nearby\nthis however gives you the action cooldown debuff for 10 seconds which this ability will not activate" +
+                player.setBonus = "When you Crit with a non-projectile melee hit you create a very powerful explosion equal to triple the damage dealt; hurting everything nearby\nthis however gives you the action cooldown debuff for 10 seconds which this ability will not activate\n25% increased melee damage against enemies who have Thermal Blaze" +
                         "\nImmune to fireblocks as well as immunity to On Fire! and Thermal Blaze";
                 player.fireWalk = true;
                 player.buffImmune[BuffID.OnFire] = true;
@@ -113,9 +143,10 @@ namespace SGAmod
             {
                 string text1 = Idglib.ColorText(Color.Red, "90% reduced breath meter regen");
                 string text2 = Idglib.ColorText(Color.Red, "You've adapted to pressurized air, removing the armor set will greatly harm you");
-                player.setBonus = "Receive Endurance and Defense based on breath left (40% Endurance and 100 Defense at full breath)\nTaking damage will drain your breath meter based on the faction of life lost\nReceive no damage when damaged with a full breath meter\n" + SGAGlobalItem.pboostertext + text1 + " \n" + text2;
+                player.setBonus = "Receive Endurance and Defense based on breath left (40% Endurance and 100 Defense at full breath)\nTaking damage will drain your breath meter based on the faction of life lost\nReceive no damage when damaged with a full breath meter\nTechnological damage increased by 25%\n" + SGAGlobalItem.pboostertext + text1 + " \n" + text2;
                 sgaplayer.SpaceDiverset = true;
                 sgaplayer.SpaceDiverWings += 0.5f;
+                sgaplayer.techdamage += 0.25f;
             }
             if (set == "MisterCreeper")
             {
@@ -199,7 +230,7 @@ namespace SGAmod
         public override bool OnPickup(Item item, Player player)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-            if (sgaplayer.MidasIdol > 0)
+            if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol<3)
             {
                 /*int[] count = {player.CountItem(ItemID.CopperCoin), player.CountItem(ItemID.SilverCoin), player.CountItem(ItemID.GoldCoin), player.CountItem(ItemID.PlatinumCoin) };
 
@@ -276,6 +307,33 @@ namespace SGAmod
             }
 
             return (usetimetemp * sgaplayer.UseTimeMul);
+        }
+
+        public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
+        {
+            player.GetModPlayer<SGAPlayer>().myammo = ammo.type;
+        }
+
+        public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
+            {
+
+                int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), damage/2, knockBack, player.whoAmI);
+                Main.projectile[probg].ranged = item.ranged;
+                Main.projectile[probg].magic = item.magic;
+                Main.projectile[probg].friendly = true;
+                Main.projectile[probg].hostile = false;
+                Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(15));
+                Main.projectile[probg].velocity.X = perturbedSpeed.X*0.6f;
+                Main.projectile[probg].velocity.Y = perturbedSpeed.Y * 0.6f;
+                Main.projectile[probg].owner = player.whoAmI;
+                SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
+                modeproj.myplayer = player;
+                IdgProjectile.Sync(probg);
+
+            }
+            return true;
         }
 
         public override void OpenVanillaBag(string context, Player player, int arg)
@@ -453,13 +511,15 @@ namespace SGAmod
         public ThrowerPrefixAccessory()
         {
         }
-        public ThrowerPrefixAccessory(float armorbreak, float damage, float thrownvelocity, float throweruserate, float throwersavingchance)
+        public ThrowerPrefixAccessory(float armorbreak = 0f, float damage = 0f, float thrownvelocity = 0f, float throweruserate = 0f, float throwersavingchance = 0f, double apocochance = 0.0,float apocostrength=0f)
         {
             this.thrownvelocity = thrownvelocity;
             this.throweruserate = throweruserate;
             this.armorbreak = armorbreak;
             this.damage = damage;
             this.throwersavingchance = throwersavingchance;
+            this.apocochance = apocochance;
+            this.apocochancestrength = apocostrength;
         }
         public override bool CanRoll(Item item)
         {
@@ -468,14 +528,114 @@ namespace SGAmod
 
 
     }
+    public class UberPrefixAccessory : TrapPrefix
+    {
+        float[] uber = {0f,0f,0f,0f,0f,0f,0f};
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
 
+        public UberPrefixAccessory()
+        {
+        }
+        public UberPrefixAccessory(float armorbreak = 0f, float damage = 0f, float thrownvelocity = 0f, float throweruserate = 0f, float throwersavingchance = 0f, double apocochance = 0.0,
+            float damageMult=0f, float knockbackMult = 0f, float useTimeMult = 0, float scaleMult = 0, float shootSpeedMult = 0, float manaMult = 0f, int critBonus=0)
+        {
+            this.thrownvelocity = thrownvelocity;
+            this.throweruserate = throweruserate;
+            this.armorbreak = armorbreak;
+            this.damage = damage;
+            this.throwersavingchance = throwersavingchance;
+            this.apocochance = apocochance;
+            uber[0] = damageMult;
+            uber[1] = knockbackMult;
+            uber[2] = useTimeMult;
+            uber[3] = scaleMult;
+            uber[4] = shootSpeedMult;
+            uber[5] = manaMult;
+            uber[6] = critBonus;
+
+        }
+        public override bool CanRoll(Item item)
+        {
+            return false;// Main.LocalPlayer.GetModPlayer<SGAPlayer>().ExpertiseCollectedTotal>10000;
+        }
+        public override float RollChance(Item item)
+        {
+            return 0.5f;
+        }
+        public override void Apply(Item item)
+        {
+            Main.NewText("UBER PREFIX!!!");
+            TrapDamageItems myitem = item.GetGlobalItem<TrapDamageItems>();
+            if (item.damage > 0)
+            {
+                item.damage += (int)(item.damage * uber[0]);
+            }
+            myitem.damageacc += uber[0];
+            if (item.knockBack > 0)
+                item.knockBack += uber[1];
+            if (item.useTime > 0)
+            {
+                item.useTime = (int)(item.useTime / (1 + uber[2]));
+                item.useAnimation = (int)(item.useTime / (1 + uber[2]));
+            }
+            item.scale = (int)(item.scale * (1 + uber[3]));
+            if (item.shoot>0)
+            item.shootSpeed += uber[4];
+            if (item.mana > 0)
+                item.mana = (int)(item.mana / (1 + uber[5]));
+            item.crit += (int)uber[6];
+            myitem.damagecrit += (int)uber[6];
+
+            int itt = Projectile.NewProjectile(Main.LocalPlayer.Center, new Vector2(0,-5), ProjectileID.FireworkFountainRainbow, 0,0);
+            Main.projectile[itt].timeLeft = 90;
+            base.Apply(item);
+        }
+        /*public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
+        {
+            damageMult += uber[0];
+            knockbackMult += uber[1];
+            useTimeMult += uber[2];
+            scaleMult += uber[3];
+            shootSpeedMult += uber[4];
+            manaMult += uber[5];
+            critBonus += (int)uber[6];
+        }*/
+
+    }    
+    public class EAPrefixAccessory : TrapPrefix
+    {
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public EAPrefixAccessory()
+        {
+        }
+        public EAPrefixAccessory(float greed = 0f)
+        {
+            this.greed = greed;
+        }
+        public override bool CanRoll(Item item)
+        {
+            //return Main.LocalPlayer.HasItem(mod.ItemType("EALogo"))
+            return Main.LocalPlayer.GetModPlayer<SGAPlayer>().EALogo;
+        }
+        public override float RollChance(Item item)
+        {
+            return 5f;
+        }
+
+    }
     public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
         public float damage = 0f;
+        public float damageacc = 0f;
+        public int damagecrit = 0;
         public float thrownvelocity = 0f;
         public float throweruserate = 0f;
         public float throwersavingchance = 0f;
+        public double apocochance = 0.0;
+        public float greed = 0f;
+        public float apocochancestrength = 0f;
 
         public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
         public TrapPrefix()
@@ -512,11 +672,30 @@ namespace SGAmod
                 }
                 if (GetType() == typeof(ThrowerPrefixAccessory))
                 {
-                    mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f,0f));
-                    mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f));
-                    mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f));
-                    mod.AddPrefix("Conservative", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f));
-                    mod.AddPrefix("Rougish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f));
+                    mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f,0f,0,0));
+                    mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f,0,0));
+                    mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f,0,0));
+                    mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f,0,0));
+                    mod.AddPrefix("Rougish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
+
+                    mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f,0.05f));
+                    mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f,0.075f));
+
+                    mod.AddPrefix("Disordered", new ThrowerPrefixAccessory(0.05f, 0.075f, 0f, 0f, 0f, 0.25f, 0.06f));
+                    mod.AddPrefix("Rioter's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.03f, 0f, 0.25f, 0.04f));
+                }
+                /*if (GetType() == typeof(UberPrefixAccessory))
+                {
+                    mod.AddPrefix("Horsemassssssn's", new UberPrefixAccessory());
+                    mod.AddPrefix("Darksider", new UberPrefixAccessory(0,0,0,0,0.075f,0.75f,0.03f,0.1f,0f,0f,0.05f,0f,2));
+                    //mod.AddPrefix("Darksider", new UberPrefixAccessory(apocochance: 0.75,damageMult: 0.03f,throwersavingchance: 0.075f,shootSpeedMult: 0.05f,manaMult: 0.04f,knockbackMult: 0.1f,critBonus: 2));
+                    mod.AddPrefix("Uber", new UberPrefixAccessory(damageMult: 0.05f, throwersavingchance: 0.10f, shootSpeedMult: 0.15f, manaMult: 0.05f, knockbackMult: 0.2f,useTimeMult: 0.075f,critBonus: 5,thrownvelocity: 0.05f));
+                }*/
+                if (GetType() == typeof(EAPrefixAccessory))
+                {
+                    mod.AddPrefix("Greedy", new EAPrefixAccessory(0.025f));
+                    mod.AddPrefix("Grubby", new EAPrefixAccessory(0.05f));
+                    mod.AddPrefix("Share Holding", new EAPrefixAccessory(0.075f));
                 }
             }
             return false;
@@ -547,12 +726,17 @@ namespace SGAmod
             myitem.throweruserate = throweruserate;
             myitem.thrownvelocity = thrownvelocity;
             myitem.thrownsavingchance = throwersavingchance;
+            myitem.apocochance = apocochance;
+            myitem.greed = greed;
+             myitem.damageacc = damageacc;
+             myitem.damagecrit = damagecrit;
+             myitem.apocochancestrength = apocochancestrength;        
             /*if (item.damage > 0)
-              {
-                  item.damage = (int)(item.damage * (1f + damage));
-              }*/
-            //myitem.damage = damage;
-        }
+          {
+              item.damage = (int)(item.damage * (1f + damage));
+          }*/
+        //myitem.damage = damage;
+    }
     }
 
     public class TrapDamageItems : GlobalItem
@@ -562,6 +746,11 @@ namespace SGAmod
         public float throweruserate = 0f;
         public float thrownvelocity = 0f;
         public float thrownsavingchance = 0f;
+        public float greed = 0f;
+        public float damageacc = 0f;
+        public int damagecrit = 0;
+       public float apocochancestrength = 0f;
+         public double apocochance = 0;
         public override bool InstancePerEntity
         {
             get
@@ -577,6 +766,11 @@ namespace SGAmod
             myClone.throweruserate = throweruserate;
             myClone.thrownvelocity = thrownvelocity;
             myClone.thrownsavingchance = thrownsavingchance;
+            myClone.apocochance = apocochance;
+            myClone.greed = greed;
+            myClone.damageacc = damageacc;
+            myClone.damagecrit = damagecrit;
+            myClone.apocochancestrength=apocochancestrength;
             return myClone;
         }
 
@@ -588,6 +782,11 @@ namespace SGAmod
             throweruserate = 0f;
             thrownvelocity = 0f;
             thrownsavingchance = 0f;
+            apocochance = 0.0;
+            greed = 0f;
+            damageacc = 0f;
+            damagecrit = 0;
+            apocochancestrength = 0;
             return base.NewPreReforge(item);
         }
 
@@ -605,6 +804,12 @@ namespace SGAmod
             player.GetModPlayer<SGAPlayer>().TrapDamageMul += damage2;
             player.GetModPlayer<SGAPlayer>().ThrowingSpeed += throweruserate;
             player.GetModPlayer<SGAPlayer>().Thrownsavingchance += thrownsavingchance;
+            player.GetModPlayer<SGAPlayer>().greedyperc += greed;
+            player.GetModPlayer<SGAPlayer>().apocalypticalStrength += apocochancestrength;
+            player.magicDamage += damageacc; player.minionDamage += damageacc; player.rangedDamage += damageacc; player.meleeDamage += damageacc; player.thrownDamage += damageacc;
+            player.magicCrit += damagecrit; player.rangedCrit += damagecrit; player.meleeCrit += damagecrit; player.thrownCrit += damagecrit;
+            for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
+                player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += apocochance;
             player.thrownVelocity += thrownvelocity;
         }
         public override void UpdateInventory(Item item, Player player)
@@ -660,6 +865,28 @@ namespace SGAmod
                 line.isModifier = true;
                 tooltips.Add(line);
             }
+            if (greed > 0)
+            {
+                string line2 = "% shop discounts";
+                TooltipLine line = new TooltipLine(mod, "Trapline7", "+" + (greed*100f) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (apocochancestrength > 0)
+            {
+                string line2 = "% Apocalyptical strength";
+                TooltipLine line = new TooltipLine(mod, "Trapline6", "+" + (apocochancestrength*100) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }              
+            if (apocochance > 0)
+            {
+                string line2 = "% Apocalyptical chance";
+                TooltipLine line = new TooltipLine(mod, "Trapline8", "+" + (apocochance) + line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+                tooltips.Add(new TooltipLine(mod, "apocthing", SGAGlobalItem.apocalypticaltext));
+            }            
         }
         public override void NetSend(Item item, BinaryWriter writer)
         {
@@ -668,6 +895,8 @@ namespace SGAmod
             writer.Write((int)thrownvelocity * 1000);
             writer.Write((int)throweruserate * 1000);
             writer.Write((int)thrownsavingchance * 1000);
+            writer.Write(apocochance);
+            writer.Write((int)greed * 1000);
         }
 
         public override void NetReceive(Item item, BinaryReader reader)
@@ -677,6 +906,8 @@ namespace SGAmod
             thrownvelocity = (float)(reader.ReadInt32() / 1000f);
             throweruserate = (float)(reader.ReadInt32() / 1000f);
             thrownsavingchance = (float)(reader.ReadInt32() / 1000f);
+            apocochance = reader.ReadDouble();
+            greed = (float)(reader.ReadInt32() / 1000f);
         }
 
 

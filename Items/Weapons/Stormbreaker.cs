@@ -97,7 +97,8 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.PossessedHatchet, 1);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
             recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
-            recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 10);
+			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
             recipe.AddRecipe();
@@ -291,10 +292,8 @@ namespace SGAmod.Items.Weapons
 			if (projectile.ai[0] < 1f && owner.direction != 1)
 				projectile.rotation *= -1f;
 
-			if (projectile.ai[0] == 0)
-			{
-				owner.manaRegenDelay = (int)(owner.maxRegenDelay * 5);
-			}
+
+				owner.manaRegenDelay = (int)(owner.maxRegenDelay * 15);
 
 			projectile.ai[0] += 1;
 
@@ -307,6 +306,7 @@ namespace SGAmod.Items.Weapons
 
 			if (owner.itemAnimation < 2)
 				projectile.Kill();
+
 
 			projectile.rotation += (((float)(Math.PI / -4.0)) - projectile.rotation) / 6f;
 			if (owner.itemAnimation == 30)

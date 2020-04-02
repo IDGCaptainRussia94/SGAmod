@@ -208,7 +208,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dank Arrow");
-			Tooltip.SetDefault("Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slow stronger, but this soft caps after a point\nDoes not effect Bosses and enemies who are immune to poisoned are also immune to Dank Slow");
+			Tooltip.SetDefault("Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not effect Bosses and enemies who are immune to poisoned are also immune to Dank Slow");
 		}
 		public override void SetDefaults()
 		{
@@ -228,8 +228,8 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ShadowJavelinRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("DarkWood"), 15);
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("DankWood"), 15);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this, 50);

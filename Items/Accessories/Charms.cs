@@ -22,7 +22,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 1, 0, 0); ;
+			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.rare = 2;
 			item.accessory = true;
 		}
@@ -51,13 +51,12 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Gel, 100);
+			recipe.AddIngredient(ItemID.Gel, 10);
 			recipe.AddIngredient(ItemID.CopperPickaxe, 1);
 			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
-			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 3);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 8);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 15);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 8);
+			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -90,13 +89,12 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Gel, 100);
-			recipe.AddIngredient(ItemID.BottledWater, 10);
+			recipe.AddIngredient(ItemID.Gel, 10);
+			recipe.AddIngredient(ItemID.LesserHealingPotion, 5);
 			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
-			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 3);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 8);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 15);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 8);
+			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -108,16 +106,12 @@ namespace SGAmod.Items.Accessories
 	public class AnticipationCharmlv1 : MiningCharmlv1
 	{
 
-		public override bool Autoload(ref string name)
-		{
-			return false;
-		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Anticipation Charm Tier 1");
-			Tooltip.SetDefault("When a boss fight starts, you are healed by 100 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.White, "Anticipation") + " is low" +
-				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.White, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 25% increase+\n" +
-	"You lose half your " + Idglib.ColorText(Color.White, "Anticipation") + " when hurt, and passively drains while no boss is alive\nCan only wear 1 Charm at a time");
+			Tooltip.SetDefault("When a boss fight starts, you are healed by 100 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
+				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 25% increase\n" +
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\nCan only wear 1 Charm at a time");
 		}
 
 		public override void SetDefaults()
@@ -132,19 +126,97 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.EnhancingCharm += 1;
+			sgaplayer.anticipationLevel = 1;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Gel, 100);
-			recipe.AddIngredient(ItemID.BottledWater, 10);
+			recipe.AddIngredient(ItemID.Gel, 10);
+			recipe.AddIngredient(ItemID.CopperBroadsword, 1);
 			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
-			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 3);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 8);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 15);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 8);
+			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
 			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class AnticipationCharmlv2 : MiningCharmlv1
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Anticipation Charm Tier 2");
+			Tooltip.SetDefault("When a boss fight starts, you are healed by 200 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
+				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 50% increase\n" +
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\nCan only wear 1 Charm at a time");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 2, 50, 0);
+			item.rare = 5;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.anticipationLevel = 2;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AnticipationCharmlv1"), 1);
+			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 15);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 6);
+			recipe.AddIngredient(ItemID.HallowedBar, 5);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class AnticipationCharmlv3 : MiningCharmlv1
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Anticipation Charm Tier 3");
+			Tooltip.SetDefault("When a boss fight starts, you are healed by 300 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
+				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a near 100% increase\n" +
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\nCan only wear 1 Charm at a time");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = 9;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.anticipationLevel = 3;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AnticipationCharmlv2"), 1);
+			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
@@ -163,7 +235,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 2, 50, 0); ;
+			item.value = Item.sellPrice(0, 2, 50, 0);
 			item.rare = 5;
 			item.accessory = true;
 		}
@@ -178,7 +250,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("EnhancingCharmlv1"), 1);
 			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 15);
-			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 40);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 6);
 			recipe.AddIngredient(ItemID.HallowedBar, 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -199,7 +272,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 10, 0, 0); ;
+			item.value = Item.sellPrice(0, 10, 0, 0);
 			item.rare = 9;
 			item.accessory = true;
 		}
@@ -213,7 +286,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("EnhancingCharmlv2"), 1);
-			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 5);
+			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -250,7 +323,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("MiningCharmlv1"), 1);
 			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 15);
-			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 40);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 6);
 			recipe.AddIngredient(ItemID.HallowedBar, 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -285,7 +359,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("MiningCharmlv2"), 1);
-			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 5);
+			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -369,6 +443,53 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	public class YoyoGauntlet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Yoyo Gauntlet");
+			Tooltip.SetDefault("15% increased melee damage and melee speed, inflict OnFire! on hit, and +5 armor penetration\nYoyo Bag Effect and fabulous rainbow strings!");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.lifeRegen = 3;
+			item.rare = 7;
+			item.value = Item.sellPrice(0, 15, 0, 0); ;
+			item.accessory = true;
+			item.stringColor = 27;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.kbGlove = true;
+			player.meleeSpeed += 0.15f;
+			player.meleeDamage += 0.15f;
+			player.magmaStone = true;
+			player.armorPenetration += 5;
+			player.counterWeight = 556 + Main.rand.Next(6);
+			player.yoyoGlove = true;
+			player.yoyoString = true;
+
+
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FireGauntlet, 1);
+			recipe.AddIngredient(ItemID.YoyoBag, 1);
+			recipe.AddIngredient(ItemID.RainbowString, 1);
+			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
+			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class BloodCharmPendant : LifeFlower
 	{
 		public override void SetStaticDefaults()
@@ -427,6 +548,7 @@ namespace SGAmod.Items.Accessories
 			item.shieldSlot = 5;
 			item.backSlot = 9;
 			item.knockBack = 1f;
+			item.backSlot = 9;
 		}
 
 		public override void AddRecipes()
@@ -434,6 +556,9 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HiveBackpack, 1);
 			recipe.AddIngredient(ItemID.HoneyComb, 1);
+			recipe.AddIngredient(ItemID.CrispyHoneyBlock, 10);
+			recipe.AddIngredient(ItemID.BeeWax, 10);
+			recipe.AddIngredient(ItemID.HoneyBucket, 2);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
 			recipe.AddTile(TileID.HoneyDispenser);
 			recipe.SetResult(this);
@@ -472,13 +597,11 @@ namespace SGAmod.Items.Accessories
 	{
 
 		float[] effects = new float[20];
-		float[] effectsangle = new float[20];
-		float[] effectrotation = new float[20];
 		float[] effectrotationadder = new float[20];
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul of Secrets");
-			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'vanity' Dev Armors in your inventory...\nCombines the effects of Blood Charm Pendant, Lifeforce Quintessence, and Portable Hive (toggle visiblity to disable bee spawning of Portable Hive)");
+			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'vanity' Dev Armors in your inventory...\nCombines the effects of Blood Charm Pendant, Lifeforce Quintessence and Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
 		}
 
 		public override void SetDefaults()
@@ -565,12 +688,14 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 20);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
 			recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 30);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 30);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 30);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 15);
 			recipe.AddIngredient(mod.ItemType("BloodCharmPendant"), 1);
 			recipe.AddIngredient(mod.ItemType("LifeforceQuintessence"), 1);
@@ -631,7 +756,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Idol Of Midas");
-			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin (hide accessory for defensive/movement buffs, otherwise you get offensive buffs, gold and platinum coins give you both)\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies inflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
+			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while on the left side of your world, offensive buffs on the right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies inflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
 		}
 
 		public override void SetDefaults()
@@ -653,7 +778,127 @@ namespace SGAmod.Items.Accessories
 			player.thrownDamage += howmuch;
 			player.minionDamage += howmuch;
 			player.meleeDamage += howmuch;
-			player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 2 : 1;
+			if (GetType()==typeof(CorperateEpiphany))
+			player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 3 : player.Center.X > (Main.maxTilesX * 16) / 2f ? 2 : 1;
+			else
+			player.GetModPlayer<SGAPlayer>().MidasIdol = player.Center.X>(Main.maxTilesX*16)/2f ? 2 : 1;
+		}
+
+	}
+
+	public class CorperateEpiphany : IdolOfMidas
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Corperate Epiphany");
+			Tooltip.SetDefault("'Money Money Money!'\n'Must be funny? In a rich man's world?'\n" +
+				"Combined Effects of Idol of Midas and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
+				"EALogo's ability while worn as an accessory");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/EALogo"); }
+		}
+
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime*1.443f)%1f,0.8f,0.75f);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.DarkRed, Color.Gold, 0.5f + (float)Math.Sin(Main.GlobalTime * 1f));
+				}
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.value = 3000000;
+			item.rare = 11;
+			item.width = 24;
+			item.height = 24;
+			item.accessory = true;
+			item.expert = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<OmniMagnet>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<EALogo>().UpdateInventory(player);
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("IdolOfMidas"), 1);
+			recipe.AddIngredient(mod.ItemType("EALogo"), 1);
+			recipe.AddIngredient(mod.ItemType("OmniMagnet"), 1);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
+			recipe.AddIngredient(mod.ItemType("CalamityRune"), 2);
+			recipe.AddIngredient(ItemID.GoldDust, 200);
+			recipe.AddIngredient(ItemID.PlatinumCoin, 20);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+
+public class BlinkTechGear : IdolOfMidas
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Blink Tech Gear");
+			Tooltip.SetDefault("Allows you to blink teleport up to 6 seconds of chaos state\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\nGrants the effects of Master Ninja Gear and Fridgeflame Canister");
+		}
+
+		public override void SetDefaults()
+		{
+			item.value = 1500000;
+			item.rare = 10;
+			item.width = 24;
+			item.defense = 5;
+			item.height = 24;
+			item.accessory = true;
+			item.handOnSlot = 11;
+			item.handOffSlot = 6;
+			item.shoeSlot = 14;
+			item.waistSlot = 10;
+
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.blackBelt = true;
+			player.dash = 1;
+			player.spikedBoots = 2;
+			player.GetModPlayer<SGAPlayer>().maxblink += 60*6;
+			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
+			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(mod.ItemType("BlinkTech"), 1);
+			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 
 	}
@@ -802,7 +1047,7 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Lunar Slime Heart");
 			Tooltip.SetDefault("Heart of the surpreme lunar princess" +
-				"\nSummons an array of lunar gels that damage enemies and cancel out projectiles\nWhen a projectile is canceled out or hits an enemy 5 times, the gel explodes into a damaging debuffing nova and grants the player a random buff for 8 seconds\nWhen the gel explodes from canceling out projectiles remains inactive for 10 seconds, otherwise only 6 seconds\nBase damage is based on your defense times the sum of your damage multipliers: (melee+thrown+summon+magic+ranged)*defense\nEach buff the player has grants +1 defense\ndebuffs grant 4 defense");
+				"\nSummons an array of lunar gels that damage enemies and nearly nullify projectile damage\nWhen a projectile is dampened or hits an enemy 5 times, the gel explodes into a damaging debuffing nova and grants the player a random buff for 8 seconds\nWhen the gel explodes from canceling out projectiles remains inactive for 10 seconds, otherwise only 6 seconds\nBase damage is based on your defense times the sum of your damage multipliers: (melee+thrown+summon+magic+ranged)*defense\nEach buff the player has grants +1 defense\ndebuffs grant 4 defense");
 		}
 		public override void SetDefaults()
 		{
@@ -834,17 +1079,73 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Omega Sigil");
-			Tooltip.SetDefault("Proof of one having beaten one of Terraria's strongest foes\nWhile you have max HP, you gain 100 defense\n10% chance to dodge attacks that would kill you\nIs not consumed when making Wrath Arrows");
+			Tooltip.SetDefault("'it's time to put an end...'\n2% increased Apocalyptical chance\nWhile you have max HP, gain an extra 3% Apocalyptical chance\n10% chance to dodge attacks that would kill you\nIs not consumed when making Wrath Arrows");
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "accapocalypticaltext", SGAGlobalItem.apocalypticaltext));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
+			player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 2.0;
 			player.GetModPlayer<SGAPlayer>().OmegaSigil = true;
 		}
 
 		public override string Texture
 		{
 			get { return ("SGAmod/Items/OmegaSigil"); }
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 32;
+			item.height = 32;
+			item.value = 1500000;
+			item.rare = 10;
+			item.accessory = true;
+		}
+	}
+
+	public class BrokenImmortalityCore : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Flawed Imm0rtality Pr0t0call");
+			Tooltip.SetDefault("'A fragment of Hellion's sheer power... Too bad it hardly even works'\nGrants 1000 defense! But getting hit causes you to lose it for 5 seconds");
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return lightColor = Main.hslToRgb((Main.GlobalTime / 15f) % 1f, 0.85f, 0.45f);
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().BIP = true;
+			if (!player.HasBuff(mod.BuffType("BIPBuff")))
+				player.statDefense += 1000;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/StarMetalMold2"); }
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 50);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 100);
+			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 25);
+			recipe.AddIngredient(ItemID.FallenStar, 15);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 
 		public override void SetDefaults()
@@ -924,29 +1225,209 @@ namespace SGAmod.Items.Accessories
 			item.expert = false;
 		}
 	}
+
+	public class CalamityRune : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Calamity Rune");
+			Tooltip.SetDefault("'The unrelenting heat of dismay shimmers, charged within this rune'\nApocalyptical Strength increased by 25%\nYou create fiery explosions on enemies when you score an Apocalyptical\nThese hit only once her enemy and inflict Thermal Blaze, short Daybreak, and Everlasting Suffering\nEverlasting Suffering increases enemy damage over time by 250% and makes other debuffs last until it ends\nDamage done, as well as Daybreak and Everlasting Suffering duration is boosted by your Apocalyptical Strength");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/CalamityRune"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().apocalypticalStrength += 0.25f;
+			player.GetModPlayer<SGAPlayer>().CalamityRune = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = 10;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FragmentSolar, 3);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 25);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 5);
+			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 3);
+			recipe.AddIngredient(ItemID.Obsidian, 6);
+			recipe.AddIngredient(ItemID.HellstoneBar, 3);
+			recipe.AddIngredient(ItemID.CrystalBall, 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+
+	}
+	public class FridgeFlamesCanister : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fridgeflame Canister");
+			Tooltip.SetDefault("Flamethrowers shoot frostflames alongside normal flames\nThis also applies to any weapon that uses gel as its ammo\nFrostflames do not cause immunity frames and do 50% of the weapon's base damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().FridgeflameCanister = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = 6;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Glass, 20);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 12);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+	public class BlinkTech : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Blink Tech Canister");
+			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().maxblink += 3;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Accessories/Canister4"); }
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 50);
+			item.rare = 4;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Glass, 25);
+			recipe.AddIngredient(ItemID.FallenStar, 5);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 3);
+			recipe.AddIngredient(mod.ItemType("VialofAcid"), 4);
+			recipe.AddIngredient(ItemID.HellstoneBar, 5);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+
+	}
+	public class HeartOfEntropy : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Heart of Entropy");
+			Tooltip.SetDefault("You spawn vampric healing projectiles when you score an Apocalyptical\nThese heal based on damage done and are boosted by your Apocalyptical Strength\n1% increased Apocalyptical Chance\n'It lashes at at your soul to bring nothing but dismay'");
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "accapocalypticaltext", SGAGlobalItem.apocalypticaltext));
+		}
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().HoE = true;
+			for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
+			player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 1.0;
+		}
+
+		/*public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.DemonHeart); }
+		}*/
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 32;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 32;
+			item.value = Item.sellPrice(gold: 5);
+			item.rare = 7;
+			item.expert = false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LifeCrystal, 1);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
+			recipe.AddIngredient(ItemID.SoulofNight, 15);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 75);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}	
 	public class DemonSteppers : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lavawaders improved\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lavawaders improved\nJump Height significantly boosted, no Fall Damage suffered, and Double Jump ability\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.buffImmune[BuffID.OnFire] = false;
 			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
-			player.accRunSpeed += 6;
-			player.rocketBoots += 2;
-			player.moveSpeed += 0.25f;
-			player.iceSkate = true;
-			player.lavaMax += 500;
-			player.waterWalk = true;
-			player.fireWalk = true;
-			player.maxRunSpeed += 0.5f;
-			player.runAcceleration += 0.25f;
-			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
+			if (!player.GetModPlayer<SGAPlayer>().demonsteppers)
+			{
+				player.GetModPlayer<SGAPlayer>().demonsteppers = true;
+				player.accRunSpeed += 6;
+				player.rocketBoots += 2;
+				player.moveSpeed += 0.25f;
+				player.iceSkate = true;
+				player.lavaMax += 500;
+				player.waterWalk = true;
+				player.fireWalk = true;
+				player.maxRunSpeed += 0.5f;
+				player.runAcceleration += 0.25f;
+				player.jumpBoost = true;
+				player.noFallDmg = true;
+				player.autoJump = true;
+				player.jumpSpeedBoost += 2.4f;
+				player.extraFall += 15;
+				player.doubleJumpCloud = true;
+			}
+
+				ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
 
 		}
 
@@ -966,7 +1447,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
 			recipe.AddIngredient(ItemID.LavaWaders, 1);
-			recipe.AddIngredient(ItemID.ObsidianSkull, 1);
+			recipe.AddIngredient(ItemID.BlueHorseshoeBalloon, 1);
+			recipe.AddIngredient(ItemID.FrogLeg, 1);
 			recipe.AddIngredient(mod.ItemType("AmberGlowSkull"), 1);
 			recipe.AddIngredient(mod.ItemType("PrimordialSkull"), 1);
 			recipe.AddIngredient(ItemID.HellstoneBar, 10);
@@ -1082,6 +1564,52 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
+	}
+
+
+	public class IceFlames : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Icey Flames");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.ignoreWater = true;
+			projectile.tileCollide = false;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 90;
+			projectile.extraUpdates = 2;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/HavocGear/Projectiles/BoulderBlast"); }
+		}
+
+		public override void AI()
+		{
+			int i = Main.rand.Next(0, 2);
+			//for (int i = 0; i < 1; i += 1)
+			//{
+			int DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 185, projectile.velocity.X * (i * 0.5f), projectile.velocity.Y * (i * 0.5f), 20, default(Color), 1.75f);
+				Main.dust[DustID2].noGravity = true;
+			//}
+
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(BuffID.Frostburn, 60 * 4);
+		}
+
 	}
 
 

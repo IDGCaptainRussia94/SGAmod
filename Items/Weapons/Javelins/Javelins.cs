@@ -20,10 +20,10 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 5;
         public override float Speartype => 7;
         public override int[] Usetimes => new int[] { 25, 12 };
-        public override string[] Normaltext => new string[] { "Made from evil Javelins and the dark essence emited by a shadow key, attacks may inflict shadowflame", "accelerates forward, is not affected by gravity until it hits a target" };
+        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Shadow Javelin");
+            DisplayName.SetDefault("Shadow Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -32,7 +32,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 400;
+            item.value = 40;
             item.rare = 4;
         }
         public override void AddRecipes()
@@ -58,7 +58,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override string[] Normaltext => new string[] { "The Hallow's wrath makes stars fall down on jabbed or impaled targets" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Pearl Wood Javelin");
+            DisplayName.SetDefault("PearlWood Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -67,14 +67,14 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 500;
+            item.value = 50;
             item.rare = 5;
         }
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Pearlwood, 5);
-            recipe.AddIngredient(ItemID.PearlstoneBrick, 10);
+            recipe.AddIngredient(ItemID.CrystalShard, 2);
             recipe.AddIngredient(ItemID.UnicornHorn, 1);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this, 50);
@@ -92,10 +92,10 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 4;
         public override float Speartype => 5;
         public override int[] Usetimes => new int[] { 35, 12 };
-        public override string[] Normaltext => new string[] { "The Battle calls!","Summons extra Dynasty Javelins to fall from the sky when they damage an enemy"};
+        public override string[] Normaltext => new string[] { "The Battle calls!", "Summons extra Dynasty Javelins to fall from the sky when they damage an enemy" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Dynasty Javelin");
+            DisplayName.SetDefault("Dynasty Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -104,8 +104,12 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 300;
+            item.value = 30;
             item.rare = 3;
+        }
+        public override void AddRecipes()
+        {
+            //null
         }
     }
 
@@ -120,7 +124,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override string[] Normaltext => new string[] { "Made from sandy materials, Sticks into targets for longer" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Amber Javelin");
+            DisplayName.SetDefault("Amber Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -129,7 +133,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 300;
+            item.value = 30;
             item.rare = 3;
         }
         public override void AddRecipes()
@@ -155,7 +159,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override string[] Normaltext => new string[] { "Made from corrupt materials" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Corruption Javelin");
+            DisplayName.SetDefault("Corruption Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -164,7 +168,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 250;
+            item.value = 25;
             item.rare = 2;
         }
         public override void AddRecipes()
@@ -190,7 +194,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override string[] Normaltext => new string[] { "Made from bloody materials" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Crimson Javelin");
+            DisplayName.SetDefault("Crimson Jab-lin");
         }
         public override void SetDefaults()
         {
@@ -199,7 +203,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
-            item.value = 250;
+            item.value = 25;
             item.rare = 2;
         }
         public override void AddRecipes()
@@ -225,16 +229,16 @@ namespace SGAmod.Items.Weapons.Javelins
         public override string[] Normaltext => new string[] { "Made from cold materials, attacks may inflict frostburn" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Ice Javelin");
+            DisplayName.SetDefault("Ice Jab-lin");
         }
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 10;
+            item.damage = 11;
             item.width = 24;
             item.height = 24;
             item.knockBack = 5;
-            item.value = 200;
+            item.value = 15;
             item.rare = 2;
         }
         public override void AddRecipes()
@@ -242,6 +246,7 @@ namespace SGAmod.Items.Weapons.Javelins
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.BorealWood, 5);
             recipe.AddIngredient(ItemID.IceBlock, 20);
+            recipe.AddIngredient(mod.ItemType("FrigidShard"), 1);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this, 50);
             recipe.AddRecipe();

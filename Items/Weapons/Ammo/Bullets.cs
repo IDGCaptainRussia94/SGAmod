@@ -124,7 +124,48 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 	}
 
+	public class AimBotBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aim-Bot Bullet");
+			Tooltip.SetDefault("Adjusts your aim to target the scrub nearest your mouse curser; bullet travels instantly\nAimbot bullets can pass through 2 targets ending on the 3rd, do not cause immunity frames\nBullets do 20% increased damage after each hit they pass through\n'GIT GUD, GET LMAOBOX!'\n(disclaimer, does not function in pvp)");
+		}
 
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return lightColor = Main.hslToRgb((Main.GlobalTime / 7f) % 1f, 0.85f, 0.45f);
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 30;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 2.0f;
+			item.value = 500;
+			item.rare = 10;
+			item.shoot = mod.ProjectileType("AimBotBullet");   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 1f;                  //The speed of the projectile
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 30);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 1);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
+			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
+			recipe.AddIngredient(ItemID.MeteorShot, 50);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 150);
+			recipe.AddRecipe();
+		}
+	}
 	public class PortalBullet : ModItem
 	{
 		public override void SetStaticDefaults()

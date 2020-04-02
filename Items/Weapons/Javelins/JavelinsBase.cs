@@ -24,10 +24,10 @@ namespace SGAmod.Items.Weapons.Javelins
         public virtual float Throwspeed => 6f;
         public virtual float Speartype => 0;
         public virtual int[] Usetimes => new int[] { 30,10};
-        public virtual string[] Normaltext => new string[] { "It's a javelin made from stone" };
+        public virtual string[] Normaltext => new string[] { "It's a jab-lin made from stone" };
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Stone Javelin");
+            DisplayName.SetDefault("Stone Jab-lin");
             //Tooltip.SetDefault("Shoots a spread of bullets");
         }
 
@@ -45,14 +45,46 @@ namespace SGAmod.Items.Weapons.Javelins
             //messageTarget("this");
         }
 
+        public void drawstuff(SpriteBatch spriteBatch, Vector2 position, Color drawColor, Color itemColor, float scale, bool inventory = true)
+        {
+            Texture2D textureSpear = ModContent.GetTexture(JavelinProj.tex[(int)Speartype] + "Spear");
+            Texture2D textureJave = ModContent.GetTexture(JavelinProj.tex[(int)Speartype]);
+            Vector2 slotSize = new Vector2(52f, 52f);
+            Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+            Vector2 textureOrigin = new Vector2(textureSpear.Width / 2, textureSpear.Height / 2);
+
+            spriteBatch.Draw(textureSpear, drawPos - new Vector2(8, 8), null, drawColor, 0f, textureOrigin, inventory ? scale : Main.inventoryScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(textureJave, drawPos - new Vector2(8, 8), null, drawColor, 0f, textureOrigin, inventory ? scale : Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+        }
+
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+            drawstuff(spriteBatch,position,drawColor,itemColor,scale);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+            return false;
+        }
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            drawstuff(spriteBatch, (item.Center-Main.screenPosition) - new Vector2(8, 8), lightColor, lightColor, scale,true);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            return false;
+        }
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             foreach( string line in Normaltext){
             tooltips.Add(new TooltipLine(mod, "JavaLine", line));
             }
             tooltips.Add(new TooltipLine(mod, "JavaLine1", "Recives damage boosts from both melee and throwing and benefits from melee attack speed"));
-            tooltips.Add(new TooltipLine(mod, "JavaLine1b", "Thrown javelins stick into foes and do extra damage"));
-            tooltips.Add(new TooltipLine(mod, "JavaLine2", "Left click to quickly jab (melee damage done, breaks after using)"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1b", "Thrown jab-lins stick into foes and do extra damage"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine2", "Left click to quickly jab like a spear (melee damage done, breaks after using)"));
             tooltips.Add(new TooltipLine(mod, "JavaLine3", "Right click to more slowly throw (throwing damage done, benefits from throwing velocity)"));
         }
 
@@ -424,7 +456,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
             bool facingleft = projectile.direction < 0f;
             Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally;
-            Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]);
+            Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]+"Spear");
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
             if (facingleft)
             Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, ((projectile.rotation-(float)Math.PI/2) - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale,effect, 0);

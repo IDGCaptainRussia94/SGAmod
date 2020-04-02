@@ -51,6 +51,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.ExplosivePowder, 100);
 			recipe.AddIngredient(ItemID.ChlorophyteBar, 10);
 			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -32,6 +32,7 @@ namespace SGAmod.Generation
             Vector2 here= new Vector2();
             Tile tstart;
 
+
             for (int tries = 0; tries < 50000; tries++)
             {
                 here = new Vector2(WorldGen.genRand.Next(1000, Main.maxTilesX - 100), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow, Main.maxTilesY - 300));

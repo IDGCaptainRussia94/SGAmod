@@ -35,13 +35,17 @@ namespace SGAmod.Items.Weapons.SeriousSam
 				{
 					valuez.Add(text2 + " ");
 				}
-				valuez.Insert(1, "technological ");
+				valuez.Insert(1, "Technological ");
 				foreach (string text3 in valuez)
 				{
 					newline += text3;
 				}
 				tt.text = newline;
 			}
+		}
+		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+		{
+			mult = mult*player.GetModPlayer<SGAPlayer>().techdamage;
 		}
 	}
 
@@ -270,14 +274,32 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			DisplayName.SetDefault("Beam Gun");
 		}
 
-		public NPC FindClosestTarget(Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
+		public List<int> GetAllActive()
+		{
+			List<int> starter=new List<int>();
+
+			for (int num172 = 0; num172 < Main.maxNPCs; num172 += 1)
+			{
+				//(Main.npc[num172].CanBeChasedBy(projectile, false)
+				if (Main.npc[num172].active && !Main.npc[num172].friendly)
+				if (!Main.npc[num172].dontTakeDamage && (Main.npc[num172].townNPC == false))
+				starter.Add(num172);
+
+
+
+			}
+			return starter;
+		}
+
+				public NPC FindClosestTarget(Vector2 loc, Vector2 size, List<int> them, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
 			int num;
 			float num170 = 1000000;
 			NPC num171 = null;
 
-			for (int num172 = 0; num172 < Main.maxNPCs; num172 = num + 1)
+			for (int num1722 = 0; num1722 < them.Count; num1722 +=1)
 				{
+				int num172 = them[num1722];
 					float num173 = Main.npc[num172].position.X + (float)(Main.npc[num172].width / 2);
 					float num174 = Main.npc[num172].position.Y + (float)(Main.npc[num172].height / 2);
 					float num175 = Math.Abs(loc.X + (float)(size.X / 2) - num173) + Math.Abs(loc.Y + (float)(size.Y / 2) - num174);
@@ -285,7 +307,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					{
 
 					//(Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) || block == false)
-					if (num175 < num170 && !Main.npc[num172].dontTakeDamage && (Main.npc[num172].townNPC == false && (Main.npc[num172].CanBeChasedBy(projectile, false) || !chasecheck)))
+					if (num175 < num170)
 						{
 						int result = bouncetargets.Find(x => x == num172);
 						if (result < 1)
@@ -295,7 +317,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 						}
 						}
 					}
-					num = num172;
 				}
 			if (num170 > 400)
 				return null;
@@ -372,6 +393,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			Main.projectile[prog].ai[1] = projectile.localAI[1];
 			Main.projectile[prog].netUpdate = true;
 
+			List<int> them = GetAllActive();
 
 			if (lasthit!=null) {
 			projectile.Center = lasthit;
@@ -379,7 +401,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 				for (int i = 0; i < 5; i += 1)
 				{
-					NPC him = FindClosestTarget(lastpos, new Vector2(0, 0));
+					NPC him = FindClosestTarget(lastpos, new Vector2(0, 0), them);
 					if (him != null)
 					{
 						int prog2 = Projectile.NewProjectile(him.Center.X, him.Center.Y, 0, 0, mod.ProjectileType("BeamGunProjectileVisual"), 0, 0, Main.player[projectile.owner].whoAmI);

@@ -49,7 +49,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 22;
+			item.damage = 23;
 			item.ranged = true;
 			item.width = 20;
 			item.height = 32;
@@ -58,12 +58,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 4;
-			item.value = 10000;
+			item.value = 25000;
 			item.rare = 5;
 			item.UseSound = SoundID.Item5;
-			item.autoReuse = false;
+			item.autoReuse = true;
 			item.shoot = 10;
-			item.shootSpeed = 35f;
+			item.shootSpeed = 65f;
 			item.useAmmo = AmmoID.Arrow;
 		}
 
@@ -109,7 +109,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 20;
 			item.useStyle = 1;
 			item.knockBack = 7;
-			item.value = 10000;
+			item.value = 25000;
 			item.rare = 3;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
@@ -142,7 +142,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 15;
+			item.damage = 10;
 			item.magic = true;
 			item.mana = 8;
 			item.width = 38;
@@ -152,7 +152,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			Item.staff[item.type] = true;
 			item.useStyle = 5;
 			item.knockBack = 0;
-			item.value = 10000;
+			item.value = 25000;
 			item.rare = 3;
 			item.noMelee = true;
 			item.shoot = mod.ProjectileType("MangroveOrb");
@@ -193,7 +193,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 6;
 			item.useStyle = 3;
 			item.knockBack = 6;
-			item.value = 10000;
+			item.value = 25000;
 			item.rare = 3;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;

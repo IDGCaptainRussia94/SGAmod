@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-
+using SGAmod.NPCs.Hellion;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
@@ -37,7 +37,9 @@ namespace SGAmod
 		public int Combusted=0;
 		public int immunitetolightning=0;
 		public float TimeSlow = 0;
+		public bool HellionArmy = false;
 		public bool Sodden = false;
+		public bool ELS = false;
 		bool fireimmunestate=false;
 		bool[] otherimmunesfill=new bool[3];
 
@@ -76,6 +78,18 @@ truthbetold=reader.ReadFloat32();
 			Sodden = false;
 			SunderedDefense = false;
 			DankSlow = false;
+			ELS = false;
+		}
+
+		public override bool CheckActive(NPC npc)
+		{
+			if (HellionArmy) {
+			if (npc.timeLeft<3)
+			npc.StrikeNPCNoInteraction(9999999,1,1);
+			return false;
+
+			}
+			return true;
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -280,6 +294,15 @@ truthbetold=reader.ReadFloat32();
 				drawColor.R = (byte)(drawColor.R * 0.9f);
 				drawColor.G = (byte)(drawColor.G * 0.9f);
 			}
+			if (ELS)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + randomcircle * (1.25f * (float)npc.height), 0, 0, DustID.HealingPlus, 0, 0, 30, Color.DarkOliveGreen, 1.25f);
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = (new Vector2(npc.velocity.X * 0.7f, npc.velocity.Y * 0.7f)) - randomcircle * 4;
+				Main.dust[dust].velocity = Main.dust[dust].velocity.RotatedBy(MathHelper.ToRadians(-45));
+				Main.dust[dust].color = Color.DarkOliveGreen;
+			}
 			if (Sodden)
 			{
 				drawColor = Color.Lerp(drawColor, Color.LightGoldenrodYellow, 0.75f);
@@ -339,16 +362,6 @@ truthbetold=reader.ReadFloat32();
 
 		}
 
-		/*public override bool PreNPCLoot(NPC npc)
-        {
-            if(npc.type == NPCID.WallofFlesh && WorldGen.crimson)
-            {
-                NPCLoader.blockLoot.Add(ItemID.Pwnhammer);
-            }
-            return true;
-        }*/
-
-
         public override bool PreAI(NPC npc)
         {
 
@@ -394,6 +407,36 @@ return true;
 
 		public override void PostAI(NPC npc)
 		{
+
+			if (ELS)
+			{
+				for(int i = 0; i < npc.buffTime.Length;i+=1)
+				{
+					if (npc.buffType[i] != mod.BuffType("EverlastingSuffering") && (npc.buffTime[i] > 10 && Main.debuff[i]))
+					{
+						npc.buffTime[i] += 1;
+					}
+
+				}
+
+				npc.lifeRegen = 0;
+				int damage = 1;
+				UpdateLifeRegen(npc, ref damage);
+				if (npc.lifeRegen < 0)
+					npc.lifeRegen = (int)(npc.lifeRegen*2.5f);
+			}
+
+			if (HellionArmy)
+			{
+				if (Hellion.GetHellion()!=null)
+				if (Hellion.GetHellion().army.Count<1)
+				npc.StrikeNPCNoInteraction(9999999, 1, 1);
+				if (Hellion.GetHellion() == null)
+				npc.StrikeNPCNoInteraction(9999999, 1, 1);
+
+			}
+
+
 			if (SunderedDefense)
 			{
 				for (int i = 0; i < Main.maxPlayers; i += 1)
@@ -452,7 +495,15 @@ return true;
 					item.value = (int)(item.value * 0.8);
 				}
 			}
+			if (sgaplayer.greedyperc > 0)
+			{
 
+			foreach(Item item2 in shop.item)
+				{
+					Main.NewText(sgaplayer.greedyperc);
+					item2.value = (int)(item2.value * (1f-(Math.Min(0.9f,sgaplayer.greedyperc*1f))));
+				}
+			}
 		}
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
@@ -472,13 +523,33 @@ return true;
 
 		public override bool PreNPCLoot(NPC npc)
 		{
-            if(npc.type == NPCID.CultistBoss && SGAWorld.downedWraiths<3)
+
+			if (HellionArmy)
+			{
+				if (Hellion.GetHellion() != null)
+				{
+					if (Hellion.GetHellion().armyspawned>5)
+					Hellion.GetHellion().armyspawned -= 2;
+				}
+			}
+
+
+			if (npc.type == NPCID.CultistBoss && SGAWorld.downedWraiths<3)
             {
             NPCLoader.blockLoot.Add(ItemID.LunarCraftingStation);
             if (Main.netMode!=1)
             SGAWorld.stolecrafting=-500;
             }
-            return true;
+
+			if (SGAWorld.NightmareHardcore > 0)
+			{
+				npc.value += (int)(SGAWorld.NightmareHardcore * 1.50);
+				if (Main.rand.Next(0, 100) < 10)
+					NPCLoot(npc);
+
+			}
+
+			return true;
         }
 
 		public override void NPCLoot(NPC npc)
@@ -490,12 +561,23 @@ return true;
 				if (ply.active)
 				{
 					ply.GetModPlayer<SGAPlayer>().DoExpertiseCheck(npc);
+					if (ply.HasItem(mod.ItemType("EntropyTransmuter")))
+					{
+						if (npc.Distance(ply.Center) < 1000)
+						{
+							ply.GetModPlayer<SGAPlayer>().AddEntropy(npc.lifeMax);
+						}
+
+					}
 
 				}
 
 			}
 
-
+			if (npc.boss)
+			{
+				Achivements.SGAAchivements.UnlockAchivement("Offender", Main.LocalPlayer);
+			}
 
 			if (SGAWorld.tf2quest == 2)
 			{
@@ -505,6 +587,7 @@ return true;
 			{
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwordofTheBlueMoon"));
+				if (SGAWorld.downedCratrosity)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SalvagedCrate"));
 				if (!Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EldritchTentacle"),Main.rand.Next(15,30));
@@ -543,7 +626,6 @@ return true;
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
 				}
 
-
 				if (npc.type == NPCID.RedDevil && Main.rand.Next(2) <= 1)
 				{
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
@@ -558,7 +640,7 @@ return true;
 				}
 
 				if (npc.type==NPCID.WallCreeper || npc.type == NPCID.BloodCrawler || npc.type == NPCID.JungleCreeper ||
-				npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall)
+				npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall || npc.type == NPCID.BlackRecluse || npc.type == NPCID.BlackRecluseWall)
 				if (Main.rand.Next(0,2)==0)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.RottenEgg);
 
@@ -620,9 +702,68 @@ return true;
 			return base.SpecialNPCLoot(npc);
 		}
 
+		public void DoApoco(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+			int chance = 0;
+			if (projectile != null) {
+				if (projectile.ranged)
+					chance = 1;
+				if (projectile.magic)
+					chance = 2;
+				if (projectile.thrown)
+					chance = 3;
+			}
+			if (item != null)
+			{
+				if (item.ranged)
+					chance = 1;
+				if (item.magic)
+					chance = 2;
+				if (item.thrown)
+					chance = 3;
+
+			}
+			if (chance > -1 && npc!=null)
+			{
+				if (Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
+				{
+					if (moddedplayer.HoE && projectile != null)
+					{
+						float ammount = damage;
+						if (moddedplayer.lifestealentropy > 0)
+						{
+							projectile.vampireHeal((int)((ammount * moddedplayer.apocalypticalStrength)), npc.Center);
+							moddedplayer.lifestealentropy -= ammount;
+						}
+					}
+
+					if (moddedplayer.CalamityRune)
+					{
+							Main.PlaySound(SoundID.Item45, npc.Center);
+							int boom=Projectile.NewProjectile(npc.Center.X, npc.Center.Y, 0f, 0f, mod.ProjectileType("BoulderBlast"), (int)((damage*2) * moddedplayer.apocalypticalStrength), knockback * 2f, player.whoAmI, 0f, 0f);
+							Main.projectile[boom].usesLocalNPCImmunity = true;
+							Main.projectile[boom].localNPCHitCooldown = -1;
+							Main.projectile[boom].netUpdate = true;
+							IdgProjectile.AddOnHitBuff(boom, BuffID.Daybreak, (int)(60f* moddedplayer.apocalypticalStrength));
+							IdgProjectile.AddOnHitBuff(boom, mod.BuffType("EverlastingSuffering"), (int)(400f * moddedplayer.apocalypticalStrength));
+					}
+
+					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
+					RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
+					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
+
+
+				}
+			}
+
+		}
+
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+			DoApoco(npc,null, player, item, ref damage, ref knockback, ref crit);
 			if (acidburn)
 				damage += (int)(Math.Min(npc.defense, 5)/2);
 			if (Gourged)
@@ -652,6 +793,15 @@ return true;
 					}
 				}
 			}
+
+			if (moddedplayer.Blazewyrmset)
+			{
+				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && item.melee)
+				{
+					damage = (int)(damage * 1.25f);
+				}
+			}
+
 		}
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -661,6 +811,7 @@ return true;
 			{
 				if (projectile.trap)
 				damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
+				DoApoco(npc, projectile, player, null, ref damage, ref knockback, ref crit);
 			}
 			if (acidburn)
 				damage += (int)(Math.Min(npc.defense, 5) / 2);
@@ -723,6 +874,14 @@ return true;
 					if (moddedplayer.CirnoWings == true && projectile.coldDamage)
 					{
 						damage = (int)((double)damage * 1.20);
+					}
+				}
+
+				if (moddedplayer.Blazewyrmset)
+				{
+					if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && projectile.melee)
+					{
+						damage = (int)(damage * 1.25f);
 					}
 				}
 

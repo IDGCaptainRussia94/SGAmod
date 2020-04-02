@@ -18,10 +18,38 @@ namespace SGAmod.Items
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;
-			item.width = 21;
-			item.height = 21;
+			item.width = 24;
+			item.height = 24;
 			item.value = 0;
 			item.rare = 10;
+		}
+	}
+
+	public class TerrariacoCrateKeyUber : TerrariacoCrateKey
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Terraria Co Supply Crate Key?");
+			Tooltip.SetDefault("Something is very strange about this key...\nMaybe try using it on that strange crate?");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/TerrariacoCrateKey"); }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.DiscoColor;
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 24;
+			item.height = 24;
+			item.value = 0;
+			item.rare = 10;
+			item.expert = true;
 		}
 	}
 

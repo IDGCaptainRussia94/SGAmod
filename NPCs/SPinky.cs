@@ -154,16 +154,19 @@ namespace SGAmod.NPCs
 				expert=1;
 				npc.DropBossBags();
 				}else{
-					for (int i = 0; i <= 50; i++){
+					for (int i = 0; i <= 30; i++){
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"));
 					}
 				}
 			}
-		
-                //float targetX = npc.Center.X;
-                //float targetY = npc.Center.Y;
-                //NPC.NewNPC((int)npc.Center.X + 13, (int)npc.Center.Y - 2, mod.NPCType("GraySlime6"));
-                //NPC.NewNPC((int)npc.Center.X - 13, (int)npc.Center.Y - 2, mod.NPCType("GraySlime6"));
+
+			//float targetX = npc.Center.X;
+			//float targetY = npc.Center.Y;
+			//NPC.NewNPC((int)npc.Center.X + 13, (int)npc.Center.Y - 2, mod.NPCType("GraySlime6"));
+			//NPC.NewNPC((int)npc.Center.X - 13, (int)npc.Center.Y - 2, mod.NPCType("GraySlime6"));
+			Achivements.SGAAchivements.UnlockAchivement("SPinky", Main.LocalPlayer);
+			if (!SGAWorld.downedSPinky)
+				SGAWorld.AdvanceHellionStory();
 			SGAWorld.downedSPinky=true;
         }
 
@@ -862,6 +865,11 @@ if (aicounter%60==0){
 		{
 			DisplayName.SetDefault("Not Supreme Pinky");
 			Main.npcFrameCount[npc.type] = 5;
+		}
+
+		public override void NPCLoot()
+		{
+			//nothing
 		}
 
 		public override string Texture

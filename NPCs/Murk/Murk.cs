@@ -93,6 +93,7 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mudmore"));
                 }
             }
+            Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);
             if (SGAWorld.downedMurk==0)
                 Idglib.Chat("The Moist Stone around Dank Shrines has weakened and can be broken.", 75, 225, 75);
             SGAWorld.downedMurk = Main.hardMode ? 2 : 1;

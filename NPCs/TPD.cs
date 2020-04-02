@@ -69,7 +69,8 @@ namespace SGAmod.NPCs
 			for (int f = 0; f < (Main.expertMode ? 100 : 50); f=f+1){
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
 		}
-		if (!SGAWorld.downedTPD){SGAWorld.downedTPD=true;
+			Achivements.SGAAchivements.UnlockAchivement("TPD", Main.LocalPlayer);
+			if (!SGAWorld.downedTPD){SGAWorld.downedTPD=true;
 		//SgaLib.Chat("You have regained the knowledge to craft a furnace!",150, 150, 70);
 		}
         }

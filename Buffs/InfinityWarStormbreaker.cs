@@ -41,8 +41,8 @@ namespace SGAmod.Buffs
 		}
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("IWS");
-			Description.SetDefault("Players arn't meant to have this debuff!");
+			DisplayName.SetDefault("Sundered Defense");
+			Description.SetDefault("Your immunity frames are wrecked");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = false;
 			Main.buffNoSave[Type] = true;
@@ -50,7 +50,8 @@ namespace SGAmod.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			//player.statDefense /= 2;
+			player.immuneTime = Math.Max(player.immuneTime - 3, 0);
+			player.GetModPlayer<SGAPlayer>().SunderedDefense = true;
 		}
 
 		public override void Update(NPC npc, ref int buffIndex)
@@ -58,7 +59,45 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().SunderedDefense = true;
 		}
 	}
+	public class BIPBuff : ModBuff
+	{
 
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/AcidBurn";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Broken Immortality");
+			Description.SetDefault("You've lost your godly defense!");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}	
+	public class IceFirePotion : ModBuff
+	{
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/MatrixBuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Fridgeframe Concoction");
+			Description.SetDefault("Reduced Damage over time at a cost of losing immunities");
+			Main.pvpBuff[Type] = false;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<SGAPlayer>().IceFire = true;
+			player.lavaRose = true;
+		}
+	}
 	public class DankSlow : ModBuff
 	{
 

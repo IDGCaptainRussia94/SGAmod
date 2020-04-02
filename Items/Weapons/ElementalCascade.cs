@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using SGAmod.Items.Tools;
 using Idglibrary;
 using SGAmod.Buffs;
+using SGAmod.NPCs.Hellion;
 
 namespace SGAmod.Items.Weapons
 {
@@ -44,11 +45,11 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("FieryShard"), 5);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 5);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 5);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
 			recipe.AddIngredient(ItemID.SpellTome, 1);
-			recipe.AddIngredient(ItemID.HallowedBar, 5);
 			recipe.AddTile(TileID.Bookcases);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -180,7 +181,7 @@ namespace SGAmod.Items.Weapons
 		{
 			projectile.friendly = true;
 			projectile.hostile = false;
-			projectile.penetrate = 1000;
+			projectile.penetrate = -1;
 			projectile.light = 0.25f;
 			projectile.width = 24;
 			projectile.timeLeft = 400;
@@ -239,7 +240,7 @@ namespace SGAmod.Items.Weapons
 			target.AddBuff(buffs[(int)projectile.ai[0]],bufftime);
 			if (this.GetType() == typeof(LunarCascadeShot))
 			{
-				target.immune[projectile.owner] = 3;
+				target.immune[projectile.owner] = 5;
 			}
 		}
 
@@ -256,8 +257,11 @@ namespace SGAmod.Items.Weapons
 				fadin = ((float)projectile.timeLeft/ fadeinouttime) *0.75f;
 			for (int i = 0; i < oldPos.Count; i += 1)
 			{
+				Color thecolor = colors[(int)projectile.ai[0]];
+			if (GetType()==typeof(HellionCascadeShot) || GetType() == typeof(HellionCascadeShot2))
+				thecolor = Main.hslToRgb(((i+ projectile.ai[0]*26f)/80f)%1f, 0.85f,0.7f);
 				Vector2 drawPos = oldPos[i] - Main.screenPosition;
-				spriteBatch.Draw(texture, drawPos, null, Color.Lerp(lightColor, colors[(int)projectile.ai[0]], 0.75f)* fadin, 1, new Vector2(texture.Width / 2f, texture.Height / 2f), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, drawPos, null, Color.Lerp(lightColor, thecolor, 0.75f)* fadin, 1, new Vector2(texture.Width / 2f, texture.Height / 2f), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 			}
 			return false;
 		}

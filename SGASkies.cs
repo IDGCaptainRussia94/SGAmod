@@ -8,9 +8,165 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using SGAmod.NPCs.Hellion;
+
 
 namespace SGAmod
 {
+	public class HellionSky : CustomSky
+	{
+		private Random _random = new Random();
+		private bool _isActive;
+		private float[] xoffset = new float[200];
+		private Color acolor = Color.White;
+
+		private static void drawit(Matrix zoomitz, float rotation = 0f, float scale = 1f)
+		{
+
+			//if (Hellion.instance != null)
+			//{
+			//Vector2 where = Hellion.instance.npc.Center;
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
+
+			int width = (int)(200f); int height = (int)(200f);
+
+			Texture2D beam = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+			var dataColors = new Color[width * height];
+
+
+			///
+
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
+					//if (Main.rand.NextFloat(dist, 32) < 16f)
+					//{
+						float alg = ((-Main.GlobalTime + ((float)(dist) / 0.5f)) / 1f);
+						dataColors[x + y * width] = (Main.hslToRgb(alg % 1f, 0.75f, 0.5f));
+					//}
+				}
+			}
+
+
+			///
+
+
+			beam.SetData(0, null, dataColors, 0, width * height);
+			Color color = Color.White;
+			float tempcolor = SGAmod.HellionSkyalpha;
+			if (SGAmod.HellionSkyalpha > 0.30)
+			{
+				color = Color.Lerp(Color.White, Color.Black, Math.Min(0.9f, (SGAmod.HellionSkyalpha - 0.30f) * 3.50f));
+				tempcolor *= 1.5f;
+			}
+			Main.spriteBatch.Draw(beam,new Vector2(Main.screenWidth/2f,Main.screenHeight/2f), null, color* Math.Min(1f, tempcolor), rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight )/new Vector2(1920,1080)*10f, SpriteEffects.None, 0f);
+
+			//}
+
+		}
+
+		public override void OnLoad()
+		{
+		}
+
+		public override void Update(GameTime gameTime)
+		{
+			Filters.Scene["SGAmod:HellionSky"].GetShader().UseColor(0.5f, 0.5f, 0.5f).UseOpacity(SGAmod.HellionSkyalpha);
+			float amax = 0f;
+			Hellion nullg = Hellion.GetHellion();
+		if (nullg != null)
+		{
+				if (nullg.introtimer > 199)
+				{
+					amax = 0.05f;
+				}
+
+				if (nullg.tyrant>0)
+				{
+					amax = 0.25f;
+				}
+
+				if (nullg.npc.ai[1]< 99700 && nullg.npc.ai[1]>30000)
+				{
+					amax = 0.60f;
+				}
+			}
+			else
+			{
+				amax = 1f;
+			}
+
+			acolor = Main.hslToRgb((Main.GlobalTime / 10f) % 1, 0.81f, 0.5f);
+			SGAmod.HellionSkyalpha = MathHelper.Clamp(NPC.CountNPCS((SGAmod.Instance).NPCType("Hellion")) > 0 ? (SGAmod.HellionSkyalpha + 0.015f / 5f) : SGAmod.HellionSkyalpha - (0.015f/5f), 0f, amax);
+		}
+
+		public override Color OnTileColor(Color inColor)
+		{
+			return acolor;
+		}
+
+		public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
+		{
+			double thevalue = Main.GlobalTime * 2.0;
+			double movespeed = Main.GlobalTime * 0.2;
+
+			//NPC theboss=Main.npc[NPC.FindFirstNPC((SGAmod.Instance).NPCType("Asterism"))];
+			//float valie=((float)theboss.life/(float)theboss.lifeMax);
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			//var deathShader = GameShaders.Misc["WaterProcessor"];
+			//GameShaders.Misc["WaterProcessor"].Apply(new DrawData?(new DrawData(this._distortionTarget, Vector2.Zero, Color.White)));
+			//deathShader.UseOpacity(0.5f);
+			//deathShader.Apply(null);
+			if (maxDepth >= 0 && minDepth < 0)
+			{
+				Texture2D texa = ModContent.GetTexture("SGAmod/noise");
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
+				HellionSky.drawit(Main.GameViewMatrix.ZoomMatrix);
+
+				//Main.spriteBatch.End();
+				//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.Transform);
+
+			}
+		}
+
+		public override float GetCloudAlpha()
+		{
+			return 1f - (0.75f * SGAmod.HellionSkyalpha);
+		}
+
+		public override void Activate(Vector2 position, params object[] args)
+		{
+			this._isActive = true;
+		}
+
+		public override void Deactivate(params object[] args)
+		{
+			this._isActive = false;
+		}
+
+		public override void Reset()
+		{
+			this._isActive = false;
+		}
+
+		public override bool IsActive()
+		{
+			return this._isActive;
+		}
+	}
+
+
+
+
 	public class ProgramSky : CustomSky
 	{
 		private Random _random = new Random();

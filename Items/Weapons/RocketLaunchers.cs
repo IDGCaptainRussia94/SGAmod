@@ -16,13 +16,13 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Launcher");
-			Tooltip.SetDefault("Launches a myriad of rockets that may inflict a myriad of debuffs\n'Something something placeholder sprite'\n'Something else something rocket launcher upgrade'");
+			Tooltip.SetDefault("Launches a trio of rockets that may inflict a myriad of debuffs\n'Something something rocket launcher upgrade'");
 		}
 
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.RocketLauncher);
-			item.damage = 100;
+			item.damage = 80;
 			item.width = 48;
 			item.height = 48;
 			item.useTime = 30;
@@ -87,4 +87,6 @@ namespace SGAmod.Items.Weapons
 
 
 	}
+
+
 }

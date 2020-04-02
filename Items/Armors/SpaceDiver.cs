@@ -20,7 +20,7 @@ namespace SGAmod.Items.Armors
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 10000;
+			item.value = Item.sellPrice(gold: 15);
 			item.rare = 6;
 			item.defense=8;
 		}
@@ -50,13 +50,13 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Chestplate");
-			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red,"5% less damage"));
+			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red, "10% less damage"));
 		}
 		public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 10000;
+			item.value = Item.sellPrice(gold: 15);
 			item.rare = 6;
 			item.defense=16;
 		}
@@ -69,7 +69,7 @@ namespace SGAmod.Items.Armors
 			player.iceSkate = true;
 			player.ignoreWater = true;
             sgaplayer.UseTimeMul+=0.10f;
-			player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
 		}
 		public override void AddRecipes()
 		{
@@ -87,13 +87,13 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Leggings");
-			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "5% less damage"));
+			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "10% less damage"));
 		}
 		public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 10000;
+			item.value = Item.sellPrice(gold: 15);
 			item.rare = 6;
 			item.defense=8;
 		}
@@ -107,7 +107,7 @@ namespace SGAmod.Items.Armors
 			player.accRunSpeed *= 1.20f;
 			player.maxRunSpeed *= 1.20f;
 		}
-			player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
 		}
 		public override void AddRecipes()
 		{

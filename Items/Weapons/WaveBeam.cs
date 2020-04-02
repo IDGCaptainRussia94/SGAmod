@@ -5,11 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using SGAmod.Items.Weapons.SeriousSam;
 using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class WaveBeam : ModItem
+	public class WaveBeam : SeriousSamWeapon
 	{
 		private bool altfired=false;
 		public override void SetStaticDefaults()
@@ -20,7 +21,9 @@ namespace SGAmod.Items.Weapons
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
+			base.ModifyTooltips(tooltips);
+
+			Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
             //string potion="[i:" + ItemID.RedPotion + "]";
             tooltips.Add(new TooltipLine(mod,"IDG Debug Item", Idglib.ColorText(c,"PhilBill44's dev weapon")));
         }
@@ -57,7 +60,8 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 5);
-            recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
+			recipe.AddIngredient(mod.ItemType("ManaBattery"), 2);
+			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
             recipe.AddRecipe();

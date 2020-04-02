@@ -124,12 +124,16 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("BigBang"), 1);
-			recipe.AddIngredient(mod.ItemType("Surt"), 1);
 			recipe.AddIngredient(mod.ItemType("HeatWave"), 1);
 			recipe.AddIngredient(ItemID.SkyFracture, 1);
+			recipe.AddIngredient(ItemID.ChristmasTreeSword, 1);
+			recipe.AddIngredient(ItemID.InfluxWaver, 1);
+			recipe.AddIngredient(ItemID.DD2SquireBetsySword, 1);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 10);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

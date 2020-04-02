@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.Items.Consumable;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod.Items.Weapons.Ammo
 {
@@ -47,6 +48,55 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(ItemID.RocketIII, 50);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class JackpotRocketItem : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rigged Jackpot");
+			Tooltip.SetDefault("Rigged to allow launchers to shoot jackpot rockets!\nNon Consumable Ammo Type");
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 100;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 3.5f;
+			item.value = 500000;
+			item.rare = 10;
+			item.shoot = mod.ProjectileType("JackpotRocket");   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 4.5f;                  //The speed of the projectile
+			item.ammo = AmmoID.Rocket;
+		}
+
+		public override bool ConsumeAmmo(Player player)
+		{
+			return false;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/CrateBossWeaponRanged"); }
+		}
+
+		public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
+		{
+			type = mod.ProjectileType("JackpotRocket");
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("CrateBossWeaponRanged"), 1);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 8);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 	}

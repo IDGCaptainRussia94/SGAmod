@@ -14,6 +14,7 @@ namespace SGAmod.NPCs.Cratrosity
 	public class Cratrosity : ModNPC
 	{
 
+public Vector2 offsetype = new Vector2(0, 0);
 public int phase=5;
 public int defaultdamage=60;
 public int themode=0;
@@ -97,11 +98,12 @@ public float nonaispin=0f;
 		public override void NPCLoot()
 		{
 	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKey"));
-	if (SGAWorld.downedCratrosity==false){
-		Idglib.Chat("The hungry video game industry has been tamed! New items are available for buying",244, 179, 66);
-		SGAWorld.downedCratrosity=true;
-	}
-        }
+			Achivements.SGAAchivements.UnlockAchivement("Cratrosity", Main.LocalPlayer);
+			if (SGAWorld.downedCratrosity==false){
+				Idglib.Chat("The hungry video game industry has been tamed! New items are available for buying",244, 179, 66);
+			}
+			SGAWorld.downedCratrosity = true;
+		}
 
 
 		public override bool CheckDead()
@@ -138,7 +140,7 @@ return false;
 			}else{
 
 		npc.ai[0]+=1f;
-		Vector2 gohere=new Vector2(P.Center.X,P.Center.Y-220);
+		Vector2 gohere=new Vector2(P.Center.X,P.Center.Y-220)+ offsetype;
 		float thespeed=0.01f;
 		float friction=0.98f-phase*0.04f;
 		float friction2=0.99f-phase*0.0075f;
@@ -147,13 +149,13 @@ return false;
 		if (npc.ai[1]%2000>850){
 		if (System.Math.Abs(npc.ai[2])<300){
 		compressvargoal=1;
-		int theammount=npc.ai[2]>0 ? 1: -1;
+		int theammount=(npc.ai[2]>0 ? 1: -1)*(offsetype.X>0 ? 1 : -1);
 		if (npc.ai[1]%2000<1100){
 		gohere=new Vector2(P.Center.X+(theammount*800),P.Center.Y-220);
 		npc.velocity=(npc.velocity+((gohere-npc.Center)*thespeed))*0.98f;
 		}else{
 
-		npc.velocity=new Vector2(-theammount*10,0);
+		npc.velocity=new Vector2(-theammount* ((GetType() == typeof(Cratrogeddon)) ? 30 : 10),0);
 		if (npc.ai[0]%15==0){
 		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.Center+new Vector2(0,P.Center.Y>npc.Center.Y ? 600 : -600),new Vector2(0,0),ProjectileID.CopperCoin,(int)(npc.damage*(20.00/defaultdamage)),10,0,1,true,0,true,100);
 		}
@@ -171,25 +173,43 @@ return false;
 		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-npc.velocity.X,0),new Vector2(0,0),ProjectileID.SilverCoin,(int)(npc.damage*(25.00/defaultdamage)),25,0,1,true,0,false,40);
 		}}
 		themode=300;
-		if (npc.Center.X<P.Center.X-700){
-		npc.ai[2]=-System.Math.Abs(npc.ai[2]);
-		}
-		if (npc.Center.X>P.Center.X+700){
-		npc.ai[2]=System.Math.Abs(npc.ai[2]);
-		}
+							if (offsetype.X >=0)
+							{
+								if (npc.Center.X < P.Center.X - 700)
+								{
+									npc.ai[2] = System.Math.Abs(npc.ai[2]);
+								}
+								if (npc.Center.X > P.Center.X + 700)
+								{
+									npc.ai[2] = -System.Math.Abs(npc.ai[2]);
+								}
+							}
+							else
+							{
+								if (npc.Center.X < P.Center.X - 700)
+								{
+									npc.ai[2] = -System.Math.Abs(npc.ai[2]);
+								}
+								if (npc.Center.X > P.Center.X + 700)
+								{
+									npc.ai[2] = System.Math.Abs(npc.ai[2]);
+								}
+							}
 		//npc.ai[1]=1600+(2000-1600);
 		//}
 		}
 
 		}else{
 		Vector2 gogo=P.Center-npc.Center; gogo.Normalize(); gogo=gogo*(8-phase*1);
+		if (GetType() == typeof(Cratrogeddon))
+		gogo *= 2f;
 		npc.velocity=gogo;
 		compressvargoal=2;
 		}
 		}else{
 		npc.ai[2]=Main.rand.Next(-600,600);
 		if (npc.ai[0]%600<350){
-		npc.velocity=(npc.velocity+((gohere-npc.Center)*thespeed))*friction;
+		npc.velocity=(npc.velocity+(((gohere) -npc.Center)*thespeed))*friction;
 		compressvargoal=1;
 
 	switch(phase)
@@ -236,7 +256,10 @@ return false;
 		}else{
 		compressvargoal=0.4f;
 		Vector2 gogo=P.Center-npc.Center; gogo.Normalize(); gogo=gogo*(30-phase*2);
-		if (npc.ai[0]%(25+(phase*10))==0){
+				if (GetType() == typeof(Cratrogeddon))
+				gogo *= 0.3f;
+		if (npc.ai[0]%(25+(phase*10))< (GetType() == typeof(Cratrogeddon) ? 20 : 1))
+						{
 		npc.velocity=(npc.velocity+gogo);
 		}
 		npc.velocity=npc.velocity*friction2;

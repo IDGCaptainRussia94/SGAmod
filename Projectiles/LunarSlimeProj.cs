@@ -113,9 +113,9 @@ namespace SGAmod.Projectiles
                         {
                             Rectangle mecol = projectile.Hitbox;
                             Rectangle themcol = proj.Hitbox;
-                            if (themcol.Intersects(mecol))
+                            if (themcol.Intersects(mecol) && proj.damage>1)
                             {
-                                proj.Kill();
+                                proj.damage = 1;
                                 projectile.penetrate -= proj.CanReflect() ? 0 : 2;
                                 Main.PlaySound(29, (int)proj.position.X, (int)proj.position.Y, Main.rand.Next(66, 69), 1f, -0.6f);
 
@@ -159,6 +159,8 @@ namespace SGAmod.Projectiles
                 projectile.ai[1] -= 1;
                 projectile.localAI[0] += 1;
                 projectile.ai[0] += 0.1f;
+
+                    projectile.damage = player.GetModPlayer<SGAPlayer>().lunarSlimeHeartdamage;
 
                 double angle = ((1f + projectile.ai[0] / 8f)) + 2.0 * Math.PI * (projectile.ai[0] / ((double)8f));
                 float dist = Math.Min(projectile.localAI[0] * 2, 100f);

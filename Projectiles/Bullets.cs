@@ -211,6 +211,77 @@ namespace SGAmod.Projectiles
 
 	}
 
+	public class AimBotBullet : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aimbot Bullet");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Bullet);
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.extraUpdates = 400;
+			projectile.penetrate = 3;
+			projectile.timeLeft = 400;
+			projectile.aiStyle = -1;
+			projectile.localNPCHitCooldown = -1;
+			projectile.usesLocalNPCImmunity = true;
+		}
+
+		public override void AI()
+		{
+
+			if (projectile.ai[0] < 1)
+			{
+				int dir = 1;
+				if (Main.myPlayer == projectile.owner)
+				{
+					NPC target = Main.npc[Idglib.FindClosestTarget(0, Main.MouseWorld, new Vector2(0f, 0f), true, true, true, projectile)];
+					if (target != null && Vector2.Distance(target.Center, projectile.Center) < 2000)
+					{
+						Vector2 projvel=projectile.velocity;
+						projectile.velocity = target.Center - projectile.Center;
+						projectile.velocity.Normalize(); projectile.velocity *= 8f;
+						IdgProjectile.Sync(projectile.whoAmI);
+						projectile.netUpdate = true;
+					}
+
+
+				}
+				dir = Math.Sign(projectile.velocity.X);
+				Main.player[projectile.owner].ChangeDir(dir);
+				Main.player[projectile.owner].itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
+				//Main.player[projectile.owner].itemRotation = projectile.velocity.ToRotation() * Main.player[projectile.owner].direction;
+
+			}
+			projectile.ai[0] += 1;
+
+			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f);
+			Main.dust[num655].noGravity = true;
+			Main.dust[num655].velocity *= 0.5f;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			projectile.damage = (int)(projectile.damage * 1.20f);
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + ProjectileID.MoonlordBullet); }
+		}
+
+	}
+
 	public class TungstenBullet : ModProjectile
 	{
 		private Vector2[] oldPos = new Vector2[6];
@@ -288,9 +359,10 @@ namespace SGAmod.Projectiles
 						gotohere.Normalize();
 
 						Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(10)) * projectile.velocity.Length();
-						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), (int)projectile.ai[0], projectile.damage, projectile.knockBack / 8f, owner.whoAmI);
+						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), ProjectileID.BulletHighVelocity, projectile.damage, projectile.knockBack / 8f, owner.whoAmI);
 						Main.projectile[proj].timeLeft = 180;
-						Main.projectile[proj].penetrate = 1;
+						//Main.projectile[proj].penetrate = 1;
+						Main.projectile[proj].GetGlobalProjectile<SGAprojectile>().onehit = true; ;
 						Main.projectile[proj].netUpdate = true;
 						IdgProjectile.Sync(proj);
 

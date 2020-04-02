@@ -26,4 +26,32 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().MoonLightCurse = true;
 		}
 	}
+	public class EverlastingSuffering : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Everlasting Suffering");
+			Description.SetDefault("Damage over time is greatly increased");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/MoonLightCurse";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<SGAPlayer>().ELS = true;
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.GetGlobalNPC<SGAnpcs>().ELS = true;
+		}
+	}
 }

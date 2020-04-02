@@ -3,6 +3,132 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
+2.40-(date)-Hellion's Wraith:
+
+--Added
+
+-Helen 'Hellion' Weygold, the 'final' boss of the mod. And a small story of sorts leading up to it
+
+-Cratogeddon, a post-moonlord boss and varient of Cratrosity
+
+-Nightmare mode! Beat the final boss on expert first to unlock them! (This feature is still rather heavy WIP, Despite sounding really generic, bonus points to whoever can guess the reference :P)
+
+-Frigid Shard, Entrophite, Raw Avarice, Mana Battery, Soul of Byte, Omni Soul, and Fridgeflame crafting materials, Calamity Rune,Entrophite Transmuter, Heart of Entropy, Fridgeframe Concoction, Rigged Jackpot, Fridgeflame Canister, Blink Tech Canister, Blink Tech Gear, Big Dakka, Brimeflame Harbinger, Rioter's Glove, Demolitionist's Glove, Lance a-lot, Yoyo Gauntlet, Rod of Enforcement, Corrupted Tome, Charms of Anticiptation, EALogo, Corperate Epiphany
+
+-A bunch of items and weapons related to Hellion which I will not spoil :p
+
+-Apocalypticals, IE Critical Crits!
+
+-Some new prefixes
+
+-Proper sprites for many items and even some resprites!
+
+-A Discord Server is back! See the home page for a link!
+
+-However a few Items are using the same/placeholder sprites and even features that are disabled because they are either incomplete or I lack the sprites needed to fully add them in
+
+
+--Changed:
+
+-Idol of Midas's coin feature changed slightly
+
+-SBC cannons reworked to be more like the source material: buffed damage, less gravity on cannonballs and explode always against knockback immune enemies, and cannonballs have a new visual effect
+
+-Adjusted prices of alot of items, again
+
+-Draken now sells Empty Charms sooner with less total Expertise, likely after the first boss
+
+-You can no longer craft anything at a furnace (or hellforce) or a mythril anvil until you defeat the respective wraiths
+
+-Stormbreaker's mana regen usage lasts the whole animation
+
+-Cobalt Wraith's ore drops reworked, also now drops hellstone
+
+-Worldgen chest loot changed a bit
+
+-Grenadier's Glove has had its functionality split, the Molotovs are now part of the upgraded form: the Rioter's Glove
+
+-Javelins are now called Jab-lins, and have a new set of sprites! Also prismal Launcher got a new sprite.
+
+-Luminary Wings are now post-SPinky (And also no longer require Frostspark boots)
+
+-Omega Sigil reworked
+
+-Avali Scythe and Wave Beam have been made into Technical Weapons
+
+-Nerfed Caliburn Guardians' damage, attempts to stay closer to the player so melee can hit them, and can no longer hurt the player by touch while not charging at them
+
+-Luminite Wraith Buffed: First fight has more HP, 2nd fight has more contact damage and slightly more defense
+
+-Tooltip on Dank Arrows has been clarified a bit, the slowing effect is stronger, not the enemies
+
+-Removed Obsidian Skull from Demon Steppers as Lava Waders already uses it
+
+-Buffed Demon Steppers quite a bit, Luminary Wings got a buff as well
+
+-Big Bang's crafting recipe changed again, and buffed
+
+-Recipes changed, such as Surt not longing being required to make Reality Shaper
+
+-Nerfed Lunar Cascade, Serpent's Redemption, Massacre prototype, Prismal Launcher
+
+-Lunar Slime Heart not longer deletes projectiles, but rather cuts out most of the their damage
+
+-Treepeater firerate and accuracy increased
+
+-Cosmic Cocktail's Stats changed, again
+
+-Djinn's Inferno now requires a shadowflame hex doll
+
+-Surt got a rework: a buff to help it synergize with Primordial Skull better and the projectile is faster, and nerf that OnFire is based on how long you charge the sword
+
+-Blazewyrm Armor has been reworked, I want to think of it as more of a beserker type armor VS tank armor that is a direct upgrade to molten armor
+
+-Space Diver Armor has been reworked, again. The damage penality on the set has been upped from 15% to 40%, however, you receive a bonus 25% to tech damage weapons.
+
+-Swamp Slimes renamed to Dank Slimes, they can drop Biomass, and they may spawn after Murk is defeated in the Jungle
+
+-Bronze Wraith Core Fragments are less grindy to craft as now you make 2
+
+-Ice-related and alot of other crafting recipes changed, many items made cheaper to craft (especially the charms)
+
+-Demon Steppers now includes the effects of the Blue Horseshoe Balloon and Frog Leg in the crafting recipe
+
+-Supreme Pinky drops less Royal Lunar Gel
+
+-World Gen involving biomass generation
+
+-MANY other smaller changes
+
+
+--Fixed:
+
+-Some missing "missing item" subtexts that led to confusion
+
+-Matrix Buff giving the wrong description
+
+-Fixed Dynasty Javelins being craftable
+
+-A bug where simply killing one of Supreme Pinky's Dopplegangers was enough to count as beating the boss
+
+-Demon Steppers and Luminary Wings Stacking allowing crazy fast speeds
+
+-Prismal Booster-style flying allowing you to fly through blocks while going straight up, you can still pass through 1-block thick tiles however
+
+-Dank Arrows being free to craft
+
+-A possible bug where Portal Bullets could pierce and do extremely high damage
+
+-Improved the Beam Gun's code to hopefully improve FPS
+
+-Changed the way the HUD is drawn again, this time it's using interface layers, which means it should not conflict with other mods at all! Yay!
+
+-Fixed various spelling mistakes
+
+-MANY other smaller fixes
+
+
+
 2.30-(3/2/20)-Patch #3:
 
 --Changed:
@@ -184,7 +310,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 
 -Nerfed TPS's boss fight, but made the predicted aim of lasers properly... uh, aim. Also nerfed Cratrosity's attacks.
 
--Nerfed Flame-Trap Thrower and HeatBeater
+-Nerfed Flame-Trap Thrower and Heat Beater
 
 -Buffed Super Dart Trap 'gun'
 

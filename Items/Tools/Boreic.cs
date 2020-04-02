@@ -27,6 +27,7 @@ namespace SGAmod.Items.Tools
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("FrigidShard"), 10);
 			recipe.AddTile(TileID.IceMachine);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -91,7 +92,8 @@ namespace SGAmod.Items.Tools
 			{
 				ModRecipe recipe = new ModRecipe(mod);
 				recipe.AddIngredient(mod.ItemType("CryostalBar"), 12);
-				recipe.AddTile(TileID.IceMachine);
+			recipe.AddIngredient(mod.ItemType("FrigidShard"), 8);
+			recipe.AddTile(TileID.IceMachine);
 				recipe.SetResult(this);
 				recipe.AddRecipe();
 			}
@@ -133,6 +135,7 @@ namespace SGAmod.Items.Tools
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("FrigidShard"), 8);
 			recipe.AddTile(TileID.IceMachine);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

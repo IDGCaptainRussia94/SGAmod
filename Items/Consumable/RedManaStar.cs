@@ -79,6 +79,43 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
+	public class Debug2 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Gain 100 Expertise");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+			item.consumable = true;
+		}
+		public override bool UseItem(Player player)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			sgaplayer.ExpertiseCollected += 100;
+			sgaplayer.ExpertiseCollectedTotal += 100;
+			Main.NewText("Expertise: "+ sgaplayer.ExpertiseCollected+": Max: "+ sgaplayer.ExpertiseCollectedTotal);
+			return true;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.DarkBlueSolution; }
+		}
+
+	}
+
+
 	public class Debug1 : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -106,7 +143,12 @@ namespace SGAmod.Items.Consumable
 			sgaplayer.ExpertiseCollected = 0;
 			sgaplayer.ExpertiseCollectedTotal = 0;
 			sgaplayer.Redmanastar = 0;
+			sgaplayer.gothellion = false;
 			sgaplayer.GenerateNewBossList();
+			for (int x = 0; x < SGAWorld.questvars.Length; x++)
+			{
+				SGAWorld.questvars[x] = 0;
+			}
 			return true;
 		}
 		public override string Texture

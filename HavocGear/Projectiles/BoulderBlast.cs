@@ -36,7 +36,7 @@ namespace SGAmod.HavocGear.Projectiles
         	Lighting.AddLight(projectile.Center, ((255 - projectile.alpha) * 0.01f) / 255f, ((255 - projectile.alpha) * 0.025f) / 255f, ((255 - projectile.alpha) * 0.25f) / 255f);
 			bool flag15 = false;
 			bool flag16 = false;
-			if (projectile.velocity.X < 0f && projectile.position.X < projectile.ai[0])
+			/*if (projectile.velocity.X < 0f && projectile.position.X < projectile.ai[0])
 			{
 				flag15 = true;
 			}
@@ -55,7 +55,7 @@ namespace SGAmod.HavocGear.Projectiles
 			if (flag15 && flag16)
 			{
 				projectile.Kill();
-			}
+			}*/
 			float num461 = 25f;
 			if (projectile.ai[0] > 180f)
 			{

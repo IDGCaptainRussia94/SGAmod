@@ -814,6 +814,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Spike, 40);
+			recipe.AddIngredient(ItemID.ThornsPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -7,24 +7,37 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.GameContent.UI;
+using Terraria.UI;
+using Terraria.Graphics;
 
 namespace SGAmod
 {
-	public class SGAHUD : Overlay
-	{
-		public SGAHUD() : base(EffectPriority.Medium, RenderLayers.All) { }
 
-		public override void Update(GameTime gameTime)
+	public abstract class SGAInterface
+	{
+		public static void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
+			for (int k = 0; k < layers.Count; k++)
+			{
+				if (layers[k].Name == "Vanilla: Resource Bars")
+				{
+					layers.Insert(k + 1, new LegacyGameInterfaceLayer("SGAmod: HUD", DrawHUD, InterfaceScaleType.UI));
+				}
+			}
 		}
 
-		public override void Draw(SpriteBatch spriteBatch)
+		public static bool DrawHUD()
 		{
-			if (Main.gameMenu || SGAmod.Instance == null && Main.netMode!=1)
-				return;
+
+			if (Main.gameMenu || SGAmod.Instance == null && Main.netMode != 1)
+				return true;
 			Player locply = Main.LocalPlayer;
-				if (locply != null && locply.whoAmI == Main.myPlayer)
+			if (locply != null && locply.whoAmI == Main.myPlayer)
 			{
+				SpriteBatch spriteBatch = Main.spriteBatch;
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 				if (locply.HeldItem.type == SGAmod.Instance.ItemType("CaliburnCompess"))
 				{
 
@@ -37,15 +50,18 @@ namespace SGAmod
 
 						Vector2 drawPos = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
 
-						Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i]+96) - (drawPos + Main.screenPosition));
+						Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i] + 96) - (drawPos + Main.screenPosition));
 						float pointthere = Vecd.ToRotation();
 						bool flip = Vecd.X > 0;
 
-						spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f)+(pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(),0.9)/50), null, Color.White, pointthere + MathHelper.ToRadians(45)+(flip ? MathHelper.ToRadians(-90)*3f : 0), drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+						spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White, pointthere + MathHelper.ToRadians(45) + (flip ? MathHelper.ToRadians(-90) * 3f : 0), drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 						//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
 					}
 				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 				if (SGAmod.UsesPlasma.ContainsKey(locply.HeldItem.type))
 				{
@@ -100,10 +116,32 @@ namespace SGAmod
 					}
 				}
 
-
-
-
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			}
+			return true;
+		}
+
+	}
+
+
+
+
+	public class SGAHUD : Overlay
+	{
+		public SGAHUD() : base(EffectPriority.Medium, RenderLayers.All) { }
+
+		public override void Update(GameTime gameTime)
+		{
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			
+
+
+
+
 
 		}
 

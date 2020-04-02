@@ -19,7 +19,7 @@ namespace SGAmod.Dusts
 			if (!dust.noGravity)
 			{
 				dust.velocity.Y += 0.05f;
-				dust.velocity.X += 0.05f;
+				//dust.velocity.X += 0.05f;
 			}
 			if (!dust.noLight)
 			{

@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System.Linq;
 
 namespace SGAmod
 {
@@ -78,7 +79,29 @@ namespace SGAmod
 
     }
 
-	class SGAGlobalRecipes : GlobalRecipe
+    class HellionItems : ModRecipe
+    {
+
+        public double tempvar = 0;
+
+        public HellionItems(Mod mod) : base(mod)
+        {
+            this.tempvar = tempvar;
+        }
+
+        public override bool RecipeAvailable()
+        {
+            //if (Main.LocalPlayer.GetModPlayer<MyPlayer>(mod).GetExp() < experienceNeeded)
+            //    return false;
+            //else
+            if (SGAWorld.downedHellion < 1)
+                return false;
+            return SgaLib.EnforceDuplicatesInRecipe(this);
+        }
+
+    }
+
+    class SGAGlobalRecipes : GlobalRecipe
 	{
 
 
@@ -91,8 +114,10 @@ namespace SGAmod
         {
 
             bool canwemakeit=base.RecipeAvailable(recipe);
-            if (((recipe.createItem.type==ItemID.Furnace) && (SGAWorld.downedWraiths<1))
-            || ((recipe.createItem.type==ItemID.MythrilAnvil || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
+            if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
+                canwemakeit = false;
+            if (((recipe.createItem.type==ItemID.Furnace || recipe.requiredTile.Any(tile => tile == TileID.Furnaces)) && (SGAWorld.downedWraiths<1))
+            || (((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
             || (recipe.createItem.type==ItemID.LunarBar && SGAWorld.downedWraiths<4))
                 return false;
             else

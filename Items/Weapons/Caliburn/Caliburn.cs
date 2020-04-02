@@ -640,8 +640,8 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.width = 54;
 			item.height = 32;
 			item.useTime = 70;
-			item.useAnimation = 70;
-			item.reuseDelay = 60;
+			item.useAnimation = 60;
+			item.reuseDelay = 80;
 			item.useStyle = 1;
 			item.knockBack = 5;
 			item.noUseGraphic = true;
@@ -651,6 +651,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.shoot = 10;
 			item.shootSpeed = 10f;
 			item.useTurn = false;
+			item.autoReuse = false;
 			item.expert = true;
 			item.noMelee = true;
 		}

@@ -19,11 +19,12 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 125;
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
 			item.useTime = 30;
+			item.crit = 10;
 			item.useAnimation = 31;
 			item.useStyle = 5;
 			item.knockBack = 15;
@@ -105,8 +106,9 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("MangroveStriker"), 1);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 10);
-			recipe.AddIngredient(ItemID.EnchantedSword, 1);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 10);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 15);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -17,7 +17,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("SBC Cannon");
-            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
+            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs explode against enemies immune to knockback, and do not crit (the explosion however can crit)\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -29,7 +29,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void SetDefaults()
         {
-            item.damage = 250;
+            item.damage = 300;
             item.ranged = true;
             item.width = 48;
             item.height = 28;
@@ -219,7 +219,8 @@ namespace SGAmod.Items.Weapons.SeriousSam
 							Vector2 perturbedSpeed = projectile.velocity.RotatedByRandom(MathHelper.ToRadians(0));
 							Vector2 perturbedSpeed2 = perturbedSpeed;
 							perturbedSpeed2.Normalize();
-							float scale = 2f+ ((projectile.ai[0]/30f));// - (Main.rand.NextFloat() * .2f);
+							float basespeed = 1f + (GetType() == typeof(SBCCannonHoldingMK2) ? 0.4f : -0.4f);
+							float scale = 1.5f+ ((projectile.ai[0]/30f)* basespeed);// - (Main.rand.NextFloat() * .2f);
 							perturbedSpeed = perturbedSpeed * (scale*4f);
 							perturbedSpeed += perturbedSpeed2;
 							offset -= perturbedSpeed;
@@ -281,7 +282,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			projectile.tileCollide = true;
 			projectile.ranged = true;
 			projectile.thrown = false;
-			projectile.extraUpdates = 1;
+			projectile.extraUpdates = 2;
 			projectile.penetrate = -1;
 			aiType = ProjectileID.WoodenArrowFriendly;
 			projectile.usesLocalNPCImmunity = true;
@@ -301,6 +302,9 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Vector2 scaler = new Vector2(Main.rand.NextFloat(0.75f, 1.25f), Main.rand.NextFloat(0.75f, 1.25f) * 0.5f + (projectile.velocity.Length() / 10f));
+			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave"), projectile.Center - Main.screenPosition, new Rectangle?(), Color.White * MathHelper.Clamp((projectile.velocity.Length()-6f) / 4f, 0f, 1f), projectile.velocity.ToRotation()+MathHelper.ToRadians(90),
+				new Vector2(ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave").Width * 0.5f, ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave").Height * 0.5f), scaler, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation, origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
 
 			return false;
@@ -336,7 +340,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		{
 			crit = false;
 			projectile.damage -= target.life;
-			if (projectile.damage < 1)
+			if (projectile.damage < 1 || target.knockBackResist == 0f)
 				projectile.Kill();
 		}
 
@@ -376,7 +380,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 
 
-			projectile.velocity.Y -= 0.1f;
+			projectile.velocity.Y -= 0.15f;
 			projectile.rotation += projectile.velocity.X * 0.25f;//(float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
 			projectile.ai[1] += 0.5f;
@@ -528,7 +532,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SBC Cannon MK2");
-			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials; it charges and recovers after firing faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage, but lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
+			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials\nCharges and recovers after firing faster, and lanuches cannonballs faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\nCannonballs explode against enemies immune to knockback, and do not crit (the explosion however can crit)\n'LETS GET SERIOUS!!'");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -541,7 +545,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void SetDefaults()
 		{
-			item.damage = 2500;
+			item.damage = 3000;
 			item.ranged = true;
 			item.width = 48;
 			item.height = 28;

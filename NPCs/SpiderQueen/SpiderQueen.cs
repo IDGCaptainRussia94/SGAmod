@@ -41,8 +41,9 @@ namespace SGAmod.NPCs.SpiderQueen
 
 		public override void NPCLoot()
 		{
-
-				for (int i = 0; i <= Main.rand.Next(25,45)*(Main.expertMode ? 2 : 1); i++){
+			SGAWorld.downedSpiderQueen = true;
+			Achivements.SGAAchivements.UnlockAchivement("Spider Queen", Main.LocalPlayer);
+			for (int i = 0; i <= Main.rand.Next(25,45)*(Main.expertMode ? 2 : 1); i++){
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VialofAcid"));
 				}
 				if (Main.expertMode)
@@ -260,6 +261,8 @@ namespace SGAmod.NPCs.SpiderQueen
 			}
 			else
 			{
+				if (SGAWorld.NightmareHardcore > 0)
+				phase = 2;
 				npc.dontTakeDamage = false;
 				bool sighttoplayer = (Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 6, 6, new Vector2(P.Center.X, P.Center.Y), 6, 6));
 				bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;

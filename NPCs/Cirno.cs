@@ -93,6 +93,7 @@ namespace SGAmod.NPCs
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CryostalBar"), Main.rand.Next(15,25));
 				}
 			}
+			Achivements.SGAAchivements.UnlockAchivement("Cirno", Main.LocalPlayer);
 			if (SGAWorld.downedCirno==false){
 			SGAWorld.downedCirno=true;
 			Idglib.Chat("The snowflakes have thawed from your wings",50, 200, 255);
@@ -151,7 +152,7 @@ Vector2 dist=P.Center-npc.Center;
 						ScreenShaderData shad=Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
 						shad.UseColor(Color.Lerp(Color.Blue,Color.Turquoise,0.5f+(float)Math.Sin(Main.GlobalTime)));
 						Main.raining = true;
-						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * 0.002f, -0.4f, 0.4f);
+						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * (-0.002f/3f), -0.4f, 0.4f);
 						Main.maxRaining = Math.Min(Main.maxRaining + 0.002f, 1f);
 						Main.rainTime = 5;
 						Main.UseStormEffects = true;

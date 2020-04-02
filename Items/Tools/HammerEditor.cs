@@ -51,14 +51,21 @@ namespace SGAmod.Items.Tools
 			item.type = myid;
 		}
 
+		public override bool CanUseItem(Player player)
+		{
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+				item.type = ItemID.CellPhone;
+			return true;
+		}
+
 		public override void UpdateInventory(Player player)
 		{
 			item.type = myid;
 			if (player.HeldItem == item)
 			{
 				item.type = ItemID.WireKite;
-				if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
-				item.type = ItemID.CellPhone;
+				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+				//item.type = ItemID.CellPhone;
 				item.CloneDefaults(item.type);
 				item.SetNameOverride("Hammer Editor");
 				player.InfoAccMechShowWires = true;
@@ -70,6 +77,15 @@ namespace SGAmod.Items.Tools
 			player.wallSpeed += 1f;
 			player.blockRange += 5;
 			player.pickSpeed -= 0.5f;
+
+			player.autoActuator = true;
+			player.autoPaint = true;
+			if (player.whoAmI == Main.myPlayer)
+			{
+				Player.tileRangeX += 3;
+				Player.tileRangeY += 2;
+			}
+
 
 
 			player.accWatch = 3;
@@ -85,6 +101,8 @@ namespace SGAmod.Items.Tools
 			player.accOreFinder = true;
 			player.accDreamCatcher = true;
 
+			item.type = myid;
+
 
 
 
@@ -95,10 +113,13 @@ namespace SGAmod.Items.Tools
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.WireKite, 1);
 			recipe.AddIngredient(ItemID.CellPhone, 1);
+			recipe.AddIngredient(ItemID.ActuationAccessory, 1);
+			recipe.AddIngredient(ItemID.ArchitectGizmoPack, 1);
 			recipe.AddIngredient(ItemID.BuilderPotion, 10);
+
 			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this, 2);
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 

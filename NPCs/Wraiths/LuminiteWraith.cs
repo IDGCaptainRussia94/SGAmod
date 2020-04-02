@@ -293,9 +293,11 @@ return false;
 		for (int f = 0; f < (Main.expertMode ? 100 : 50); f=f+1){
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
 		}
-		if (Main.expertMode)
+			Achivements.SGAAchivements.UnlockAchivement("Luminite Wraith", Main.LocalPlayer);
+			if (Main.expertMode)
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CosmicFragment"));
 		if (SGAWorld.downedWraiths<4){SGAWorld.downedWraiths=4;
+		SGAWorld.AdvanceHellionStory();
 		Idglib.Chat("You have regained your knowledge to make Luminite Bars!",150, 150, 70);
 		}
         }
@@ -304,12 +306,13 @@ return false;
 		{
 			npc.width = 16;
 			npc.height = 16;
-			npc.damage = 100;
+			npc.damage = 150;
 			npc.defense = 0;
 			npc.lifeMax = 20000;
-			npc.defense = 20;
+			npc.defense = 25;
 			if (SGAWorld.downedWraiths<3){
-			npc.lifeMax = 15000;
+			npc.damage = 100;
+			npc.lifeMax = 25000;
 			npc.defense = 0;
 			}
 			else{
@@ -444,7 +447,7 @@ return false;
 		warninglevel+=5;
 		npc.life=npc.lifeMax;
 		npc.netUpdate=true;
-		Idglib.Chat(warninglevel<55 ? "This is proving more than We expected..." : (warninglevel<65 ? "How is he still alive?!" : "Failure is an option we can't affourd!"),25, 25, 80);
+		Idglib.Chat(warninglevel<60 ? "This is proving more than We expected..." : (warninglevel<66 ? "How is he still alive?!" : "Failure is an option we can't affourd!"),25, 25, 80);
 		}}}}
 
 		if (warninglevel>69 && warninglevel<1000 && npc.life<(int)(npc.lifeMax*0.75)){warninglevel=1000;

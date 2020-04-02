@@ -258,8 +258,12 @@ namespace SGAmod.NPCs.Wraiths
 		npc.rotation=rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
 		npc.velocity=npc.velocity*0.86f;
 		if (npc.ai[0]%20==0 && npc.ai[0]%900>650){
-		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0), SGAWorld.NightmareHardcore > 0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile,20,20,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
-		}
+							List<Projectile> one = Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0), SGAWorld.NightmareHardcore > 0 ? mod.ProjectileType("UnmanedArrow2") : ProjectileID.WoodenArrowHostile,20,20,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
+							one[0].hostile = true;
+							one[0].friendly = false;
+							one[0].localAI[0] = P.whoAmI;
+							one[0].netUpdate = true;
+						}
 		npc.spriteDirection=1;
 		}else{
 		if (Math.Abs(npc.velocity.X)>2){ npc.spriteDirection=npc.velocity.X>0 ? -1 : 1; }
@@ -427,14 +431,25 @@ return true;
 		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
 		float locspeed=0.25f;
 		if (npc.ai[0]%600>350){
+
 		npc.damage = (int)npc.defDamage*3;
 		itt=itt=(P.position-npc.position+new Vector2(npc.ai[1]*npc.spriteDirection,-8));
+
+					if (npc.ai[0] % 160 == 0 && SGAWorld.NightmareHardcore > 0)
+					{
+						Vector2 zxx = itt;
+						itt += P.velocity * 3f;
+						zxx.Normalize();
+						npc.velocity += (zxx) * 18f;
+					}
+
 		npc.rotation=npc.rotation+(0.65f*npc.spriteDirection);
 		locspeed=0.5f;
 		}else{
 		npc.damage = (int)npc.defDamage;
 		if (npc.ai[0]%300<60){
-		locspeed=1.0f;
+
+						locspeed =1.0f;
 		npc.velocity=npc.velocity*0.92f;
 		}
 		npc.rotation=(float)npc.velocity.X*0.09f;
@@ -549,9 +564,19 @@ return true;
 
 			List<int> types=new List<int>();
 			types.Insert(types.Count,mod.ItemType("WraithFragment4"));
-			types.Insert(types.Count,SGAmod.WorldOres[4,WorldGen.oreTier1 == 107 ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[4,WorldGen.oreTier1 == 107 ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[5,WorldGen.oreTier2 == 108 ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[5,WorldGen.oreTier2 == 108 ? 1 : 0]); types.Insert(types.Count,ItemID.SoulofLight);
-			types.Insert(types.Count,SGAmod.WorldOres[6,WorldGen.oreTier3 == 111 ? 1 : 0]); types.Insert(types.Count,ItemID.SoulofNight);
+			int ammount = 0;
+			for (ammount = 0; ammount < 1; ammount+=1)
+				types.Insert(types.Count, ItemID.Hellstone);
+			for (ammount = 0; ammount < 3; ammount += 1)
+				types.Insert(types.Count,SGAmod.WorldOres[4,WorldGen.oreTier1 == 107 ? 1 : 0]);
+			for (ammount = 0; ammount < 2; ammount += 1)
+				types.Insert(types.Count,SGAmod.WorldOres[5,WorldGen.oreTier2 == 108 ? 1 : 0]);
+			for (ammount = 0; ammount < 1; ammount += 1)
+				types.Insert(types.Count,ItemID.SoulofLight);
+			for (ammount = 0; ammount < 1; ammount += 1)
+				types.Insert(types.Count,SGAmod.WorldOres[6,WorldGen.oreTier3 == 111 ? 1 : 0]);
+			for (ammount = 0; ammount < 1; ammount += 1)
+				types.Insert(types.Count,ItemID.SoulofNight);
 
 		for (int f = 0; f < (Main.expertMode ? 200 : 100); f=f+1){
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
@@ -562,6 +587,7 @@ return true;
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"));
 		}
 
+		Achivements.SGAAchivements.UnlockAchivement("Cobalt Wraith", Main.LocalPlayer);
 		if (SGAWorld.downedWraiths<2){SGAWorld.downedWraiths=2;
 		Idglib.Chat("You have regained the knowledge to craft a hardmode anvil!",20, 60, 220);
 		}

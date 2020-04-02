@@ -9,19 +9,19 @@ using Terraria.ModLoader;
 
 namespace SGAmod.Buffs
 {
-	public class Matrix : ModBuff
+	public class MatrixBuff : ModBuff
 	{
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Matrix");
-			Description.SetDefault("You are coated in a highly flammable substance");
+			Description.SetDefault("Time is slowed for all around you");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.GetModPlayer<SGAPlayer>().Matrix = true;
+			player.GetModPlayer<SGAPlayer>().MatrixBuffp = true;
 		}
 	}
 }

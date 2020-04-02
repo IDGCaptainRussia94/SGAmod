@@ -11,15 +11,16 @@ namespace SGAmod.Items.Weapons
 {
 	class ThrowerGlove : ModItem
 	{
-
+		public static string disc = "\nMay also be worn in place of a Grapple Hook to throw grenades with the grapple key\nHowever, the grenades are slower and has a cooldown";
+		public virtual int level => 0;
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Grenadier's Glove");
-			Tooltip.SetDefault("Throws hand grenades (and Molotovs) further, and increases their damage\nMay also be worn in place of a Grapple Hook to throw grenades with the grapple key\nHowever, the grenades are slower and has a cooldown");
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage"+ disc);
 		}
 
-		public static int FindGrenadeToThrow(Mod mod,Player player)
+		public static int FindGrenadeToThrow(Mod mod,Player player, int level)
 		{
 		List<int> grenadetypes = new List<int>();
 			grenadetypes.Add(ItemID.Grenade);
@@ -29,10 +30,24 @@ namespace SGAmod.Items.Weapons
 			grenadetypes.Add(ItemID.Beenade);
 			grenadetypes.Add(mod.ItemType("AcidGrenade"));
 			grenadetypes.Add(mod.ItemType("ThermalGrenade"));
-			grenadetypes.Add(mod.ItemType("CelestialCocktail"));
-			grenadetypes.Add(ItemID.MolotovCocktail);
+			if (level != 2 && level>0)
+			{
+				grenadetypes.Add(mod.ItemType("CelestialCocktail"));
+				grenadetypes.Add(ItemID.MolotovCocktail);
+				grenadetypes.Add(ItemID.Bone);
+				grenadetypes.Add(ItemID.Ale);
+			}
 
-
+			if (level == 2)
+			{
+				grenadetypes.Add(ItemID.Dynamite);
+				grenadetypes.Add(ItemID.BombFish);
+				grenadetypes.Add(ItemID.BouncyDynamite);
+				grenadetypes.Add(ItemID.StickyDynamite);
+				grenadetypes.Add(ItemID.Bomb);
+				grenadetypes.Add(ItemID.StickyBomb);
+				grenadetypes.Add(ItemID.BouncyBomb);
+			}
 
 			for (int i = 0; i < 58; i++)
 			{
@@ -44,6 +59,23 @@ namespace SGAmod.Items.Weapons
 			}
 			return -1;
 
+
+		}
+		public static int FindProjectile(int proj,int weapon)
+		{
+			if (proj == ProjectileID.Bone)
+				proj = ProjectileID.BoneGloveProj;
+			if (weapon == ItemID.AleThrowingGlove || proj == ItemID.AleThrowingGlove)
+				proj = ProjectileID.Ale;
+			return proj;
+
+		}
+
+		public static int FindItem(int weapon)
+		{
+			if (weapon == ItemID.Ale)
+				weapon = ItemID.AleThrowingGlove;
+			return weapon;
 
 		}
 
@@ -74,12 +106,12 @@ namespace SGAmod.Items.Weapons
 
 		public override bool CanUseItem(Player player)
 		{
-			return (ThrowerGlove.FindGrenadeToThrow(mod,player)>0);
+			return (ThrowerGlove.FindGrenadeToThrow(mod,player, level) >0);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player);
+			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player, level);
 			//if (player.CountItem(mod.ItemType("AcidGrenade"))>0)
 			//basetype = mod.ItemType("AcidGrenade");
 
@@ -88,19 +120,19 @@ namespace SGAmod.Items.Weapons
 			basespeed.Normalize();
 
 			Item basetype2 = new Item();
-			basetype2.SetDefaults(basetype);
+			basetype2.SetDefaults(FindItem(basetype));
 			float baseumtli = (item.useTime/player.GetModPlayer<SGAPlayer>().ThrowingSpeed) /60f;
 			player.itemAnimation = (int)(basetype2.useAnimation* baseumtli);
 			player.itemAnimationMax = (int)(basetype2.useAnimation* baseumtli);
 			player.itemTime = (int)(basetype2.useTime* baseumtli);
-			type = basetype2.shoot;
+			type = FindProjectile(basetype2.shoot, basetype);
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;
 			speedY = basespeed.Y;
-			if (type!=mod.ProjectileType("CelestialCocktailProj"))
+			//if (type!=mod.ProjectileType("CelestialCocktailProj"))
 			damage += (int)(basetype2.damage * player.thrownDamage);
-			else
-			damage = (int)(basetype2.damage * player.thrownDamage);
+			//else
+			//damage = (int)(basetype2.damage * player.thrownDamage);
 
 			player.ConsumeItem(basetype);
 
@@ -131,8 +163,92 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+	class ThrowerGloveMK2 : ThrowerGlove
+	{
+		public override int level => 1;
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Rioter's Glove");
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, and Bones!\n" + disc);
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.useStyle = 1;
+			item.damage = 5;
+			item.shoot = ModContent.ProjectileType<GrenadeNotAHook2>();
+			item.shootSpeed = 5.5f;
+			item.value = Item.buyPrice(0, 2, 50, 0);
+			item.rare = 4;
+			item.expert = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/MolotovGlove"); }
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
+			recipe.AddIngredient(ItemID.AleThrowingGlove, 1);
+			recipe.AddIngredient(ItemID.BoneGlove, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	class ThrowerGloveDynamite : ThrowerGlove
+	{
+		public override int level => 2;
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Demolitionist's Glove");
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Bombs and Dynamite!\n" + disc);
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.useStyle = 1;
+			item.damage = 4;
+			item.shoot = ModContent.ProjectileType<GrenadeNotAHook3>();
+			item.shootSpeed = 5.5f;
+			item.value = Item.buyPrice(0, 2, 50, 0);
+			item.rare = 4;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/DynamiteGlove"); }
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
+			recipe.AddIngredient(ItemID.Dynamite, 10);
+			recipe.AddIngredient(ItemID.StickyBomb, 20);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 10);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	internal class GrenadeNotAHook : ModProjectile
 	{
+		public virtual int level => 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
@@ -152,7 +268,8 @@ namespace SGAmod.Items.Weapons
 		{
 			Player player = Main.player[projectile.owner];
 			player.GetModPlayer<SGAPlayer>().greandethrowcooldown = 120;
-			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player);
+			ThrowerGlove thrown;
+			int basetype = ThrowerGlove.FindGrenadeToThrow(mod, player, level);
 			//if (player.CountItem(mod.ItemType("AcidGrenade"))>0)
 			//basetype = mod.ItemType("AcidGrenade");
 
@@ -161,9 +278,9 @@ namespace SGAmod.Items.Weapons
 			basespeed.Normalize();
 
 			Item basetype2 = new Item();
-			basetype2.SetDefaults(basetype);
+			basetype2.SetDefaults(ThrowerGlove.FindItem(basetype));
 			player.itemTime = basetype2.useTime;
-			int type = basetype2.shoot;
+			int type = ThrowerGlove.FindProjectile(basetype2.shoot, basetype);
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			int damage = (int)(basetype2.damage * player.thrownDamage);
 
@@ -177,12 +294,52 @@ namespace SGAmod.Items.Weapons
 		// Use this hook for hooks that can have multiple hooks mid-flight: Dual Hook, Web Slinger, Fish Hook, Static Hook, Lunar Hook
 		public override bool? CanUseGrapple(Player player)
 		{
-			return (player.GetModPlayer<SGAPlayer>().greandethrowcooldown<1 && ThrowerGlove.FindGrenadeToThrow(mod, player)>-1);
+			return (player.GetModPlayer<SGAPlayer>().greandethrowcooldown<1 && ThrowerGlove.FindGrenadeToThrow(mod, player, level) >-1);
 		}
 
 	}
 
-		class AcidGrenade : ModItem
+	internal class GrenadeNotAHook2 : GrenadeNotAHook
+	{
+		public override int level => 1;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/AcidGrenade"); }
+		}
+
+	}
+
+	internal class GrenadeNotAHook3 : GrenadeNotAHook
+	{
+		public override int level => 2;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/AcidGrenade"); }
+		}
+
+	}
+
+	class AcidGrenade : ModItem
 	{
 
 		public override void SetStaticDefaults()
@@ -223,7 +380,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class ThermalGrenade : AcidGrenade
+		class ThermalGrenade : AcidGrenade
 	{
 
 		public override void SetStaticDefaults()
@@ -428,7 +585,7 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.MolotovCocktail);
 			item.useStyle = 1;
 			item.thrown = true;
-			item.damage = 55;
+			item.damage = 50;
 			item.useTime = 40;
 			item.useAnimation = 40;
 			item.maxStack = 999;
@@ -518,7 +675,7 @@ namespace SGAmod.Items.Weapons
 
 			int[] projectiletype = { ProjectileID.NebulaBlaze1, ProjectileID.VortexBeaterRocket, ProjectileID.HeatRay, ProjectileID.DD2LightningBugZap };
 			float[] projectiledamage = { 1f, 1f, 2.5f, 0.25f };
-			int[] projectilecount = { 5, 5,10,6 };
+			int[] projectilecount = { 9, 9,12,7 };
 			for (int zz = 0; zz < 4; zz += 1)
 			{
 				for (int i = 0; i < projectilecount[zz]; i += 1)
@@ -527,11 +684,15 @@ namespace SGAmod.Items.Weapons
 					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), projectiletype[zz], (int)((projectile.damage * 1f)* projectiledamage[zz]), projectile.knockBack / 10f, projectile.owner);
 					Main.projectile[proj].thrown = true;
 					Main.projectile[proj].magic = false;
+					Main.projectile[proj].ranged = false;
 					Main.projectile[proj].friendly = true;
 					Main.projectile[proj].velocity = new Vector2(perturbedSpeed.X, perturbedSpeed.Y);
 					Main.projectile[proj].hostile = false;
-					Main.projectile[proj].timeLeft = 300;
-					Main.projectile[proj].penetrate = 4;
+					if (i != 2)
+					{
+						Main.projectile[proj].timeLeft = 300;
+						Main.projectile[proj].penetrate = 4;
+					}
 					if (zz==3)
 					Main.projectile[proj].penetrate = 15;
 					projectile.netUpdate = true;

@@ -55,6 +55,7 @@ namespace SGAmod.Items.Accessories
 			Tile mytile = Framing.GetTileSafely(x_edge, y_bottom_edge);
 
 			ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, hideVisual);
+			player.doubleJumpCloud = false;
 
 			if (mytile.active() || player.velocity.Y==0)
 			{
@@ -100,14 +101,16 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CirnoWings"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
 			recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(ItemID.WingsNebula, 1);
 			recipe.AddIngredient(ItemID.WingsSolar, 1);
 			recipe.AddIngredient(ItemID.WingsStardust, 1);
-			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 30);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 20);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -118,8 +121,8 @@ namespace SGAmod.Items.Accessories
 		{
 			ascentWhenFalling = 0.85f;
 			ascentWhenRising = 0.35f;
-			maxCanAscendMultiplier = 2f;
-			maxAscentMultiplier = 2f;
+			maxCanAscendMultiplier = 1.5f;
+			maxAscentMultiplier = 1.5f;
 			constantAscend = 0.435f;
 		}
 

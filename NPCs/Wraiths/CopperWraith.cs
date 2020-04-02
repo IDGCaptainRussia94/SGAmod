@@ -83,6 +83,18 @@ namespace SGAmod.NPCs.Wraiths
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 		}
+
+		public override bool PreAI()
+		{
+			if (Hellion.Hellion.GetHellion() != null)
+			{
+				if (Hellion.Hellion.GetHellion().npc.ai[1] > 999)
+					npc.ai[0] = 0;
+
+			}
+
+			return true;
+		}
 		public override void AI()
 		{
 		int npctype=mod.NPCType(attachedType);
@@ -273,7 +285,7 @@ namespace SGAmod.NPCs.Wraiths
 		List<Projectile> one = Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),Math.Abs(npc.ai[1])<18 ? ProjectileID.DD2BetsyArrow : (SGAWorld.NightmareHardcore>0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7,12,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
 							one[0].hostile = true;
 							one[0].friendly = false;
-							//one[0].localAI[0] = P.whoAmI;
+							one[0].localAI[0] = P.whoAmI;
 							one[0].netUpdate = true;
 						}
 		npc.spriteDirection=1;
@@ -346,6 +358,7 @@ namespace SGAmod.NPCs.Wraiths
 					if (npc.ai[0] % 180 == 0 && SGAWorld.NightmareHardcore>0)
 					{
 						Vector2 zxx = itt;
+						zxx += P.velocity * 3f;
 						zxx.Normalize();
 						npc.velocity += zxx*18;
 					}
@@ -500,6 +513,7 @@ namespace SGAmod.NPCs.Wraiths
 		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
 		}
 
+		Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
 		if (SGAWorld.downedWraiths<1){SGAWorld.downedWraiths=1;
 		Idglib.Chat("You have regained the knowledge to craft a furnace!",150, 150, 70);
 		}

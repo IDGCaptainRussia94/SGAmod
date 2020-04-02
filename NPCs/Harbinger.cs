@@ -77,6 +77,7 @@ namespace SGAmod.NPCs
 					npc.type = oldtype;
 					NPC myguy = Main.npc[(int)npc.ai[1]];
 					myguy.active = false;
+					Achivements.SGAAchivements.UnlockAchivement("Harbinger", Main.LocalPlayer);
 					if (SGAWorld.downedHarbinger == false)
 					{
 						Idglib.Chat("Your end is nigh...", 15, 15, 150);

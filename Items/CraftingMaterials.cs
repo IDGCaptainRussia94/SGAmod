@@ -96,10 +96,11 @@ namespace SGAmod.HavocGear.Items
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "Biomass", 2);
-			recipe.AddIngredient(null, "MurkyGel",1);
+			recipe.AddIngredient(null, "Biomass", 5);
+			recipe.AddIngredient(null, "MurkyGel",2);
+			recipe.AddIngredient(null, "DecayedMoss", 1);
 			recipe.AddTile(TileID.Furnaces);
-			recipe.SetResult(this, 2);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}
@@ -190,6 +191,30 @@ namespace SGAmod.HavocGear.Items
 			item.rare = 3;
 		}
 	}
+	public class FieryShard : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fiery Shard");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 22;
+			item.height = 22;
+			item.maxStack = 99;
+			item.value = 1000;
+			item.rare = 3;
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
+			item.alpha = 30;
+		}
+
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Orange.ToVector3() * 0.55f * Main.essScale);
+		}
+	}
 }
 
 namespace SGAmod.Items
@@ -211,6 +236,60 @@ namespace SGAmod.Items
 			item.rare = 5;
 		}
 	}
+	public class FrigidShard : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Frigid Shard");
+			Tooltip.SetDefault("Raw essence of ice");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 26;
+			item.height = 14;
+			item.value = 500;
+			item.rare = 1;
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Aqua.ToVector3() * 0.25f);
+		}
+	}	
+	public class Fridgeflame : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fridgeflame");
+			Tooltip.SetDefault("Alloy of hot and cold essences");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 22;
+			item.height = 22;
+			item.maxStack = 99;
+			item.value = 10000;
+			item.rare = 6;
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.White.ToVector3() * 0.65f * Main.essScale);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("FrigidShard"), 1);
+			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 	public class VialofAcid : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -228,6 +307,72 @@ namespace SGAmod.Items
 			item.rare = 2;
 		}
 	}
+	public class OmniSoul : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Omni Soul");
+			Tooltip.SetDefault("'The essence of essences combined'");
+			// ticksperframe, frameCount
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(5, 4));
+			ItemID.Sets.AnimatesAsSoul[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.SoulofSight);
+			item.width = refItem.width;
+			item.height = refItem.height;
+			item.maxStack = 999;
+			item.value = 10000;
+			item.rare = 6;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime/3f)%1f, 0.85f, 0.50f);
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SoulofLight, 1);
+			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(ItemID.SoulofFlight, 1);
+			recipe.AddIngredient(ItemID.SoulofFright, 1);
+			recipe.AddIngredient(ItemID.SoulofMight, 1);
+			recipe.AddIngredient(ItemID.SoulofSight, 1);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}
+
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Main.hslToRgb((Main.GlobalTime / 3f)%1f, 0.85f, 0.80f).ToVector3() * 0.55f * Main.essScale);
+		}
+	}
+	public class Entrophite : ModItem
+	{
+		public override void SetDefaults()
+		{
+			item.value = 5000;
+			item.rare = 7;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 999;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entrophite");
+			Tooltip.SetDefault("Corrupted beyond the veils of life");
+		}
+
+	}
 	public class AdvancedPlating : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -241,7 +386,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 50000;
+			item.value = 1000;
 			item.rare = 2;
 		}
 		public override void AddRecipes()
@@ -251,6 +396,34 @@ namespace SGAmod.Items
 			recipe.AddIngredient(ItemID.Wire, 10);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this,2);
+			recipe.AddRecipe();
+		}
+	}
+	public class ManaBattery : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Mana Battery");
+			Tooltip.SetDefault("Capsulated mana to be used as a form of energy for techno weapons");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 26;
+			item.value = 15000;
+			item.rare = 3;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 2);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 3);
+			recipe.AddIngredient(ItemID.ManaCrystal, 1);
+			recipe.AddIngredient(ItemID.RecallPotion, 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 	}
@@ -305,7 +478,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eldritch Tentacle");
-			Tooltip.SetDefault("Remains of an eldritch deity\nMy be used alongside fragments to craft all of Moonlord's drops");
+			Tooltip.SetDefault("Remains of an eldritch deity\nMay be used alongside fragments to craft all of Moonlord's drops");
 		}
 
 		public override void SetDefaults()
@@ -553,7 +726,7 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(mod.ItemType("WraithFragment"), 2);
 			recipe.AddIngredient(ItemID.TinOre, 4);
 			recipe.AddTile(TileID.Hellforge);
-			recipe.SetResult(this);
+			recipe.SetResult(this,2);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
@@ -648,6 +821,47 @@ public class LunarRoyalGel : ModItem
 
 	}
 	}
+	public class MoneySign : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Raw Avarice");
+			Tooltip.SetDefault("'pure greed'");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 14;
+			item.height = 14;
+			item.value = 100000;
+			item.rare = 10;
+		}
+	}
+
+	public class ByteSoul : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Soul of Byte");
+			Tooltip.SetDefault("'remains of the Hellion Core'");
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+Main.rand.Next(0,2000)); }
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb(Main.rand.NextFloat(0f, 1f), 0.75f, 0.65f);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 14;
+			item.height = 14;
+			item.value = 10000;
+			item.rare = 10;
+		}
+	}
 
 	public class PrismalBar: ModItem
 	{
@@ -712,14 +926,10 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(mod.ItemType("UnmanedOre"), 15);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 1);
-			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
-			recipe.AddIngredient(mod.ItemType("IceFairyDust"), 1);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 3);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 2);
 			recipe.AddIngredient(ItemID.CrystalShard, 3);
-			recipe.AddIngredient(ItemID.SoulofLight, 1);
-			recipe.AddIngredient(ItemID.SoulofNight, 1);
-			recipe.AddIngredient(ItemID.SoulofFright, 1);
-			recipe.AddIngredient(ItemID.SoulofSight, 1);
-			recipe.AddIngredient(ItemID.SoulofMight, 1);
+			recipe.AddIngredient(ItemID.BeetleHusk, 1);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
 			recipe.SetResult(this, 15);
 			recipe.AddRecipe();
@@ -743,6 +953,61 @@ public class LunarRoyalGel : ModItem
 				item.rare = 2;
 			}
 		}
+
+	public class EntropyTransmuter : ModItem
+	{
+		public override void SetDefaults()
+		{
+			item.value = 0;
+			item.rare = 7;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 1;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "entropy", "Entropy Collected: "+Main.LocalPlayer.GetModPlayer<SGAPlayer>().entropycollected+"/100000"));
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entropy Transmuter");
+			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
+		}
+
+	}
+
+	public class EALogo : ModItem
+	{
+
+		public override void SetDefaults()
+		{
+			item.value = 1000000;
+			item.rare = 9;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 1;
+			item.expert = true;
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			player.GetModPlayer<SGAPlayer>().EALogo = true;
+			if (player.taxMoney >= Item.buyPrice(0, 10, 0, 0))
+			{
+				player.taxMoney = 0;
+				player.QuickSpawnItem(ItemID.GoldCoin,10);
+			}
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("EA Logo");
+			Tooltip.SetDefault("While in your inventory: you can reforge unique prefixes for accessories that let you charge maximum mirco-transactions against your town NPCs\nYou automatically collect taxes while you have a Tax Collector\nPress the 'Collect Taxes' hotkey to collect a gold coin from your tax collector's purse\n'EA! It's NOT in the game, that's DLC!'");
+		}
+
+	}
 
 }
 

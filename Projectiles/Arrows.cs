@@ -17,6 +17,7 @@ namespace SGAmod.Projectiles
 		protected double keepspeed = 0.0;
 		protected virtual float homing => 0.03f;
 		protected virtual float homingdist => 400f;
+		protected virtual float maxhoming => 250f;
 		public Player P;
 		public override void SetStaticDefaults()
 		{
@@ -32,7 +33,7 @@ namespace SGAmod.Projectiles
 			}
 		}
 
-		public virtual float gravity
+		protected virtual float gravity
 		{
 			get
 			{
@@ -115,7 +116,7 @@ namespace SGAmod.Projectiles
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
 
-			if (projectile.ai[0] < (beginhoming) || projectile.hostile)
+			if (projectile.ai[0] < (beginhoming) && !projectile.hostile)
 			{
 				projectile.localAI[0] = -1;
 				return;
@@ -149,7 +150,7 @@ namespace SGAmod.Projectiles
 				{
 				if ((target.Center - projectile.Center).Length() < homingdist)
 				{
-					if (projectile.ai[0] < (250f))
+					if (projectile.ai[0] < (maxhoming))
 					{
 						projectile.velocity = projectile.velocity + (projectile.DirectionTo(target.Center) * ((float)previousspeed * homing));
 						projectile.velocity.Normalize();
@@ -550,7 +551,7 @@ namespace SGAmod.Projectiles
 		}
 
 		public override float beginhoming => 99990f;
-		public override float gravity => 0.025f;
+		protected override float gravity => 0.025f;
 
 		public override void SetDefaults()
 		{

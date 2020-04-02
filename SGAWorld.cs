@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.ID;
@@ -15,6 +16,7 @@ using Terraria.Graphics.Effects;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 using SGAmod.Tiles;
+using SGAmod.NPCs.Hellion;
 using Idglibrary;
 
 namespace SGAmod
@@ -30,9 +32,11 @@ namespace SGAmod
         public static bool downedHarbinger = false;
         public static bool downedSpiderQueen = false;
         public static bool downedCratrosity = false;
+        public static bool downedCratrosityPML = false;
         public static bool downedSharkvern = false;
         public static bool downedCirno = false;
         public static int downedMurk = 0;
+        public static int downedHellion = 0;
         public static int downedCaliburnGuardians = 0;
         public static int downedCaliburnGuardiansPoints = 0;
         public static int[] CaliburnAlterCoordsX = {0,0,0};
@@ -47,6 +51,7 @@ namespace SGAmod
         public static int tf2questcounter = 0;
         public static int[] questvars = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static bool WorldIsTin = false;
+        public static bool updatelasers = false;
 
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
@@ -128,10 +133,29 @@ namespace SGAmod
             }
         }
 
+        public static void AdvanceHellionStory()
+        {
+            if (!Main.expertMode)
+                return;
+            if (questvars[10] < 2400 && questvars[10]>2299)
+            {
+                questvars[10] = 2401;
+                return;
+            }
+            if (questvars[10] > 999 && questvars[10] < 1100)
+            {
+                questvars[10] = 1101;
+                return;
+            }
+            if (questvars[10] < 1)
+                questvars[10] = 101;
+
+
+        }
 
         public override void PostUpdate()
         {
-        if (Main.netMode<1)
+        if ((Main.netMode< 1 || Main.myPlayer==0) && Main.expertMode)
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true) ;
@@ -163,6 +187,67 @@ namespace SGAmod
                     SGAmod.CalamityNoRevengenceNoDeathNoU();
                     NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
                 } }
+
+            questvars[11] = Math.Max(questvars[11] - 1, 0);
+            if (questvars[10]>100 && questvars[10] < 1000)
+            {
+                questvars[10] += 1;
+                questvars[11] = 120;
+                Hellion hellinstance = new Hellion();
+                if (questvars[10] == 250)
+                    hellinstance.HellionTaunt("...");
+                if (questvars[10] == 400)
+                    hellinstance.HellionTaunt("I see...");
+                if (questvars[10] == 600)
+                    hellinstance.HellionTaunt("A new challenger rises...");
+                if (questvars[10] == 800)
+                    hellinstance.HellionTaunt("Curious...");
+            }
+
+            if (questvars[10] > 1100 && questvars[10] < 2300)
+            {
+                questvars[10] += 1;
+                questvars[11] = 120;
+                Hellion hellinstance = new Hellion();
+                if (questvars[10] == 1200)
+                    hellinstance.HellionTaunt("Another emmessary...");
+                if (questvars[10] == 1400)
+                    hellinstance.HellionTaunt("Fallen. hmp...?");
+                if (questvars[10] == 1600)
+                    hellinstance.HellionTaunt("The dragon?");
+                if (questvars[10] == 1800)
+                    hellinstance.HellionTaunt("'Planets.System.FindDraken'");
+                if (questvars[10] == 2000)
+                    hellinstance.HellionTaunt("Who is this who is slaying my emissaries?");
+                if (questvars[10] == 2200)
+                    hellinstance.HellionTaunt("No matter... We'll be meeting soon enough...");
+            }
+
+            if (questvars[10] > 2400 && questvars[10] < 3750)
+            {
+                questvars[10] += 1;
+                questvars[11] = 120;
+                Hellion hellinstance = new Hellion();
+                if (questvars[10] == 2400)
+                    hellinstance.HellionTaunt("There is no mistake");
+                if (questvars[10] == 2600)
+                    hellinstance.HellionTaunt("the failures found the dragon");
+                if (questvars[10] == 2800)
+                    hellinstance.HellionTaunt("You there, human");
+                if (questvars[10] == 3000)
+                    hellinstance.HellionTaunt("Hand over the dragon, and I'll spare your world");
+                if (questvars[10] == 3200)
+                    hellinstance.HellionTaunt("After all, we're old acquaintances");
+                if (questvars[10] == 3400)
+                    hellinstance.HellionTaunt("And thanks to the incompetence of my minions, my mission will finally be complete");
+                if (questvars[10] == 3600)
+                    hellinstance.HellionTaunt("I'm sure your dragon will have something to say about this");
+                if (questvars[10] == 3700)
+                {
+                    Main.PlaySound(29, -1, -1, 105, 1f, -0.6f);
+                    hellinstance.HellionTaunt("I'll be waiting...");
+                }
+            }
 
             if (stolecrafting == -400)
                 Idglib.Chat("Bet you were expecting him to drop an Ancient Manipulator huh?", 25, 25, 80);
@@ -227,11 +312,13 @@ namespace SGAmod
             tag["downedHarbinger"] = downedHarbinger;
             tag["downedMurk"] = downedMurklegacy;
             tag["downedMurk2"] = downedMurk;
-            tag["downedWraiths"] = downedWraiths;
+            tag["downedHellion"] = downedHellion;
+           tag["downedWraiths"] = downedWraiths;
             tag["tf2quest"] = tf2quest;
             tag["bossprgressor"] = bossprgressor;
             tag["GennedVirulent"] = GennedVirulent; 
             tag["downedSpiderQueen"] = downedSpiderQueen; 
+            tag["downedCratrosityPML"] = downedCratrosityPML; 
             tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
             tag["downedCaliburnGuardiansPoints"] = downedCaliburnGuardiansPoints;
             int x = 0;
@@ -274,7 +361,9 @@ namespace SGAmod
             downedHarbinger = tag.GetBool("downedHarbinger");
             downedMurklegacy = tag.GetBool("downedMurk");
             downedMurk = tag.GetInt("downedMurk2");
+            downedHellion = tag.GetInt("downedHellion");
             downedSpiderQueen = tag.GetBool("downedSpiderQueen");
+            downedCratrosityPML = tag.GetBool("downedCratrosityPML");
             downedCaliburnGuardians = tag.GetInt("downedCaliburnGuardians");
             downedCaliburnGuardiansPoints = tag.GetInt("downedCaliburnGuardiansPoints");
             if (tag.ContainsKey("downedWraiths")) { downedWraiths = tag.GetInt("downedWraiths"); }
@@ -311,14 +400,16 @@ namespace SGAmod
             writer.Write(overalldamagedone);
             writer.Write(downedWraiths);
             writer.Write(downedMurk);
+            writer.Write(downedHellion);
             writer.Write(downedCaliburnGuardians);
             writer.Write(downedCaliburnGuardiansPoints);
             writer.Write(tf2quest);
             writer.Write(bossprgressor);
             writer.Write(tf2cratedrops);
             writer.Write(modtimer);
+            writer.Write(NightmareHardcore);
             //writer.Write(NightmareHardcore);
-             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen;
+             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML;
             writer.Write(flags2);
             int x = 0;
 
@@ -345,14 +436,16 @@ namespace SGAmod
             overalldamagedone = reader.ReadInt32();
             downedWraiths = reader.ReadInt32();
             downedMurk = reader.ReadInt32();
+            downedHellion = reader.ReadInt32();
             downedCaliburnGuardians = reader.ReadInt32();
             downedCaliburnGuardiansPoints = reader.ReadInt32();
             tf2quest = reader.ReadInt32();
             bossprgressor = reader.ReadInt32();
             tf2cratedrops = reader.ReadBoolean();
             modtimer = reader.ReadInt32();
+            NightmareHardcore = reader.ReadInt16();
             //NightmareHardcore = reader.ReadInt32();
-            BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0];
+            BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0]; downedCratrosityPML = flags2[0];
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
@@ -428,11 +521,19 @@ namespace SGAmod
                 int geny = WorldGen.genRand.Next((int)0, (int)Main.rockLayer + 150);
                  Tile tile = Framing.GetTileSafely(genx, geny);
                 int chance = 0;
+                int[] size = { 3, 8 };
                 int tiletype = TileType<UnmanedOreTile>();
-                if (tile.active() && (tile.type == TileID.Dirt || tile.type == TileID.Stone))
+                if (tile.active() && (tile.type == TileID.Dirt || tile.type == TileID.Stone || tile.type == TileID.RainCloud || tile.type == TileID.Cloud))
                 {
                     chance = 2;
-                        if (tile.active() && (geny < WorldGen.worldSurfaceLow || (WorldGen.genRand.Next(0, 1000) < 2)))
+                    if (tile.active() && tile.type == TileID.RainCloud || tile.type == TileID.Cloud)
+                    {
+                        chance = 5;
+                        tiletype = TileType<Biomass>();
+                        size[0] = 2;
+                        size[1] = 5;
+                    }
+                    if (tile.active() && (geny < WorldGen.worldSurfaceLow || (WorldGen.genRand.Next(0, 1000) < 2)))
                         {
                             chance = 100;
                             tiletype=TileType<Biomass>();
@@ -440,7 +541,7 @@ namespace SGAmod
                 }
 
                 if (WorldGen.genRand.Next(0,100)<chance)
-                WorldGen.TileRunner(genx, geny, (double)WorldGen.genRand.Next(3, 8), WorldGen.genRand.Next(5, 16), tiletype, false, 0f, 0f, false, true);
+                IDGWorldGen.TileRunner(genx, geny, (double)WorldGen.genRand.Next(size[0], size[1]), WorldGen.genRand.Next(5, 16), tiletype, false, 0f, 0f, false, true);
             }
         }
 
@@ -461,7 +562,7 @@ namespace SGAmod
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            SGAPlayer modPlayer = Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>();
+            //SGAPlayer modPlayer = Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>();
             MoistStonecount = tileCounts[mod.TileType("MoistStone")];
         }
 
@@ -504,13 +605,45 @@ namespace SGAmod
             {
                 Idglibrary.Idglib.nightmaremode = NightmareHardcore;
             }
+            Hellion.HellionManager();
+
+
+
+            int width = 32; int height = 256;
+            SGAmod.hellionLaserTex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+            Color[] dataColors = new Color[width * height];
+
+            Color lerptocolor = Color.Red;
+            //if (projectile.ai[1] < 100)
+            //    lerptocolor = Color.Green;
+            float scroll = (float)SGAWorld.modtimer;
+
+            ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
+
+            if (SGAWorld.updatelasers) {
+
+                if (SGAmod.hellionLaserTex != null)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x += 1)
+                        {
+                            dataColors[(int)x + y * width] = Color.Lerp(Main.hslToRgb(((float)Math.Sin((x + scroll) * (width / (float)Math.PI)) * (1f)) % 1f, 0.75f, 0.5f), lerptocolor, 0.5f);
+                        }
+
+                    }
+                }
+                SGAWorld.updatelasers = false;
+
+                SGAmod.hellionLaserTex.SetData(dataColors);
+            }
+
             /*if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
             {
                 Overlays.Scene["SGAmod:CirnoBlizzard"].Deactivate();
                 Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
             }*/
         }
-
         public override void PostWorldGen()
         {
             oretypesprehardmode[0]= WorldGen.CopperTierOre;
@@ -542,7 +675,7 @@ namespace SGAmod
 
             for (int i = 1; i < 3; i++)
             {
-                int[] itemsToPlaceInOvergrownChestsSecond = new int[] {mod.ItemType("DragonsMightPotion"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss") };
+                int[] itemsToPlaceInOvergrownChestsSecond = new int[] {mod.ItemType("DragonsMightPotion"), mod.ItemType("TimePotion"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("Biomass"), mod.ItemType("Biomass") };
                 int itemsToPlaceInOvergrownChestsChoiceSecond = 0;
                 for (int chestIndex = 0; chestIndex < 1000; chestIndex++)
                 {

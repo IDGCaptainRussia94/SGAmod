@@ -85,46 +85,6 @@ namespace SGAmod.NPCs.Cratrosity
 
 	}
 
-		public class CratrosityCrateOfSlowing: CratrosityCrate
-	{
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Crate Of Slowing");
-			Main.npcFrameCount[npc.type] = 1;
-		}
-
-
-		public override void NPCLoot()
-		{
-		return;
-		}
-
-		public override string Texture
-		{
-			get { return "Terraria/Buff_" + BuffID.Slow; }
-		}
-
-
-		public override void AI()
-		{
-		base.AI();
-		int npctype=mod.NPCType("Cratrogeddon");
-		if (NPC.CountNPCS(npctype)>0){
-		NPC myowner=Main.npc[NPC.FindFirstNPC(npctype)];
-		npc.ai[0]+=Main.rand.Next(0,4);
-		npc.velocity=npc.velocity*0.95f;
-		if (myowner.ai[0]%350>250){npc.velocity=npc.velocity*0.45f;}
-		if (myowner.ai[0]%350==300){
-		Player P = Main.player[myowner.target];
-		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PlatinumCoin,70,8,0,1,true,0,false,220);
-		itz[0].aiStyle=5;
-		}}
-
-	}
-
-	}
-
 	public class CratrosityCrate3207: CratrosityCrate
 	{
 		public override string Texture
@@ -158,6 +118,11 @@ namespace SGAmod.NPCs.Cratrosity
 	int spawnedint=NPC.NewNPC((int)npc.Center.X,(int)npc.Center.Y, mod.NPCType("Cratrosity"));
 	NPC spawned=Main.npc[spawnedint];
 spawned.ai[3]=100001;
+			if (NPC.CountNPCS(mod.NPCType("Cratrogeddon")) > 0)
+			{
+				(spawned.modNPC as Cratrosity).offsetype = new Vector2(-700, 0);
+				spawned.GivenName = "Crates of Light";
+			}
 npc.active=false;
 	}
 
@@ -170,8 +135,13 @@ npc.active=false;
 	int spawnedint=NPC.NewNPC((int)npc.Center.X,(int)npc.Center.Y, mod.NPCType("Cratrosity"));
 	NPC spawned=Main.npc[spawnedint];
 spawned.ai[3]=-100001;
-npc.active=false;
-	}
+			if (NPC.CountNPCS(mod.NPCType("Cratrogeddon")) > 0)
+			{
+				(spawned.modNPC as Cratrosity).offsetype = new Vector2(700, 0);
+				spawned.GivenName = "Crates of Night";
+			}
+			npc.active = false;
+		}
 
 	}
 

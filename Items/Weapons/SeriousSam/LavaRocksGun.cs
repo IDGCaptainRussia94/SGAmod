@@ -45,6 +45,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 15);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 2);
+			recipe.AddIngredient(mod.ItemType("ManaBattery"), 3);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 5);
 			recipe.AddIngredient(ItemID.JackOLanternLauncher, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);

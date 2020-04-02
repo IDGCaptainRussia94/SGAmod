@@ -19,6 +19,7 @@ namespace SGAmod.NPCs.Wraiths
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
 		public float appear = 0.5f;
+		public int nohit = 0;
 
 		public virtual void trailingeffect()
 		{
@@ -111,8 +112,8 @@ namespace SGAmod.NPCs.Wraiths
 				npc.ai[3] = 1;
 				npc.lifeMax = 2000;
 				npc.value = 40000f;
-				npc.damage = 25;
-				npc.defDamage = 25;
+				npc.damage = 20;
+				npc.defDamage = 20;
 				npc.defense = 7;
 			}
 			if (SGAWorld.downedCaliburnGuardians == 2)
@@ -132,6 +133,7 @@ namespace SGAmod.NPCs.Wraiths
 				SGAWorld.downedCaliburnGuardians += 1;
 				SGAWorld.downedCaliburnGuardiansPoints += 1;
 			}
+			Achivements.SGAAchivements.UnlockAchivement("Caliburn", Main.LocalPlayer);
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -239,6 +241,7 @@ namespace SGAmod.NPCs.Wraiths
 			appear = Math.Max(appear - 0.03f, appear);
 			trailingeffect();
 			npc.knockBackResist = 0.85f;
+			nohit += 1;
 
 			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
@@ -253,14 +256,20 @@ namespace SGAmod.NPCs.Wraiths
 			else
 			{
 				npc.dontTakeDamage = P.GetModPlayer<SGAPlayer>().DankShrineZone != true;
-			starthere:
 					if (npc.ai[1] < 1)
 					{
 						npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
 						npc.ai[0] += 1;
 					}
 
+				float floattime = (90 - (npc.ai[3] * 10));
+
 				Vector2 theside = new Vector2(P.Center.X - npc.Center.X > 0 ? -200 : 200, 0);
+				if (npc.ai[0] % 600 < 280 && !(npc.ai[0] % 1150 > 700))
+				{
+					theside = new Vector2(P.Center.X - npc.Center.X > 0 ? -120 : 120, 0);
+					theside *= 0.5f + (float)Math.Cos(-npc.ai[0] / (floattime / 4f)) * 0.20f;
+				}
 
 				Vector2 itt = ((P.Center + theside) - npc.Center);
 				float locspeed = 0.25f;
@@ -280,6 +289,7 @@ namespace SGAmod.NPCs.Wraiths
 
 					if (npc.ai[0] % 600 > 350)
 					{
+						nohit = -10;
 						if (Main.expertMode)
 						npc.knockBackResist = 0f;
 						npc.damage = (int)npc.defDamage * 3;
@@ -289,9 +299,9 @@ namespace SGAmod.NPCs.Wraiths
 						if (npc.ai[0] % (70) == 0)
 						{
 							if (npc.ai[3]>0)
-							Idglib.Shattershots(npc.Center, npc.Center-npc.velocity*26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 20, npc.ai[3] * 8f, npc.ai[3] * 60, 8 + (int)npc.ai[3]*8, true, 0, false, 200);
+							Idglib.Shattershots(npc.Center, npc.Center-npc.velocity*26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 10, npc.ai[3] * 8f, npc.ai[3] * 60, 8 + (int)npc.ai[3]*8, true, 0, false, 200);
 							if (npc.ai[3] > 0)
-							Idglib.Shattershots(npc.Center, npc.Center + npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.EnchantedBeam, 50, 6f, 30, (int)npc.ai[3], true, 0, false, 200);
+							Idglib.Shattershots(npc.Center, npc.Center + npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.EnchantedBeam, 20, 6f, 30, (int)npc.ai[3], true, 0, false, 200);
 
 							npc.velocity = npc.velocity * 0.96f;
 							npc.velocity = npc.velocity + (itt * locspeed);
@@ -337,6 +347,11 @@ namespace SGAmod.NPCs.Wraiths
 
 			}
 
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return nohit<1;
 		}
 
 		public override void OnHitPlayer(Player player, int damage, bool crit)

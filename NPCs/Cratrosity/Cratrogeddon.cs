@@ -26,6 +26,37 @@ namespace SGAmod.NPCs.Cratrosity
 		{
 			DisplayName.SetDefault("Cratrogeddon");
 			Main.npcFrameCount[npc.type] = 1;
+			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
+		}
+
+		public override void BossLoot(ref string name, ref int potionType)
+		{
+			potionType = ItemID.SuperHealingPotion;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			npc.damage = 70;
+			npc.defense = 40;
+			npc.lifeMax = 40000;
+			npc.value = Item.buyPrice(10, 0, 0, 0);
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
+			animationType = 0;
+			npc.noTileCollide = true;
+			npc.noGravity = true;
+		}
+
+		public override void NPCLoot()
+		{
+			if (Main.expertMode)
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKeyUber"));
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MoneySign"), Main.rand.Next(15, Main.expertMode ? 35 : 25));
+			if (SGAWorld.downedCratrosityPML == false)
+			{
+				SGAWorld.AdvanceHellionStory();
+			}
+			SGAWorld.downedCratrosityPML = true;
 		}
 
 
@@ -59,7 +90,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		}
 
 		if (a==1 && pmlphasetimer%200<40 && pmlphasetimer<2200 && pmlphasetimer>1200 && pmlphasetimer%20==i){
-		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)8,0,1,true,0,false,150);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)12,0,1,true,0,false,300);
 		}
 
 		if (a==2 && pmlphasetimer%180==i*10 && pmlphasetimer>2200 && pmlphasetimer<2800){
@@ -86,26 +117,34 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		pmlphasetimer=1100;
 		if (pmlphase==2){pmlphasetimer=3000;}
 		Idglib.Chat("Impressive, but not good enough",144, 79, 16);
-		int spawnedint=NPC.NewNPC((int)npc.Center.X,(int)npc.Center.Y, summons[0]); summons.RemoveAt(0);
-		NPC him=Main.npc[spawnedint];
-		him.life=(int)(npc.life*0.75f);
-		him.lifeMax=(int)(npc.lifeMax*0.75f);
-		}
-
-
-		public override void SetDefaults()
-		{
-			base.SetDefaults();
-			npc.damage = 70;
-			npc.defense = 40;
-			npc.lifeMax = 15000;
-			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
-			animationType = 0;
-			npc.noTileCollide = true;
-			npc.noGravity = true;
-			summons.Insert(summons.Count,mod.NPCType("CratrosityCrateOfSlowing"));
-			summons.Insert(summons.Count,mod.NPCType("CratrosityCrateOfSlowing"));
-			summons.Insert(summons.Count,mod.NPCType("CratrosityCrateOfSlowing"));
+			if (pmlphase == 1)
+			{
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfSlowing"));
+			}
+			if (pmlphase == 2)
+			{
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfSlowing"));
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfPoisoned"));
+			}
+			if (pmlphase == 3)
+			{
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfWitheredArmor"));
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfWitheredWeapon"));
+			}
+			if (pmlphase > 3)
+			{
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfPoisoned"));
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfSlowing"));
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfWitheredArmor"));
+				summons.Insert(0, mod.NPCType("CratrosityCrateOfWitheredWeapon"));
+			}
+			for (int ii = 0; ii < summons.Count; ii += 1)
+			{
+				int spawnedint = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, summons[0]); summons.RemoveAt(0);
+				NPC him = Main.npc[spawnedint];
+				him.life = (int)(npc.life * 0.75f);
+				him.lifeMax = (int)(npc.lifeMax * 0.75f);
+			}
 		}
 
 		public override void AI()
@@ -148,19 +187,171 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		npc.Opacity+=(0.1f-npc.Opacity)/30f;
 	}
 
+				//phase 3
+				if (pmlphase==3){
+					npc.ai[0] = 0;
+
+					if (pmlphasetimer > 1000)
+					{
+						int spawnedint = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("CratrosityNight"));
+						spawnedint = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("CratrosityLight"));
+						pmlphasetimer = 105;
+						Idglib.Chat("Give in to Temptation!", 144, 79, 16);
+					}
+
+					if (NPC.CountNPCS(mod.NPCType("Cratrosity"))>0)
+					{
+					pmlphasetimer = 100;
 
 
+					}
 
-		}else{
+							npc.dontTakeDamage=true;
+		base.OrderOfTheCrates(P);
+		npc.velocity=(npc.velocity*0.77f);
+		Vector2 it=new Vector2(P.Center.X-npc.Center.X,P.Center.Y-npc.Center.Y);
+		it.Normalize();
+		npc.velocity+=it*0.3f;
+		npc.Opacity+=(0.1f-npc.Opacity)/30f;
+
+
+	}
+
+				//phase 4
+				if (pmlphase > 3)
+				{
+					npc.velocity /= 1.5f;
+					if (pmlphasetimer > 1000)
+					{
+						pmlphasetimer = 100;
+					}
+
+				}
+
+
+			}
+			else{
 		npc.rotation=npc.rotation*0.85f;
+		npc.Opacity += (1f - npc.Opacity) / 30f;
 		base.AI();
 		}
+
+
+			if (phase < 1)
+			{
+				int val;
+				val = (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.WoodenCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.IronCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.GoldenCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.DungeonFishingCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.JungleFishingCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + evilcratetype.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.HallowedFishingCrate.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.FloatingIslandFishingCrate.ToString())));
+				val += NPC.CountNPCS(mod.NPCType("CratrosityCrateOfWitheredWeapon")) +
+					NPC.CountNPCS(mod.NPCType("CratrosityCrateOfWitheredArmor")) +
+					NPC.CountNPCS(mod.NPCType("CratrosityCrateOfPoisoned")) +
+					NPC.CountNPCS(mod.NPCType("CratrosityCrateOfSlowing"));
+				if (val > 0)
+					npc.dontTakeDamage = true;
+			}
+
+
 
 		}
 	
 
+
 	}
 
+
+	public class CratrosityCrateOfWitheredWeapon : CratrosityCrateOfSlowing
+	{
+		protected override int BuffType => BuffID.WitheredWeapon;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Crate Of Withered Weapon");
+			Main.npcFrameCount[npc.type] = 1;
+		}
+	}
+	public class CratrosityCrateOfWitheredArmor : CratrosityCrateOfSlowing
+	{
+		protected override int BuffType => BuffID.WitheredArmor;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Crate Of Withered Armor");
+			Main.npcFrameCount[npc.type] = 1;
+		}
+	}
+
+	public class CratrosityCrateOfPoisoned : CratrosityCrateOfSlowing
+	{
+		protected override int BuffType => BuffID.Venom;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Crate Of Venom");
+			Main.npcFrameCount[npc.type] = 1;
+		}
+	}
+
+	public class CratrosityCrateOfSlowing : CratrosityCrate
+	{
+		protected virtual int BuffType => BuffID.Slow;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Crate Of Slowing");
+			Main.npcFrameCount[npc.type] = 1;
+		}
+
+
+		public override void NPCLoot()
+		{
+			return;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Buff_" + BuffType; }
+		}
+
+
+		public override void AI()
+		{
+			base.AI();
+			int npctype = mod.NPCType("Cratrogeddon");
+			if (NPC.CountNPCS(npctype) > 0)
+			{
+
+				for (int i = 0; i <= Main.maxPlayers; i++)
+				{
+					Player thatplayer = Main.player[i];
+					if (thatplayer.active && !thatplayer.dead)
+					{
+					thatplayer.AddBuff(BuffType, 2);
+					}
+				}
+
+				NPC myowner = Main.npc[NPC.FindFirstNPC(npctype)];
+				npc.ai[0] += Main.rand.Next(0, 4);
+				npc.netUpdate = true;
+				npc.velocity = npc.velocity * 0.95f;
+				if (myowner.ai[0] % 350 > 250) { npc.velocity = npc.velocity * 0.45f; }
+				if (myowner.ai[0] % 150 == 140)
+				{
+					Player P = Main.player[myowner.target];
+					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.PlatinumCoin, 70, 8, 0, 1, true, 0, false, 220);
+					itz[0].aiStyle = 5;
+				}
+			}
+			else
+			{
+				npc.active = false;
+
+			}
+
+		}
+
+	}
 
 
 }

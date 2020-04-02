@@ -214,7 +214,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("TF2EmblemCommando"), 1);
 			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
 			recipe.AddIngredient(ItemID.CrystalBall, 1);
-			recipe.AddIngredient(ItemID.LifeFruit, 5);
+			recipe.AddIngredient(ItemID.LifeCrystal, 5);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -261,8 +261,10 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemAssassin"), 1);
 			recipe.AddIngredient(ItemID.MagicCuffs, 1);
-			recipe.AddIngredient(ItemID.LifeCrystal, 5);
+			recipe.AddIngredient(ItemID.ManaCrystal, 3);
+			recipe.AddIngredient(ItemID.LifeFruit, 5);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 10);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

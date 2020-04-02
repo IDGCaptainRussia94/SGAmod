@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.Generation;
+using SGAmod;
 
 namespace SGAmod.Items.Consumable
 {
@@ -35,17 +36,21 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "IceFairyDust",2);
-			recipe.AddIngredient(null, "FieryShard", 2);
-			recipe.AddIngredient(null, "MurkyGel", 5);
+			recipe.AddIngredient(ItemID.RestorationPotion,2);
 			recipe.AddIngredient(ItemID.BottledHoney);
+			recipe.AddIngredient(null, "OmniSoul", 2);
+			recipe.AddIngredient(null, "Fridgeflame", 2);
+			recipe.AddIngredient(null, "MurkyGel", 4);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 20);
 			recipe.AddTile(TileID.AlchemyTable);
-			recipe.SetResult(this);
+			recipe.SetResult(this,2);
 			recipe.AddRecipe();
 		}
 
 		public override void OnConsumeItem(Player player)
 		{
+			//RippleBoom.MakeShockwave(player.Center,8f,1f,10f,60,1f);
+			//Achivements.SGAAchivements.UnlockAchivement("TPD", Main.LocalPlayer);
 			//SGAmod.FileTest();
 			//NormalWorldGeneration.PlaceCaiburnShrine(player.Center / 16f);
 			//WorldGen.placeTrap((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)+1, 0);

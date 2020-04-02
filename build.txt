@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
-version = 2.30
-displayName = [i:2730][i:2718][i:2712]mod - [i:3368] [c/c0e9eb:Caliburn's Gifts] [i:3725]
+version = 2.401
+displayName = [i:2730][i:2718][i:2712]mod - [i:3040] [c/C54D0D:Hellion's Wraith] [i:3725]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true
 hideCode = false
@@ -8,4 +8,4 @@ homepage = https://forums.terraria.org/index.php?threads/wip-sgamod.78876/
 hideResources = false
 includeSource = true
 modReferences = Idglibrary
-weakReferences = CalamityMod@1.4.2.101
+weakReferences = CalamityMod@1.4.2.101,WebmilioCommons

@@ -20,6 +20,7 @@ using SGAmod.NPCs.Cratrosity;
 using SGAmod.NPCs.Murk;
 using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
+using SGAmod.NPCs.Hellion;
 using CalamityMod;
 
 namespace SGAmod
@@ -28,6 +29,7 @@ namespace SGAmod
 	public class SGAPlayer : ModPlayer
 	{
 
+		public int myammo = 0;
 		public int beefield = 0;
 		public float mspeed = 1f;
 		public int beefieldtoggle = 0;
@@ -38,10 +40,11 @@ namespace SGAmod
 		public bool NoFly = false;
 		public bool Pressured = false;
 		public bool MassiveBleeding = false;
+		public bool ELS = false;
 		public bool ActionCooldown = false;
 		public bool thermalblaze = false; public bool acidburn = false;
 		public bool LifeFlower = false; public bool GeyserInABottle=false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
-		public bool Matrix = false; public bool BoosterMagnet = false;
+		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false;
 		public int EnhancingCharm = 0;
 		public int FieryheartBuff = 0;
 		public int creeperexplosion = 0;
@@ -49,7 +52,9 @@ namespace SGAmod
 		private Projectile[] projectileslunarslime = new Projectile[15];
 
 		public bool lunarSlimeHeart = false;
+		public int lunarSlimeHeartdamage = 1;
 		public int lunarSlimeCounter = 0;
+		public bool SunderedDefense=false;
 
 		public bool Lockedin = false;
 		public bool CirnoWings = false;
@@ -70,7 +75,7 @@ namespace SGAmod
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
 		public bool modcheckdelay = false;
-		public bool gottf2 = false;
+		public bool gottf2 = false; public bool gothellion = false;
 		public int floatyeffect = 0;
 		public int PrismalShots = 0;
 		public int devpower = 0;
@@ -87,6 +92,19 @@ namespace SGAmod
 		public bool nightmareplayer = false;
 		public bool playercreated = false;
 		public bool granteditems = false;
+		public float techdamage = 1f;
+		public double[] apocalypticalChance = {0,0,0,0};
+		public float apocalypticalStrength = 1f;
+		public int entropycollected = 0;
+		public float greedyperc = 0f;
+		public float lifestealentropy = 0f;
+		public int maxblink = 0;
+		public bool EALogo = false;
+		public bool demonsteppers = false;
+		public bool FridgeflameCanister = false;
+		public bool IceFire = false;
+		public int playertimer = 0;
+		public bool BIP = false;
 
 		public List<int> ExpertisePointsFromBosses;
 		public List<string> ExpertisePointsFromBossesModded;
@@ -121,6 +139,32 @@ namespace SGAmod
 				return false;
 
 			}
+		}
+
+		public void AddEntropy(int ammount)
+		{
+			entropycollected += ammount;
+			while (entropycollected > 100000)
+			{
+				entropycollected -= 100000;
+				for (int fgf = 0; fgf < 20; fgf += 1)
+				{
+					int type = -1;
+					if (player.HasItem(ItemID.CrimtaneOre))
+						type = ItemID.CrimtaneOre;
+					if (player.HasItem(ItemID.DemoniteOre))
+						type = ItemID.DemoniteOre;
+					if (type > -1)
+					{
+						player.ConsumeItem(type);
+						player.QuickSpawnItem(mod.ItemType("Entrophite"));
+					}
+				}
+			}
+
+
+
+
 		}
 
 		public bool RefilPlasma(bool checkagain=false)
@@ -200,7 +244,7 @@ namespace SGAmod
 			NoFly = false;
 			CirnoWings = false;
 			MassiveBleeding = false;
-			thermalblaze = false; acidburn = false;
+			thermalblaze = false; acidburn = false; ELS = false;
 			SerratedTooth = false;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
@@ -210,6 +254,7 @@ namespace SGAmod
 			Mangroveset = false;
 			Pressured = false;
 			Havoc = 0;
+			SunderedDefense = false;
 			ammoLeftInClipMax = 6;
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
@@ -228,7 +273,7 @@ namespace SGAmod
 			MidasIdol = 0;
 			OmegaSigil = false;
 			MurkyDepths = false;
-			Matrix = false;
+			MatrixBuffp = false;
 			plasmaLeftInClipMax = 1000;
 			beedamagemul = 1f;
 			anticipationLevel = -1;
@@ -237,6 +282,20 @@ namespace SGAmod
 			if (player.itemTime < 1)
 			recoil = Math.Max(recoil - 0.5f, 0f);
 			greandethrowcooldown = Math.Max(greandethrowcooldown - 1, 0);
+			techdamage = 1f;
+			HoE = false;
+			CalamityRune = false;
+			for (int a = 0; a < apocalypticalChance.Length; a++)
+			apocalypticalChance[a] = 0;
+			apocalypticalStrength = 1f;
+			greedyperc = 0f;
+			lifestealentropy = Math.Min(lifestealentropy + 0.20f, 500);
+			maxblink = 0;
+			EALogo = false;
+			demonsteppers = false;
+			IceFire = false;
+			FridgeflameCanister = false;
+			BIP = false;
 		}
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -371,6 +430,55 @@ namespace SGAmod
 			{
 				player.lifeRegen -= 250;
 			}
+
+			if (IceFire)
+			{
+				float hasbuffs = (player.HasBuff(BuffID.OnFire) || player.HasBuff(BuffID.Frostburn) ? 0.15f : 0f);
+				if (player.lifeRegen < 0)
+					player.lifeRegen = (int)(player.lifeRegen * (0.80 - hasbuffs));
+
+				player.buffImmune[BuffID.OnFire] = false;
+				player.buffImmune[BuffID.Frostburn] = false;
+			}
+		}
+
+		public bool DashBlink()
+		{
+			if (maxblink > 0 && Math.Abs(player.dashTime)>0 && player.dashDelay< 1 && player.dash > 0)
+			{
+				int bufftime = 0;
+				if (player.HasBuff(BuffID.ChaosState))
+					bufftime = player.buffTime[player.FindBuffIndex(BuffID.ChaosState)];
+
+
+				if (bufftime < maxblink && (player.controlUp))
+				{				
+					player.Teleport(player.Center + new Vector2(player.dashTime > 0 ? -8 : 0, -20), 1);
+					for (int i = 0; i < 30; i += 1) {
+						if (Collision.CanHit(player.Center, 16, 16, player.Center+ new Vector2(Math.Sign(player.dashTime)*8, 0), 16, 16))
+						{
+							player.Center += new Vector2(Math.Sign(player.dashTime)*8,0);
+
+						}
+						else
+						{
+							player.Center -= new Vector2(Math.Sign(player.dashTime)*16, 0);
+							break;
+						}
+					}
+					player.Teleport(player.Center+new Vector2(player.dashTime > 0 ? -8 : 0, -20), 1);
+					player.dashTime = 0;
+					player.dashDelay = 5;
+					player.AddBuff(BuffID.ChaosState, bufftime + 120);
+
+				return true;
+				}
+
+			}
+			return false;
+
+
+
 		}
 
 		public override void PostUpdateRunSpeeds()
@@ -387,7 +495,7 @@ namespace SGAmod
 
 		public override void PreUpdate()
 		{
-
+			playertimer += 1;
 			for (int i = 54; i < 58; i++)
 			{
 
@@ -398,12 +506,21 @@ namespace SGAmod
 
 		public override void PostUpdateBuffs()
 		{
+			if (ELS)
+			{
+				if (player.lifeRegen < 0)
+					player.lifeRegen = (int)(player.lifeRegen * 1.5f);
+			}
+
 			player.statManaMax2 += 20 * Redmanastar;
 
 		}
 
 		public override void PostUpdateEquips()
 		{
+
+			DashBlink();
+
 			if (!granteditems)
 			{
 				if (nightmareplayer && !player.HasItem(mod.ItemType("Nightmare")))
@@ -422,7 +539,7 @@ namespace SGAmod
 			}
 			if (Main.netMode != 1)
 			{
-				Overlays.Scene.Activate("SGAmod:SGAHUD");
+				//Overlays.Scene.Activate("SGAmod:SGAHUD");
 			}
 
 
@@ -434,11 +551,11 @@ namespace SGAmod
 					//longerExpertDebuff
 					for (int i = 0; i < Player.MaxBuffs; i += 1)
 					{
-						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != BuffID.ManaSickness && player.buffType[i] != mod.BuffType("Matrix"))
+						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != BuffID.ManaSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
 						{
 							ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
 							bool isdebuff = Main.debuff[player.buffType[i]];
-							if (player.buffTime[i] > 10 && ((buff != null && ((buff.longerExpertDebuff && isdebuff) || !isdebuff)) || buff == null))
+							if (player.buffTime[i] > 10 && ((buff != null && ((isdebuff) || !isdebuff)) || buff == null))
 							{
 								player.buffTime[i] += isdebuff ? -2 : 2;
 							}
@@ -459,15 +576,15 @@ namespace SGAmod
 				}
 				Item helditem = player.HeldItem;
 				if (helditem.thrown)
-				player.thrownDamage += (float)(anticipation / 3000);
+				player.thrownDamage += (float)(anticipation / 3000f);
 				if (helditem.magic)
-					player.magicDamage += (float)(anticipation / 3000);
+					player.magicDamage += (float)(anticipation / 3000f);
 				if (helditem.summon)
-					player.minionDamage += (float)(anticipation / 3000);
+					player.minionDamage += (float)(anticipation / 3000f);
 				if (helditem.ranged)
-					player.rangedDamage += (float)(anticipation / 3000);
+					player.rangedDamage += (float)(anticipation / 3000f);
 				if (helditem.melee)
-					player.meleeDamage += (float)(anticipation / 3000);
+					player.meleeDamage += (float)(anticipation / 3000f);
 			}
 
 			int adderlevel = Math.Max(-1, (int)Math.Pow(anticipationLevel, 0.75));
@@ -478,7 +595,7 @@ namespace SGAmod
 			else
 			adder2 = -1;
 
-			anticipation = (int)MathHelper.Clamp(anticipation + (IdgNPC.bossAlive ? adderlevel : -1), 0, (100+(adder2))*3);
+			anticipation = (int)MathHelper.Clamp(anticipation + (IdgNPC.bossAlive ? (adderlevel) : -1), 0, (100+(adder2))*3);
 
 			if (creeperexplosion > 9700)
 			{
@@ -590,6 +707,7 @@ sufficate=(int)MathHelper.Clamp(sufficate+1,-200,player.breathMax-1);
 								int whereisity;
 								whereisity = Idglib.RaycastDown(minTilePosX + 1, Math.Max(minTilePosY, 0));
 								if ((whereisity - minTilePosY > 4 + (player.velocity.Y * 1)) || player.velocity.Y < 0)
+								if (Collision.CanHit(player.Center, 32, 32, player.Center + new Vector2(0, -96), 32, 32))
 									player.position.Y += 8 + (player.velocity.Y * 2);
 							}
 							else
@@ -665,9 +783,6 @@ if (Havoc>0){
 if (NPC.CountNPCS(mod.NPCType("Cirno"))>0 || (SGAWorld.downedCirno==false && Main.hardMode))
 player.AddBuff(mod.BuffType("NoFly"), 1, true);
 
-if (NPC.CountNPCS(mod.NPCType("CratrosityCrateOfSlowing"))>0){
-player.AddBuff(BuffID.Slow, 2, true);
-}
 int pmlcrato=NPC.CountNPCS(mod.NPCType("Cratrogeddon"));
 int npctype=NPC.CountNPCS(mod.NPCType("Cratrosity"))+pmlcrato;
 
@@ -761,7 +876,6 @@ modeproj.enhancedbees=true;
 
 			if (lunarSlimeHeart)
 			{
-
 				int Buffscounter = 0;
 				for (int z = 0; z < Player.MaxBuffs; z++)
 				{
@@ -772,7 +886,9 @@ modeproj.enhancedbees=true;
 				}
 				player.statDefense += Buffscounter*2;
 
-					lunarSlimeCounter = lunarSlimeCounter + 1;
+				lunarSlimeHeartdamage = (int)((float)(player.statDefense * (player.minionDamage + player.rangedDamage + player.meleeDamage + player.thrownDamage + player.magicDamage)));
+
+				lunarSlimeCounter = lunarSlimeCounter + 1;
 				if (player.ownedProjectileCounts[mod.ProjectileType("LunarSlimeProjectile")] < 8)
 				{
 					bool beeflag = false;
@@ -803,7 +919,7 @@ modeproj.enhancedbees=true;
 
 			}		
 			
-			if (player.ownedProjectileCounts[mod.ProjectileType("TimeEffect")] < 1 && Matrix)
+			if (player.ownedProjectileCounts[mod.ProjectileType("TimeEffect")] < 1 && MatrixBuffp)
 			{
 				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("TimeEffect"), 1, 0, player.whoAmI);
 			}
@@ -811,7 +927,10 @@ modeproj.enhancedbees=true;
 			if (OmegaSigil)
 			{
 				if (player.statLife > player.statLifeMax2 - 1)
-					player.statDefense += 100;
+				{
+					for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
+						player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 3.0;
+				}
 			}
 
 			if (player.HeldItem != null)
@@ -933,6 +1052,9 @@ modeproj.enhancedbees=true;
 					player.AddBuff(BuffID.Honey, 60 * 5);
 			}
 
+			if (BIP)
+				player.AddBuff(mod.BuffType("BIPBuff"), 60 * 5);
+
 			return true;
 		}
 
@@ -985,10 +1107,27 @@ modeproj.enhancedbees=true;
 
 		private int OnHit(ref int damage, bool crit,NPC npc, Projectile projectile)
 		{
+			if (Hellion.GetHellion() != null)
+			{
+			if (Hellion.GetHellion().army.Count > 0)
+				{
+					player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("NullExceptionDebuff").Type, 60 * 2);
+				}
+			if (npc != null)
+				{
+					if (npc.type==NPCID.SkeletronHand)
+						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("HotBarCurse").Type, 60 * 20);
 
+
+				}
+			}
 			if (NPC.CountNPCS(mod.NPCType("Murk")) > 0 && Main.hardMode)
 			{
 				player.AddBuff(mod.BuffType("MurkyDepths"), damage * 5);
+			}
+			if (NPC.CountNPCS(mod.NPCType("Hellion")) > 0 && Main.hardMode)
+			{
+				player.AddBuff(Idglib.Instance.BuffType("RadiationOne"), 60*5);
 			}
 			if (NPC.CountNPCS(mod.NPCType("TPD")) > 0 && Main.rand.Next(0,10)<(Main.expertMode ? 6 : 3))
 			{
@@ -1002,11 +1141,19 @@ modeproj.enhancedbees=true;
 				if (projectile != null)
 					if (projectile.coldDamage)
 						damage = (int)(damage * 0.80);
-
-
 			}
 
-		if (projectile != null)
+			if (IceFire)
+			{
+				if (npc != null)
+					if (npc.coldDamage)
+						damage = (int)(damage * 0.75);
+				if (projectile != null)
+					if (projectile.coldDamage)
+						damage = (int)(damage * 0.75);
+			}
+
+			if (projectile != null)
 			{
 				damagecheck(projectile.Center-projectile.velocity,ref damage);
 			}
@@ -1058,6 +1205,21 @@ modeproj.enhancedbees=true;
 		return damage;
 		}
 
+		public override void ProcessTriggers(TriggersSet triggersSet)
+		{
+			if (SGAmod.CollectTaxesHotKey.JustPressed)
+			{
+				if (EALogo)
+				{
+					if (player.taxMoney > Item.buyPrice(0, 1, 0, 0))
+					{
+						player.taxMoney -= Item.buyPrice(0, 1, 0, 0);
+						player.QuickSpawnItem(ItemID.GoldCoin);
+					}
+				}
+			}
+		}
+
 		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
 
@@ -1088,6 +1250,14 @@ modeproj.enhancedbees=true;
 					//Main.dust[dust].velocity.Y -= 0.5f;
 					Main.playerDrawDust.Add(dust);
 				}
+
+			if (SunderedDefense)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				int dust = Dust.NewDust(new Vector2(player.position.X, player.position.Y) + randomcircle * (1.2f * (float)player.width), player.width + 4, player.height + 4, mod.DustType("TornadoDust"), player.velocity.X * 0.4f, (player.velocity.Y - 7f) * 0.4f, 30, default(Color) * 1f, 0.5f);
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].color = Main.hslToRgb(0f, 0.5f, 0.35f);
+			}
 
 			if (thermalblaze)
 			{
@@ -1284,6 +1454,7 @@ modeproj.enhancedbees=true;
 		{
 			//TheProgrammer
 			player.ManageSpecialBiomeVisuals("SGAmod:ProgramSky",(SGAmod.ProgramSkyAlpha>0f || NPC.CountNPCS(mod.NPCType("SPinky"))>0) ? true : false, player.Center);
+			player.ManageSpecialBiomeVisuals("SGAmod:HellionSky", (SGAmod.HellionSkyalpha > 0f || NPC.CountNPCS(mod.NPCType("Hellion"))>0) ? true : false, player.Center);
 			player.ManageSpecialBiomeVisuals("SGAmod:CirnoBlizzard", (SGAWorld.CirnoBlizzard>0) ? true : false, player.Center);
 			ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
 			if (SGAWorld.CirnoBlizzard > 0)
@@ -1310,6 +1481,7 @@ modeproj.enhancedbees=true;
 			playercreated = true;
 			tag["playercreated"] = playercreated;
 			tag["gottf2"] = gottf2;
+			tag["gothellion"] = gothellion;
 			tag["devpower"] = devpowerbool;
 			tag["devpowerint"] = devpower;
 			tag["Redmanastar"] = Redmanastar;
@@ -1318,6 +1490,7 @@ modeproj.enhancedbees=true;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
 			tag["resetver"] = resetver;
 			tag["nightmareplayer"] = nightmareplayer;
+			tag["entropycollected"] = entropycollected;
 
 			if (ExpertisePointsFromBosses != null)
 			{
@@ -1348,6 +1521,7 @@ modeproj.enhancedbees=true;
 			ExpertiseCollected = 0;
 			ExpertiseCollectedTotal = 0;
 			gottf2 = tag.GetBool("gottf2");
+			gothellion = tag.GetBool("gothellion");
 			devpowerbool = tag.GetBool("devpower");
 			devpower = tag.GetInt("devpowerint");
 			Redmanastar = tag.GetInt("Redmanastar");
@@ -1355,6 +1529,8 @@ modeproj.enhancedbees=true;
 			resetver = tag.GetInt("resetver");
 			if (tag.ContainsKey("nightmareplayer"))
 			nightmareplayer = tag.GetBool("nightmareplayer");
+			if (tag.ContainsKey("entropycollected"))
+				entropycollected = tag.GetInt("entropycollected");
 
 			ExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedZZZ");
 			int maybeExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedTotalZZZ");
@@ -1583,10 +1759,12 @@ modeproj.enhancedbees=true;
 			addtolistmodded("Harbinger", 700);
 			addtolist(NPCID.MoonLordCore, 1000);//7400
 
-			//Post-moonlord Bosses (+3000 total)
+			//Post-moonlord Bosses (+7500 total)
 
 			addtolistmodded("LuminiteWraith", 1500);
 			addtolistmodded("SPinky", 1500);
+			addtolistmodded("Cratrogeddon", 1500);
+			addtolistmodded("Hellion", 3000);
 
 			//Not bosses (+500 total)
 			for (int i = 0; i < 75; i += 1)

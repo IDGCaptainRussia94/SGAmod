@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Terraria;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -45,16 +46,18 @@ namespace SGAmod.Items.Consumable
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
-			item.buffType = mod.BuffType("Matrix");
+			item.buffType = mod.BuffType("MatrixBuff");
 			item.buffTime = 60*60;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LesserRestorationPotion);
+			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(ItemID.AncientCloth, 2);
-			recipe.AddIngredient(null, "VirulentBar", 10);
-			recipe.AddIngredient(ItemID.LovePotion);
+			recipe.AddIngredient(null, "VirulentBar", 4);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 40);
 			recipe.AddIngredient(ItemID.DD2KoboldBanner);
 			recipe.AddIngredient(ItemID.FossilOre, 10);
 			recipe.AddIngredient(ItemID.Amber, 3);
@@ -112,7 +115,7 @@ namespace SGAmod.Items.Consumable
 
 			Player player = Main.player[projectile.owner];
 
-			int buffid = player.FindBuffIndex(mod.BuffType("Matrix"));
+			int buffid = player.FindBuffIndex(mod.BuffType("MatrixBuff"));
 
 			if (player != null && player.active)
 			{
@@ -177,6 +180,7 @@ namespace SGAmod.Items.Consumable
 
 					counterx = 0;
 
+					int[] nonolist = { mod.ProjectileType("HellionCascadeShot"), mod.ProjectileType("HellionCascadeShot2") };
 					for (int i = 0; i < Main.maxProjectiles; i += 1)
 					{
 						Projectile proj = Main.projectile[i];
@@ -184,10 +188,13 @@ namespace SGAmod.Items.Consumable
 						{
 							if (proj.hostile && (proj.Center-projectile.Center).Length()< projectile.ai[0])
 							{
+								if (nonolist.Any(type => type != proj.type))
+								{
 									for (int z = 0; z < proj.MaxUpdates; z += 1)
 									{
 										proj.position -= proj.velocity * 0.75f;
-									counterx += 0.10f;
+										counterx += 0.10f;
+									}
 								}
 
 							}
@@ -214,7 +221,7 @@ namespace SGAmod.Items.Consumable
 			Player player = Main.player[projectile.owner];
 			SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
 
-				int buffid = player.FindBuffIndex(mod.BuffType("Matrix"));
+				int buffid = player.FindBuffIndex(mod.BuffType("MatrixBuff"));
 				float timeleft = 0f;
 				if (buffid > -1)
 				timeleft = (float)player.buffTime[buffid];
