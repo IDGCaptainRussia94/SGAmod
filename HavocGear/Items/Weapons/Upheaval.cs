@@ -23,6 +23,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.damage = 105;
             item.useTime = 22;
             item.useAnimation = 22;
+            item.noMelee = true;
             item.useStyle = 5;
             item.channel = true;
             item.melee = true;

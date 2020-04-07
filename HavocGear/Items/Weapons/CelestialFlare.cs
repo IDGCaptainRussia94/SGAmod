@@ -24,7 +24,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 8;
 			item.useStyle = 1;
 			item.knockBack = 10;
-			item.value = 10000;
+			item.value = 1000000;
 			item.rare = 10;
 	        item.UseSound = SoundID.Item1;		
 			item.autoReuse = true;

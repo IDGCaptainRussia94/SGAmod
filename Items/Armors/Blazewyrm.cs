@@ -22,6 +22,12 @@ namespace SGAmod.Items.Armors
 			item.rare = 6;
 			item.defense=10;
 		}
+
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+		}
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
@@ -59,7 +65,14 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			player.meleeCrit += 15; 
-		}		
+		}
+
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+			sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_ArmsGlow";
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -87,6 +100,12 @@ namespace SGAmod.Items.Armors
 			item.value = 50000;
 			item.rare = 6;
 			item.defense=8;
+		}
+
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.armorglowmasks[3] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 		public override void UpdateEquip(Player player)
 		{

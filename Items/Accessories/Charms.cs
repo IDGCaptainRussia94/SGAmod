@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SGAmod.HavocGear.Items.Accessories;
 using Idglibrary;
 
 namespace SGAmod.Items.Accessories
@@ -383,6 +384,7 @@ namespace SGAmod.Items.Accessories
 			item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
+			item.faceSlot = 6;
 			item.value = Item.sellPrice(0, 2, 50, 0); ;
 			item.accessory = true;
 		}
@@ -419,6 +421,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = 6;
+			item.faceSlot = 6;
 			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.accessory = true;
 		}
@@ -483,6 +486,46 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.RainbowString, 1);
 			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+	public class Photosynthesizer : MudAbsorber
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Photosynthesizer");
+			Tooltip.SetDefault("Increased life regen while on the surface at day and near mud\n10% of the sum of all damage types is added to your current weapon's attack\nBeing near mud greatly increases your stats");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 7;
+			item.value = Item.sellPrice(0, 20, 0, 0);
+			item.accessory = true;
+			item.expert = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player,hideVisual);
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.Dankset = 3;
+		}
+		public override void AddRecipes()
+		{
+				ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddIngredient(mod.ItemType("DankCore"), 2);
+			recipe.AddIngredient(mod.ItemType("DankWoodHelm"), 1);
+			recipe.AddIngredient(mod.ItemType("DankWoodChest"), 1);
+			recipe.AddIngredient(mod.ItemType("DankLegs"), 1);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 10);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -601,7 +644,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul of Secrets");
-			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'vanity' Dev Armors in your inventory...\nCombines the effects of Blood Charm Pendant, Lifeforce Quintessence and Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
+			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
 		}
 
 		public override void SetDefaults()
@@ -612,7 +655,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = 12;
 			item.damage = 1;
 			item.summon = true;
-			item.value = Item.sellPrice(3, 0, 0, 0);
+			item.value = Item.sellPrice(5, 0, 0, 0);
 			item.accessory = true;
 			item.expert = true;
 			/*for (int i = 0; i < effects.Length; i += 1)
@@ -673,6 +716,7 @@ namespace SGAmod.Items.Accessories
 			ModContent.GetInstance<BloodCharmPendant>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<LifeforceQuintessence>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PortableHive>().UpdateAccessory(player, false);
+			ModContent.GetInstance<Havoc>().UpdateAccessory(player, false);
 			if (hideVisual == true)
 			{
 				player.GetModPlayer<SGAPlayer>().beefield = 3;
@@ -687,8 +731,8 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
-			recipe.AddIngredient(mod.ItemType("MoneySign"), 20);
+			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
 			recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
@@ -699,6 +743,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 15);
 			recipe.AddIngredient(mod.ItemType("BloodCharmPendant"), 1);
 			recipe.AddIngredient(mod.ItemType("LifeforceQuintessence"), 1);
+			recipe.AddIngredient(mod.ItemType("Havoc"), 1);
 			recipe.AddIngredient(mod.ItemType("PortableHive"), 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -860,8 +905,8 @@ public class BlinkTechGear : IdolOfMidas
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Blink Tech Gear");
-			Tooltip.SetDefault("Allows you to blink teleport up to 6 seconds of chaos state\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\nGrants the effects of Master Ninja Gear and Fridgeflame Canister");
+			DisplayName.SetDefault("Tech Master's Gear");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 15% increased Tech damage, and Grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jagged Overgrown Spike and Jury Rigged Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -869,14 +914,13 @@ public class BlinkTechGear : IdolOfMidas
 			item.value = 1500000;
 			item.rare = 10;
 			item.width = 24;
-			item.defense = 5;
+			item.defense = 12;
 			item.height = 24;
 			item.accessory = true;
 			item.handOnSlot = 11;
 			item.handOffSlot = 6;
 			item.shoeSlot = 14;
 			item.waistSlot = 10;
-
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -884,16 +928,25 @@ public class BlinkTechGear : IdolOfMidas
 			player.blackBelt = true;
 			player.dash = 1;
 			player.spikedBoots = 2;
-			player.GetModPlayer<SGAPlayer>().maxblink += 60*6;
+			player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.rangedDamage += 0.05f; player.minionDamage += 0.05f; player.thrownDamage += 0.05f;
+			player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.thrownCrit += 5;
+			player.GetModPlayer<SGAPlayer>().maxblink += hideVisual ? 0 : 60 * 6;
+			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.25f;
+			player.GetModPlayer<SGAPlayer>().techdamage += 0.15f;
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<JaggedOvergrownSpike>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<JuryRiggedSpikeBuckler>().UpdateAccessory(player, hideVisual);
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
-			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
+			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory",1);
 			recipe.AddIngredient(mod.ItemType("BlinkTech"), 1);
+			recipe.AddIngredient(mod.ItemType("JuryRiggedSpikeBuckler"), 1);
+			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 1);
 			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));

@@ -235,7 +235,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(1, 0, 0, 0); ;
+			item.value = Item.sellPrice(2, 0, 0, 0); ;
 			item.rare = 12;
 			item.accessory = true;
 		}

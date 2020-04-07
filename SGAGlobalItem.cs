@@ -151,8 +151,9 @@ namespace SGAmod
             if (set == "MisterCreeper")
             {
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
-                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\nThis gives you Action cooldown for 60 seconds, which prevents reactivation";
+                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\nThis gives you Action cooldown for 60 seconds, which prevents reactivation\nCreeper's explosive throw and Stormbreaker are empowered";
                 sgaplayer.MisterCreeperset = true;
+                sgaplayer.devempowerment[1] = 2;
             }
         }
 

@@ -259,7 +259,7 @@ namespace SGAmod.Items.Weapons
 			{
 				Color thecolor = colors[(int)projectile.ai[0]];
 			if (GetType()==typeof(HellionCascadeShot) || GetType() == typeof(HellionCascadeShot2))
-				thecolor = Main.hslToRgb(((i+ projectile.ai[0]*26f)/80f)%1f, 0.85f,0.7f);
+				thecolor = Main.hslToRgb((((i+ projectile.ai[0]*26f)/80f) + (Main.GlobalTime / 0.8f))% 1f, 0.85f,0.7f);
 				Vector2 drawPos = oldPos[i] - Main.screenPosition;
 				spriteBatch.Draw(texture, drawPos, null, Color.Lerp(lightColor, thecolor, 0.75f)* fadin, 1, new Vector2(texture.Width / 2f, texture.Height / 2f), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 			}

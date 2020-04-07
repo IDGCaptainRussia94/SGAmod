@@ -59,6 +59,7 @@ namespace SGAmod
         public static int modtimer = 0;
         public static bool GennedVirulent=false;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
+        public static ModWorld Instance;
 
 
         public static int NightmareHardcore = 0;
@@ -66,6 +67,7 @@ namespace SGAmod
         //Initialize all variables to their default values
         public override void Initialize()
         {
+            Instance = this;
             Main.invasionSize = 0;
             customInvasionUp = false;
             downedCustomInvasion = false;

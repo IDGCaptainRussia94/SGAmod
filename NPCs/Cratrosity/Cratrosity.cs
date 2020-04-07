@@ -84,6 +84,11 @@ public float nonaispin=0f;
 			npc.damage = (int)(npc.damage * 0.6f);
 		}
 
+		public override bool CheckActive()
+		{
+			return false;
+		}
+
 		public virtual void FalseDeath(int phase)
 		{
 		//nothing here

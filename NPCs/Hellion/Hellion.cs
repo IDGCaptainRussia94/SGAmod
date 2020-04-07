@@ -367,7 +367,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-							Vector2 where = new Vector2(-2000, (int)fx2);
+							 Vector2 where = new Vector2(-2000, (int)fx2);
 
 							where = where.RotatedBy(MathHelper.ToRadians(direction), new Vector2(0, 0));
 

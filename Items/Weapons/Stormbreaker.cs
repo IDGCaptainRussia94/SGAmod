@@ -22,7 +22,14 @@ namespace SGAmod.Items.Weapons
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
+			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
+			{
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "10% increased damage on Primary"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary will always summon lightning as if it were raining"));
+
+			}
+			Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
             //string potion="[i:" + ItemID.RedPotion + "]";
             tooltips.Add(new TooltipLine(mod,"IDG Debug Item", Idglib.ColorText(c,"Mister Creeper's dev weapon")));
         }
@@ -57,7 +64,16 @@ namespace SGAmod.Items.Weapons
             return true;
         }
 
-        public override bool CanUseItem(Player player)
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			if (player.GetModPlayer<SGAPlayer>().devempowerment[1]>0)
+			{
+				damage = (int)(damage * 1.10);
+			}
+			return true;
+		}
+
+		public override bool CanUseItem(Player player)
         {
 
         altfired=player.altFunctionUse == 2 ? true : false;
@@ -322,7 +338,7 @@ namespace SGAmod.Items.Weapons
 							{
 								owner.statMana -= (int)(10f * owner.manaCost);
 								owner.manaRegenDelay = 180;
-								int rainmeansmore = Main.raining ? 2 : 0;
+								int rainmeansmore = (Main.raining || owner.GetModPlayer<SGAPlayer>().devempowerment[1] > 0) ? 2 : 0;
 
 								for (int x = 0; x < rainmeansmore + 1; x++)
 								{

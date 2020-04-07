@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.Generation;
 using SGAmod;
+//using SubworldLibrary;
 
 namespace SGAmod.Items.Consumable
 {
@@ -49,6 +50,7 @@ namespace SGAmod.Items.Consumable
 
 		public override void OnConsumeItem(Player player)
 		{
+			//SLWorld.EnterSubworld("SGAmod_Blank");
 			//RippleBoom.MakeShockwave(player.Center,8f,1f,10f,60,1f);
 			//Achivements.SGAAchivements.UnlockAchivement("TPD", Main.LocalPlayer);
 			//SGAmod.FileTest();

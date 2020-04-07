@@ -30,7 +30,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 20;
 			item.useStyle = 5;
 			item.knockBack = 10;
-			item.value = 10000;
+			item.value = 1000000;
 			item.rare = 10;
 			item.UseSound = SoundID.Item20;
 			item.autoReuse = true;
@@ -47,10 +47,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 			type = mod.ProjectileType("QuasarOrb");
 			float numberProjectiles = 3; // 3, 4, or 5 shots
 			float rotation = MathHelper.ToRadians(Main.rand.Next(33));
-			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 64f;
 			for (int i = 0; i < numberProjectiles; i++)
 			{
-				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1))) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1))) * .25f; // Watch out for dividing by 0 if there is only 1 projectile.
 				Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI);
 			}
 			return false;
@@ -65,7 +65,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(ItemID.FragmentNebula, 12);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
-			recipe.AddIngredient(ItemID.SoulofNight, 8);			recipe.AddTile(TileID.LunarCraftingStation);			recipe.SetResult(this);
+			recipe.AddIngredient(ItemID.SoulofNight, 8);			
+			recipe.AddTile(TileID.LunarCraftingStation);			
+			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
 	}

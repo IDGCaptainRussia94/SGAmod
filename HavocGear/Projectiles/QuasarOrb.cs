@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using SGAmod.Items.Weapons;
 using Idglibrary;
 
 namespace SGAmod.HavocGear.Projectiles
@@ -36,6 +37,7 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.scale = 1.2f;
 			projectile.timeLeft = 600;
 			projectile.magic = true;
+			projectile.extraUpdates = 1;
 		}
 		
 		public override void AI()
@@ -55,7 +57,7 @@ namespace SGAmod.HavocGear.Projectiles
 			gohere.Normalize();
 			if (dist<1000f && projectile.ai[0]>5 && projectile.ai[0]<5000f){
 			projectile.ai[0]+=200f;
-			projectile.velocity+=gohere;
+			projectile.velocity+=gohere/2f;
 
 
 			}}
@@ -106,9 +108,10 @@ namespace SGAmod.HavocGear.Projectiles
 			}
 
 			Main.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 10);
-			for (int num315 = 0; num315 < 300; num315 = num315 + 2)
+			float ascale= ((GetType() == typeof(QuasarOrbLessParticles) ? 1.5f : 1f));
+			for (int num315 = 0; num315 < 300; num315 = num315 + (GetType()==typeof(QuasarOrbLessParticles) ? 4 : 2))
 			{
-				float makesmaller=(float)(1.00-(num315/300.00));
+				float makesmaller = (float)(1.00 - (num315 / 300.00)) * ascale;
 				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize(); Vector2 ogcircle=randomcircle; randomcircle*=(float)(num315/300.00);
 				int num316 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y)+randomcircle*240f, projectile.width, projectile.height, 173, projectile.velocity.X+(float)(Main.rand.Next(-250,250)/15f), projectile.velocity.Y+(float)(Main.rand.Next(-250,250)/15f), 0, default(Color), 4.4f*makesmaller);
 				Main.dust[num316].noGravity = true;

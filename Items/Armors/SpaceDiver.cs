@@ -33,6 +33,11 @@ namespace SGAmod.Items.Armors
 		player.arcticDivingGear = true;
 		player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
 		}
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -70,6 +75,12 @@ namespace SGAmod.Items.Armors
 			player.ignoreWater = true;
             sgaplayer.UseTimeMul+=0.10f;
 			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+		}
+
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 		public override void AddRecipes()
 		{

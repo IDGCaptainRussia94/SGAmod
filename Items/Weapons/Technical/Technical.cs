@@ -602,6 +602,10 @@ namespace SGAmod.Items.Weapons.Technical
 			item.channel = true;
 			item.reuseDelay = 5;
 			item.useAmmo = AmmoID.Bullet;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/BigDakka_Glow");
+			}
 		}
 
 		public override bool ConsumeAmmo(Player player)
@@ -935,6 +939,10 @@ namespace SGAmod.Items.Weapons.Technical
 			item.shootSpeed = 16f;
 			item.mana = 15;
 			item.channel = true;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/RodofEnforcement_Glow");
+			}
 		}
 
 		public override Vector2? HoldoutOffset()

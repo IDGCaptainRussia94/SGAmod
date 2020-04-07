@@ -1276,7 +1276,7 @@ namespace SGAmod.NPCs.Hellion
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Support Wraith");
+            DisplayName.SetDefault("Repair Support Wraith");
             Main.npcFrameCount[npc.type] = 1;
             NPCID.Sets.NeedsExpertScaling[npc.type] = true;
         }
@@ -1313,8 +1313,8 @@ namespace SGAmod.NPCs.Hellion
 
             NPC guy = Main.npc[(int)npc.ai[1]];
 
-            bool checksem = master.active && !master.dontTakeDamage && !master.friendly && master.type != npc.type && master.type != hell.npc.type && master.whoAmI != npc.whoAmI;
-
+            bool checksem = master.active && !master.dontTakeDamage && !master.friendly && master.type != npc.type && master.whoAmI != npc.whoAmI
+                 && !master.immortal && master.chaseable;
 
                 if (master == null || master.active==false || !checksem)
                 {
@@ -1323,16 +1323,31 @@ namespace SGAmod.NPCs.Hellion
                     {
                         if (Main.npc[i]!=null)
                         if (Main.npc[i].active)
-                        if (!Main.npc[i].dontTakeDamage && !Main.npc[i].friendly && Main.npc[i].type!=npc.type && Main.npc[i].type != hell.npc.type)
+                        if (!Main.npc[i].dontTakeDamage && !Main.npc[i].friendly && Main.npc[i].type!=npc.type && !master.immortal && master.chaseable)
                         stuffs.Add(i);
                     }
 
+                if (stuffs.Count > 0)
+                {
                     npc.ai[1] = stuffs[(Main.rand.Next(0, stuffs.Count))];
-
-
-                    if (!P.active || P.dead)
-                    npc.active = false;
                 }
+                else
+                {
+                    if (hell != null)
+                    {
+                        npc.ai[1] = hell.npc.whoAmI;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                //if (!P.active || P.dead)
+                //    npc.active = false;
+
+            }
+
 
 
 

@@ -31,12 +31,40 @@ using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.Cratrosity;
 using Terraria.Achievements;
 using Terraria.GameContent.Achievements;
+//using SubworldLibrary;
 
 namespace SGAmod
 {
 
+	/*public class Blank : Subworld
+	{
+		public override int width => 800;
+		public override int height => 400;
+		public override ModWorld modWorld => SGAWorld.Instance;
+
+		public override SubworldGenPass[] tasks => new SubworldGenPass[]
+		{
+		new SubworldGenPass("Loading", 1f, progress =>
+		{
+			progress.Message = "Loading"; //Sets the text above the worldgen progress bar
+            Main.worldSurface = Main.maxTilesY - 42; //Hides the underground layer just out of bounds
+            Main.rockLayer = Main.maxTilesY; //Hides the cavern layer way out of bounds
+        })
+		};
+
+		public override void Load()
+		{
+			Main.dayTime = true;
+			Main.time = 27000;
+			Main.worldRate = 0;
+		}
+	}*/
+
 	class SGAmod : Mod
 	{
+
+
+
 		public static int ScrapCustomCurrencyID;
 		public static CustomCurrencySystem ScrapCustomCurrencySystem;
 		public static SGAmod Instance;
@@ -125,9 +153,12 @@ namespace SGAmod
 			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
 			Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
 			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
-			Ref<Effect> screenRef = new Ref<Effect>(base.GetEffect("Effects/Shockwave"));
-			Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
-			Filters.Scene["SGAmod:Shockwave"].Load();
+			if (!Main.dedServ)
+			{
+				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
+				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
+				//Filters.Scene["SGAmod:Shockwave"].Load();
+			}
 
 
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
@@ -247,6 +278,23 @@ namespace SGAmod
 			recipe.SetResult(ItemID.Uzi);
 			recipe.AddRecipe();
 
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.TatteredCloth, 5);
+			recipe.AddIngredient(ItemID.Aglet, 1);
+			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.WaterWalkingBoots);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.TurtleShell, 1);
+			recipe.AddIngredient(this.ItemType("CryostalBar"), 8);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 6);
+			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(ItemID.FrozenTurtleShell);
+			recipe.AddRecipe();
+
 			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher };
 
 			foreach (int idofitem in moonlorditems)
@@ -315,7 +363,7 @@ namespace SGAmod
 				bossList.Call("AddBossWithInfo", "Luminite Wraith (Rematch)", 14.8f, (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), string.Format("Use a [i:{0}] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", ItemType("WraithCoreFragment3")));
 				bossList.Call("AddBossWithInfo", "Cratrogeddon", 15f, (Func<bool>)(() => SGAWorld.downedCratrosityPML), string.Format("Use a [i:{1}] with a [i:{0}] at night", ItemType("SalvagedCrate"), ItemID.TempleKey));
 				bossList.Call("AddBossWithInfo", "Supreme Pinky", 16f, (Func<bool>)(() => SGAWorld.downedSPinky), string.Format("Use a [i:{0}] anywhere at night", ItemType("Prettygel")));
-				bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 20f, (Func<bool>)(() => SGAWorld.downedHellion>1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
+				bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 17.5f, (Func<bool>)(() => SGAWorld.downedHellion>1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
 			}
 
 			Mod yabhb = ModLoader.GetMod("FKBossHealthBar");
@@ -437,13 +485,19 @@ namespace SGAmod
 			ItemID.YellowPressurePlate
 			});
 			RecipeGroup.RegisterGroup("SGAmod:PressurePlates", group6);
-			group6 = new RecipeGroup(() => "a" + " Presserator, Wrench, MetalDetector, or Detonator", new int[]
+			group6 = new RecipeGroup(() => "a" + " Presserator, Wrench, Metal Detector, or Detonator", new int[]
 			{
 			ItemID.ActuationAccessory,
 			ItemID.Wrench,
 			ItemID.Detonator,
 			ItemID.MetalDetector
 			});
+			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
+			group6 = new RecipeGroup(() => "Putrid Scent or Flesh Knuckles", new int[]
+{
+			ItemID.FleshKnuckles,
+			ItemID.PutridScent
+});
 			RecipeGroup.RegisterGroup("SGAmod:TechStuff", group6);
 
 
@@ -642,21 +696,23 @@ namespace SGAmod
 
 		public static void MakeShockwave(Vector2 position2, float rippleSize, float rippleCount, float expandRate, int timeleft = 200, float size = 1f, bool important = false)
 		{
-			if (!Filters.Scene["SGAmod:Shockwave"].IsActive() || important)
+			if (!Main.dedServ)
 			{
-				int prog = Projectile.NewProjectile(position2, Vector2.Zero, SGAmod.Instance.ProjectileType("RippleBoom"), 0, 0f);
-				Projectile proj = Main.projectile[prog];
-				RippleBoom modproj = proj.modProjectile as RippleBoom;
-				modproj.rippleSize = rippleSize;
-				modproj.rippleCount = rippleCount;
-				modproj.expandRate = expandRate;
-				modproj.size = size;
-				proj.timeLeft = timeleft - 10;
-				modproj.maxtime = timeleft;
-				proj.netUpdate = true;
-				Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+				if (!Filters.Scene["SGAmod:Shockwave"].IsActive() || important)
+				{
+					int prog = Projectile.NewProjectile(position2, Vector2.Zero, SGAmod.Instance.ProjectileType("RippleBoom"), 0, 0f);
+					Projectile proj = Main.projectile[prog];
+					RippleBoom modproj = proj.modProjectile as RippleBoom;
+					modproj.rippleSize = rippleSize;
+					modproj.rippleCount = rippleCount;
+					modproj.expandRate = expandRate;
+					modproj.size = size;
+					proj.timeLeft = timeleft - 10;
+					modproj.maxtime = timeleft;
+					proj.netUpdate = true;
+					Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+				}
 			}
-
 
 		}
 

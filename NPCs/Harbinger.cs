@@ -65,15 +65,8 @@ namespace SGAmod.NPCs
 
 			if (Math.Abs(npc.ai[2]) > 200)
 			{
-				if (NPC.CountNPCS(npc.type) < 1)
+				if (npc.ai[0]>6)
 				{
-
-					for (int i = 0; i <= Main.rand.Next(2, 5); i++)
-					{
-						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IceFairyDust"));
-					}
-
-
 					npc.type = oldtype;
 					NPC myguy = Main.npc[(int)npc.ai[1]];
 					myguy.active = false;

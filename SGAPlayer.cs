@@ -105,6 +105,8 @@ namespace SGAmod
 		public bool IceFire = false;
 		public int playertimer = 0;
 		public bool BIP = false;
+		public string[] armorglowmasks=new string[4];
+		public int[] devempowerment = { 0, 0, 0, 0 };
 
 		public List<int> ExpertisePointsFromBosses;
 		public List<string> ExpertisePointsFromBossesModded;
@@ -296,6 +298,13 @@ namespace SGAmod
 			IceFire = false;
 			FridgeflameCanister = false;
 			BIP = false;
+			for (int a = 0; a < devempowerment.Length; a++)
+				devempowerment[a] = Math.Max(devempowerment[a]-1,0);
+
+			for (int i = 0; i < armorglowmasks.Length; i += 1)
+			{
+				armorglowmasks[i] = null;
+			}
 		}
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -1312,10 +1321,8 @@ modeproj.enhancedbees=true;
 				SGAmod mod = SGAmod.Instance;
 				SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-				//Color color = Lighting.GetColor((int)drawPlayer.Center.X / 16, (int)drawPlayer.Center.Y / 16);
 				//better version, from Qwerty's Mod
-				Color color = drawInfo.bodyColor;//;*drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int)((double)drawInfo.position.X + (double)drawPlayer.width * 0.5) / 16, (int)((double)drawInfo.position.Y + (double)drawPlayer.height * 0.5) / 16, Microsoft.Xna.Framework.Color.White), 0f);
-
+				Color color = drawInfo.bodyColor;
 				Texture2D texture = mod.GetTexture("Items/Armors/BeamArms");
 					int drawX = (int)((drawInfo.position.X+drawPlayer.bodyPosition.X+10) - Main.screenPosition.X);
 					int drawY = (int)(((drawPlayer.bodyPosition.Y-4)+drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
@@ -1329,71 +1336,104 @@ modeproj.enhancedbees=true;
 				SGAmod mod = SGAmod.Instance;
 				SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-				//Color color = Lighting.GetColor((int)drawPlayer.Center.X / 16, (int)drawPlayer.Center.Y / 16);
 				//better version, from Qwerty's Mod
-				//Color color = drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int)((double)drawInfo.position.X + (double)drawPlayer.width * 0.5) / 16, (int)((double)drawInfo.position.Y + (double)drawPlayer.height * 0.5) / 16, Microsoft.Xna.Framework.Color.White), 0f);
-
-				Color color = drawInfo.bodyColor;//;*drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int)((double)drawInfo.position.X + (double)drawPlayer.width * 0.5) / 16, (int)((double)drawInfo.position.Y + (double)drawPlayer.height * 0.5) / 16, Microsoft.Xna.Framework.Color.White), 0f);
-
+				Color color = drawInfo.bodyColor;
 
 				Texture2D texture = mod.GetTexture("Items/Armors/SpaceDiverTank");
 					int drawX = (int)((drawInfo.position.X+drawPlayer.bodyPosition.X+10) - Main.screenPosition.X);
 					int drawY = (int)(((drawPlayer.bodyPosition.Y-4)+drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
 					DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0,drawPlayer.bodyFrame.Y,drawPlayer.bodyFrame.Width,drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width/2,drawPlayer.bodyFrame.Height/2), 1f, (drawPlayer.direction==-1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir>0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+					data.shader = (int)drawPlayer.cWings;
 					Main.playerDrawData.Add(data);
 			});
 
-		public static readonly PlayerLayer BulletCount = new PlayerLayer("SGAmod", "BulletCount", PlayerLayer.MiscEffectsFront, delegate (PlayerDrawInfo drawInfo)
+		public static readonly PlayerLayer HeadGlowmask = new PlayerLayer("SGAmod", "HeadGlowmask", PlayerLayer.Body, delegate (PlayerDrawInfo drawInfo)
 		{
 			Player drawPlayer = drawInfo.drawPlayer;
-			if (drawPlayer == Main.LocalPlayer && Main.netMode < 2 && !drawPlayer.dead)
-			{
-				SGAmod mod = SGAmod.Instance;
-				SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
-				int maxclip;
-				bool check = SGAmod.UsesClips.TryGetValue(drawPlayer.HeldItem.type, out maxclip);
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-				if (check)
-				{
-					Color color = Lighting.GetColor((int)drawPlayer.Center.X / 16, (int)drawPlayer.Center.Y / 16);
-					Texture2D texture = mod.GetTexture("AmmoHud");
-					int drawX = (int)((drawInfo.position.X + (drawPlayer.width / 2)) - Main.screenPosition.X);
-					int drawY = (int)((drawInfo.position.Y + (drawInfo.drawPlayer.gravDir == -1 ? drawInfo.drawPlayer.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
-					for (int q = 0; q < modply.ammoLeftInClip; q++)
-					{
-						DrawData data = new DrawData(texture, new Vector2((drawX - (q * texture.Width)) + (int)((maxclip * texture.Width) / 2), drawY), null, Color.White, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0);
-						Main.playerDrawData.Add(data);
-					}
-				}
+			Color color = (Color.White * drawPlayer.stealth)* drawInfo.bodyColor.A;
+			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
+				color = drawInfo.bodyColor;
+
+			if (modply.armorglowmasks[0] != null && !drawPlayer.mount.Active)
+			{
+				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[0]);
+
+				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				data.shader= (int)drawPlayer.dye[0].dye;
+				Main.playerDrawData.Add(data);
 			}
 		});
 
-		public static readonly PlayerLayer PlasmaCount = new PlayerLayer("SGAmod", "PlasmaCount", PlayerLayer.MiscEffectsFront, delegate (PlayerDrawInfo drawInfo)
+		public static readonly PlayerLayer ChestplateGlowmask = new PlayerLayer("SGAmod", "ChestplateGlowmask", PlayerLayer.Body, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
+				color = drawInfo.bodyColor;
+
+			if (modply.armorglowmasks[1] != null && !drawPlayer.mount.Active)
 			{
-				Player drawPlayer = drawInfo.drawPlayer;
-				if (drawPlayer==Main.LocalPlayer && Main.netMode<2 && !drawPlayer.dead){
-				SGAmod mod = SGAmod.Instance;
-				SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
-				int maxclip;
-				bool check=SGAmod.UsesPlasma.TryGetValue(drawPlayer.HeldItem.type,out maxclip);
+				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[1]);
 
-					if (check){
-					Color color = Lighting.GetColor((int)drawPlayer.Center.X / 16, (int)drawPlayer.Center.Y / 16);
-					Texture2D texture = mod.GetTexture("Items/PlasmaCell");
-					int drawX = (int)((drawInfo.position.X+(drawPlayer.width/2)) - Main.screenPosition.X);
-					int drawY = (int)((drawInfo.position.Y+(drawInfo.drawPlayer.gravDir == -1 ? drawInfo.drawPlayer.height + 20 : -20)) - Main.screenPosition.Y);//gravDir 
+				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				data.shader = (int)drawPlayer.dye[1].dye;
+				Main.playerDrawData.Add(data);
+			}
+		});
 
-						float percent = ((float)modply.plasmaLeftInClip / (float)modply.plasmaLeftInClipMax);
+		public static readonly PlayerLayer ArmsGlowmask = new PlayerLayer("SGAmod", "ArmsGlowmask", PlayerLayer.Arms, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
+			//better version, from Qwerty's Mod
+			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
+				color = drawInfo.bodyColor;
 
+			if (modply.armorglowmasks[2] != null && !drawPlayer.mount.Active)
+			{
+				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[2]);
+				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				data.shader = (int)drawPlayer.dye[1].dye;
+				Main.playerDrawData.Add(data);
+			}
+		});
 
-						DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, Color.Lerp(Color.Black,Color.DarkGray,0.25f), (float)Math.PI, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0);
-						DrawData data2 = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0,0, texture.Width,(int)((float)texture.Height*percent)), Color.White, (float)Math.PI, new Vector2(texture.Width/2,texture.Height/2), 1f, SpriteEffects.None, 0);
-					Main.playerDrawData.Add(data);
-					Main.playerDrawData.Add(data2);
-					}
-				}
-			});
+		public static readonly PlayerLayer LegsGlowmask = new PlayerLayer("SGAmod", "LegsGlowmask", PlayerLayer.Legs, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
+				color = drawInfo.bodyColor;
+
+			if (modply.armorglowmasks[3] != null && !drawPlayer.mount.Active)
+			{
+				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[3]);
+
+				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				data.shader = (int)drawPlayer.dye[2].dye;
+				Main.playerDrawData.Add(data);
+			}
+		});
 
 
 		public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
@@ -1404,19 +1444,6 @@ modeproj.enhancedbees=true;
 		{
 			//plasmaLeftInClip
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
-
-			/*if (SGAmod.UsesClips.ContainsKey(player.HeldItem.type)){
-			int armLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
-			//BulletCount.visible = true;
-			//layers.Insert(armLayer+1, BulletCount);
-			}
-
-			if (SGAmod.UsesPlasma.ContainsKey(player.HeldItem.type))
-			{
-				int armLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
-				PlasmaCount.visible = true;
-				layers.Insert(armLayer + 1, PlasmaCount);
-			}*/
 
 			if (sgaplayer.SpaceDiverset)
 			{
@@ -1433,6 +1460,21 @@ modeproj.enhancedbees=true;
 			int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("HandOnAcc"));
 			WaveBeamArm.visible = true;
 			layers.Insert(armLayer2, WaveBeamArm);
+			}
+
+			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+			PlayerLayer[] thelayer = { HeadGlowmask, ChestplateGlowmask, ArmsGlowmask, LegsGlowmask };
+
+			for (int i = 0; i < 4; i += 1)
+			{
+
+				if (sgaplayer.armorglowmasks[i] != null)
+				{
+					int layer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals(stringsz[i])) + 1;
+					thelayer[i].visible = true;
+					layers.Insert(layer, thelayer[i]);
+				}
+
 			}
 
 		}

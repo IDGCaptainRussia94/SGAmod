@@ -792,7 +792,7 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(mod.ItemType("UnmanedOre"), 4);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards",3);
 			recipe.AddTile(TileID.Furnaces);
-			recipe.SetResult(this);
+			recipe.SetResult(this,2);
 			recipe.AddRecipe();
 		}
 	}

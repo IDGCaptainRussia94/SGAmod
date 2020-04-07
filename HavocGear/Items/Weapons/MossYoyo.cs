@@ -25,6 +25,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.useAnimation = 22;
             item.useStyle = 5;
             item.channel = true;
+            item.noMelee = true;
             item.melee = true;
 			item.crit = 4;
             item.knockBack = 4.5f;

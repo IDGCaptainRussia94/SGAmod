@@ -3,7 +3,57 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
-2.40-(date)-Hellion's Wraith:
+2.50-(4/6/20)-Patch #4:
+
+--Added
+
+-Cosmic Grasp, Photosynthesizer
+
+-More glow masks, glow masks for armor (Blazewyrm, Space Diver)
+
+-Empowerment bonuses for Dev items and armors
+
+-Frozen Turtle Shell and Water Walking Boots to craftable items
+
+
+--Changed:
+
+-Blink Tech Gear renamed to Tech Master's Gear, and added alot of features and crafting items required
+
+-Novus Bars are cheaper (you now make 2)
+
+-Hellion Cosmetic changes to some attacks
+
+-Cosmillash has faster projectiles
+
+-Havoc's Fragmented Remains has been added to Soul of Secrets
+
+-Crafting Recipes!
+
+
+--Fixed:
+
+-Fixed a major bug involving shaders that stopped network games (I hope)
+
+-Cratrosity and Cratrogeddon no longer despawn, and Murk is less likely to despawn during the fly swarm phases
+
+-Doom Harbinger's death not counting, also him dropping
+
+-Items that shouldn't cause melee hits (the yoyos largely)
+
+-Creeper's explosive throw doesn't block immunity frames now for the explosions
+
+-Hellion's repair drones sticking to target dummies (and also not being called repair wraiths)
+
+-Removed lines from Draken that refer to there being no discord server.
+
+-Hellion being below some harder bosses on boss checklist
+
+-Even more items with broken prices
+
+
+
+2.40-(4/1/2020)-Hellion's Wraith:
 
 --Added
 

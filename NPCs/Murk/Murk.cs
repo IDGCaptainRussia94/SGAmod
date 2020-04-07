@@ -1163,6 +1163,12 @@ namespace SGAmod.NPCs.Murk
 
 
                 }
+                if (Main.npc[(int)npc.ai[1]].active)
+                {
+                    if (Main.npc[(int)npc.ai[1]].type == ModContent.NPCType<Murk>())
+                        Main.npc[(int)npc.ai[1]].timeLeft = 500;
+
+                }
                 if (NPC.CountNPCS(mod.NPCType("Murk")) < 1)
                 npc.ai[1] = prev;
                 if (npc.ai[2]<1)

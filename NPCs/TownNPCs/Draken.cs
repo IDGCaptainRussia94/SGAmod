@@ -277,8 +277,6 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Why are you looking at me like that? Is there something on my snout?");
 				chat.Add("You think I look nice? Well from what i heard: my 'sprites' were a paid commission, and they wern't cheap. Thank you eitherway!");
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
-				chat.Add("A Discord Server? What's a Discord Server?");
-				chat.Add("No, there is no, what ever this Discord Server for whatever this 'mod' is, atleast not yet, I have no clue to be honest what this even means.");
 				if (!npc.homeless)
 				{
 					chat.Add("The dwelling you made is far better than being forced to sleep outside.");

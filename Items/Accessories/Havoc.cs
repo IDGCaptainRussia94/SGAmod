@@ -13,7 +13,7 @@ namespace SGAmod.Items.Accessories
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Havoc's Fragmented Remains");
-            Tooltip.SetDefault("The remains of PeopleMCNugget's dreams of Havoc mod, now at your will and prehaps, can be put back together\n25% more damage with Havoc weapons\n3 defense per Havoc accessory equipped (8 in hardmode)\nEffects of Mud Absorber and Serrated Tooth");
+            Tooltip.SetDefault("The remains of PeopleMCNugget's dreams of Havoc mod, now at your will and prehaps, can be put back together\n25% more damage with Havoc weapons\n3 defense per Havoc accessory equipped (8 in hardmode)\nEffects of Photosynthesizer and Serrated Tooth");
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -42,7 +42,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 		player.GetModPlayer<SGAPlayer>().Havoc = 1;
-		mod.GetItem("MudAbsorber").UpdateAccessory(player,hideVisual);
+		mod.GetItem("Photosynthesizer").UpdateAccessory(player,hideVisual);
 		mod.GetItem("SerratedTooth").UpdateAccessory(player,hideVisual);
 		}
 		public override void AddRecipes()
@@ -50,7 +50,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 100);
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 100);
-			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddIngredient(mod.ItemType("Photosynthesizer"), 1);
 			recipe.AddIngredient(mod.ItemType("SerratedTooth"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
 			recipe.AddTile(TileID.LunarCraftingStation);

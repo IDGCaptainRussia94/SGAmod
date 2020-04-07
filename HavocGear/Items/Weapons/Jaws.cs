@@ -26,7 +26,8 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.useStyle = 5;
             item.channel = true;
             item.melee = true;
-			item.crit = 4;
+            item.noMelee = true;
+            item.crit = 4;
             item.knockBack = 2.2f;
             item.value = 10000;
             item.rare = 5;
