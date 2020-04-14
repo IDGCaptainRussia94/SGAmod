@@ -219,13 +219,16 @@ namespace SGAmod.Items.Weapons
 					flytodistnorm = distnorm;
 				}
 
-
-				projectile.velocity += flytodistnorm * 8f;
-				projectile.velocity /= 1.05f;
-				float maxspeed = 38f * (1f + ((player.thrownVelocity - 1f) / 2f));
-				if (projectile.velocity.Length() > maxspeed)
+				if (Main.LocalPlayer == player)
 				{
-					projectile.velocity.Normalize(); projectile.velocity *= maxspeed;
+					projectile.velocity += flytodistnorm * 8f;
+					projectile.velocity /= 1.05f;
+					float maxspeed = 38f * (1f + ((player.thrownVelocity - 1f) / 2f));
+					if (projectile.velocity.Length() > maxspeed)
+					{
+						projectile.velocity.Normalize(); projectile.velocity *= maxspeed;
+					}
+					projectile.netUpdate = true;
 				}
 				//projectile.Center+=(dist*((float)(projectile.timeLeft-12)/28));
 
@@ -346,13 +349,16 @@ namespace SGAmod.Items.Weapons
 									float rotation = MathHelper.ToRadians(3);
 									Vector2 speed = new Vector2(0f, 72f);
 									Vector2 perturbedSpeed = speed.RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) * 0.02f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
-									int proj = Projectile.NewProjectile(him.Center.X + ((-200 + Main.rand.Next(0, 400)) * rainmeansmore), ((-150 + Main.rand.Next(0, 200)) * rainmeansmore) + him.Center.Y - Main.rand.Next(200, 540), perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CultistBossLightningOrbArc, (int)((projectile.damage * 0.50f)*(1f - owner.manaSickReduction)), 15f, Main.player[projectile.owner].whoAmI);
+									Vector2 starting = new Vector2(him.Center.X + ((-200 + Main.rand.Next(0, 400)) * rainmeansmore), ((-150 + Main.rand.Next(0, 200)) * rainmeansmore) + him.Center.Y - Main.rand.Next(200, 540));
+									int proj = Projectile.NewProjectile(starting.X,starting.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CultistBossLightningOrbArc, (int)((projectile.damage * 0.50f)*(1f - owner.manaSickReduction)), 15f, Main.player[projectile.owner].whoAmI, (him.Center - starting).ToRotation());
 									Main.projectile[proj].friendly = true;
 									Main.projectile[proj].hostile = false;
-									Main.projectile[proj].penetrate = 999;
+									Main.projectile[proj].penetrate = -1;
 									Main.projectile[proj].timeLeft = 300;
+									//Main.projectile[proj].usesLocalNPCImmunity = true;
+									Main.projectile[proj].localNPCHitCooldown = 8;
 									Main.projectile[proj].thrown = true;
-									Main.projectile[proj].ai[0] = (him.Center - Main.projectile[proj].Center).ToRotation();
+									IdgProjectile.Sync(proj);
 
 									for (int q = 0; q < 50; q++)
 									{

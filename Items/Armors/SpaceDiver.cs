@@ -36,7 +36,8 @@ namespace SGAmod.Items.Armors
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+			if (!Main.dedServ)
+				sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 		public override void AddRecipes()
 		{
@@ -80,7 +81,8 @@ namespace SGAmod.Items.Armors
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+			if (!Main.dedServ)
+				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 		public override void AddRecipes()
 		{

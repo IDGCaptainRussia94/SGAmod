@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("True Moonlight");
-			Tooltip.SetDefault("Hold left click to raise your sword to the stars and power up your slash!\nLv2 Slash inflicts Moon Light Curse on enemies, massively reducing their defense and taking damage over time\nLv3 slash does massive damage and homes in nearby enemies\nHold right click to auto swing basic slash waves at less accuracy\nHaving a faster Melee Swing Speed charges the blade faster");
+			Tooltip.SetDefault("Hold left click to raise your sword to the stars and power up your slash!\nLv2 Slash inflicts Moon Light Curse on enemies\nThis debuff massively reduces their defense and taking damage over time\nLv3 slash does massive damage and homes in nearby enemies\nHold right click to auto swing basic slash waves at less accuracy\nHaving a faster Melee Swing Speed charges the blade faster");
 			Item.staff[item.type] = true; 
 		}
 		
@@ -166,9 +166,9 @@ namespace SGAmod.Items.Weapons
 		return false;
 		}
 
-		public override bool? CanHitNPC(NPC target)
+		public override bool CanDamage()
 		{
-		return false;
+			return false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

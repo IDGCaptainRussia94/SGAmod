@@ -39,7 +39,7 @@ namespace SGAmod.NPCs
             	npc.netAlways = true;
             	npc.HitSound = SoundID.NPCHit1;
             	npc.DeathSound = SoundID.NPCDeath6;
-            	npc.value = Item.buyPrice(10000);
+            	npc.value = Item.buyPrice(gold: 1);
             	npc.noTileCollide = false;
 				npc.noGravity = true;
 				npc.netUpdate = true;

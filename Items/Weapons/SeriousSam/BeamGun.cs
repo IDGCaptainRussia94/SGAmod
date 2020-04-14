@@ -45,6 +45,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		}
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
+			//add += player.GetModPlayer<SGAPlayer>().techdamage-1f;
 			mult = mult*player.GetModPlayer<SGAPlayer>().techdamage;
 		}
 	}
@@ -61,7 +62,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
         public override void SetDefaults()
         {
-            item.damage = 100;
+            item.damage = 90;
             item.magic = true;
             item.width = 48;
             item.height = 28;
@@ -99,7 +100,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			recipe.AddIngredient(null, "PlasmaCell", 10);
 			recipe.AddIngredient(null, "AdvancedPlating", 15);
 			recipe.AddIngredient(ItemID.HeatRay, 1);
-			recipe.AddIngredient(ItemID.ChargedBlasterCannon, 1);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
             recipe.SetResult(this);
@@ -120,7 +120,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 				float scale = 1f;// - (Main.rand.NextFloat() * .2f);
 				perturbedSpeed = perturbedSpeed * scale; 
 				int prog=Projectile.NewProjectile(position.X+ offset.X, position.Y+ offset.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI);
-                IdgProjectile.Sync(prog);
 
 
 			return false;
@@ -229,7 +228,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					float scale = 1f;// - (Main.rand.NextFloat() * .2f);
 					perturbedSpeed = perturbedSpeed * scale;
 					int prog = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<BeamGunProjectile>(), projectile.damage, projectile.knockBack, player.whoAmI);
-					IdgProjectile.Sync(prog);
+					//IdgProjectile.Sync(prog);
 				}
 			}
 			else

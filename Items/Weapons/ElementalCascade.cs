@@ -69,7 +69,7 @@ namespace SGAmod.Items.Weapons
 				Vector2 offset = speez;
 				offset.Normalize();
 				offset *= 48f;
-			int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage, knockBack, player.whoAmI);
+			int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage, knockBack, player.whoAmI, ((i + projectiletype) % 4));
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
 			Vector2 perturbedSpeed = new Vector2(speez.X, speez.Y).RotatedByRandom(MathHelper.ToRadians(5));
@@ -77,7 +77,6 @@ namespace SGAmod.Items.Weapons
 			Main.projectile[probg].velocity.Y = perturbedSpeed.Y;
 			Main.projectile[probg].owner = player.whoAmI;
 			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
-				Main.projectile[probg].ai[0] = ((i + projectiletype) % 4);
 				Main.projectile[probg].netUpdate = true;
 
 				IdgProjectile.Sync(probg);
@@ -144,7 +143,7 @@ namespace SGAmod.Items.Weapons
 				Vector2 offset = speez;
 				offset.Normalize();
 				offset *= 48f;
-				int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage, knockBack, player.whoAmI);
+				int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage, knockBack, player.whoAmI, (projectiletype));
 				Main.projectile[probg].friendly = true;
 				Main.projectile[probg].hostile = false;
 				Vector2 perturbedSpeed = new Vector2(speez.X, speez.Y).RotatedByRandom(MathHelper.ToRadians(5));
@@ -152,7 +151,6 @@ namespace SGAmod.Items.Weapons
 				Main.projectile[probg].velocity.Y = perturbedSpeed.Y;
 				Main.projectile[probg].owner = player.whoAmI;
 				SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
-				Main.projectile[probg].ai[0] = ((projectiletype));
 				Main.projectile[probg].netUpdate = true;
 
 				IdgProjectile.Sync(probg);

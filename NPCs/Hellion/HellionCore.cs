@@ -101,7 +101,7 @@ namespace SGAmod.NPCs.Hellion
         {
             npc.width = 54;
             npc.height = 54;
-            npc.damage = 200;
+            npc.damage = 100;
             npc.defense = 20;
             npc.lifeMax = 27000;
             npc.knockBackResist = 0.0f;
@@ -120,6 +120,11 @@ namespace SGAmod.NPCs.Hellion
             get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
         }
 
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            target.AddBuff(mod.BuffType("TechnoCurse"), 120);
+        }
+
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
             if (phase > 1)
@@ -131,7 +136,7 @@ namespace SGAmod.NPCs.Hellion
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
             if (npc.ai[1] > 0 && Main.npc[(int)npc.ai[1]].active)
-                damage = (int)(damage / 4f);
+                damage = (int)(damage / 2f);
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -249,12 +254,12 @@ namespace SGAmod.NPCs.Hellion
                                     Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 40, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 2, true, 0, false, 400);
                             if (npc.ai[0] % 125 == 0)
                                 if (phase == 1)
-                                    Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 40, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 3, true, 0, false, 400);
+                                    Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 25, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 3, true, 0, false, 400);
                         }
                         else
                         {
                             if (npc.ai[0] % 100 == 0)
-                                Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.CursedFlameHostile, 40, 20, 160, Hellion.GetHellion().phase<1 ? 5 : 3, false, 0, false, 200);
+                                Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.CursedFlameHostile, 25, 20, 160, Hellion.GetHellion().phase<1 ? 5 : 3, false, 0, false, 200);
 
 
                         }
@@ -445,7 +450,7 @@ namespace SGAmod.NPCs.Hellion
                     if (npc.ai[0] % 160 == 30 + aioffset * 2)
                     {
                         Vector2 theplayerdir = player.Center - (npc.Center);
-                        Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ProjectileID.ShadowFlame, 40, 25, 60, 1, true, 0, false, 150);
+                        Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ProjectileID.ShadowFlame, 30, 25, 60, 1, true, 0, false, 150);
 
                     }
 
@@ -563,10 +568,10 @@ namespace SGAmod.NPCs.Hellion
 
                     };*/
                     int rando = Main.rand.Next(0, 2);
-                    atex = ModContent.GetTexture("Terraria/Gore_"+ Main.rand.Next(0, 800));
+                    atex = ModContent.GetTexture("Terraria/Gore_"+ Main.rand.Next(1, 800));
                     while (atex == null)
                     {
-                        ModContent.GetTexture("Terraria/Gore_" + Main.rand.Next(0, 800));
+                        ModContent.GetTexture("Terraria/Gore_" + Main.rand.Next(1, 800));
                     }
 
                     rotoffset = Main.rand.Next(0, 360);
@@ -1382,6 +1387,8 @@ namespace SGAmod.NPCs.Hellion
                     {
                         Idglib.Shattershots(npc.position, master.Center, new Vector2(0, 0), ProjectileID.DD2DarkMageHeal, 50, 12, 0, 1, true, 0, true, 300);
                         if (master.type == mod.NPCType("HellionWorm"))
+                            hell.npc.life = Math.Min(hell.npc.lifeMax, hell.npc.life + 200);
+                        if (master.type == mod.NPCType("Hellion"))
                             hell.npc.life = Math.Min(hell.npc.lifeMax, hell.npc.life + 500);
                     }
 

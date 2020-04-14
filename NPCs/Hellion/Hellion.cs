@@ -18,12 +18,37 @@ using Idglibrary;
 using Idglibrary.Bases;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
+using System.IO;
+using System.Diagnostics;
 
 namespace SGAmod.NPCs.Hellion
 {
 
 	public abstract class HellionAttacks
 	{
+
+		public static void HellionWelcomesYou()
+		{
+			if (SGAWorld.downedHellion > 1)
+			{
+				if (!Directory.Exists(SGAmod.filePath))
+				{
+					Directory.CreateDirectory(SGAmod.filePath);
+
+				}
+				File.WriteAllLines(SGAmod.filePath + "/It's not over yet.txt", new string[]
+				{"Congrats, you beat me, and this world, and prevented me from getting the Dragon... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated the strength of your avatar "+Main.LocalPlayer.name+", but now I know who I'm really fighting against.",
+				"If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' "+Main.LocalPlayer.name+" if I wanted to, but that wouldn't gain either of us anything now would it?",
+				"Come now, lets see if your up for a REAL challenge and if your really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
+				"See you soon, I'll be waiting "+SGAmod.userName,
+				"#Helen 'Helion' Weygold"
+
+
+			});
+				Process.Start(@"" + SGAmod.filePath + "");
+			}
+
+		}
 
 		public static void SpecialAttacks(Player P)
 		{
@@ -1519,9 +1544,9 @@ namespace SGAmod.NPCs.Hellion
 	}
 
 
-		public class Hellion : ModNPC
+		public class Hellion : ModNPC 
 	{
-
+		
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
 		public float appear = 0.5f;
@@ -1572,6 +1597,7 @@ namespace SGAmod.NPCs.Hellion
 			npc.noGravity = true;
 			phase = 0;
 			npc.netAlways = true;
+			npc.GetGlobalNPC<SGAnpcs>().TimeSlowImmune = true;
 		}
 
 		public static Hellion GetHellion()
@@ -2128,8 +2154,8 @@ namespace SGAmod.NPCs.Hellion
 			writer.Write((double)npc.localAI[0]);
 			writer.Write((double)npc.localAI[1]);
 			writer.Write(supportabilitycooldown);
-			writer.Write(phase);
-			writer.Write(manualmovement);
+			writer.Write((short)phase);
+			writer.Write((short)manualmovement);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
@@ -2302,10 +2328,10 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (SGAWorld.downedHellion < 2)
 			{
-				SGAmod.HellionWelcomesYou();
+				SGAWorld.downedHellion = 2;
+				HellionAttacks.HellionWelcomesYou();
 			}
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
-			SGAWorld.downedHellion = 2;
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -2814,6 +2840,42 @@ namespace SGAmod.NPCs.Hellion
 			get { return "Terraria/Item_"+ItemID.GeyserTrap; }
 		}
 
+		public static void UpdateHellionBeam()
+		{
+			if (!Main.dedServ)
+			{
+				int width = 32; int height = 256;
+				SGAmod.hellionLaserTex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+				Color[] dataColors = new Color[width * height];
+
+				Color lerptocolor = Color.Red;
+				//if (projectile.ai[1] < 100)
+				//    lerptocolor = Color.Green;
+				float scroll = (float)SGAWorld.modtimer;
+
+				if (SGAWorld.updatelasers)
+				{
+
+					if (SGAmod.hellionLaserTex != null)
+					{
+						for (int y = 0; y < height; y++)
+						{
+							for (int x = 0; x < width; x += 1)
+							{
+								dataColors[(int)x + y * width] = Color.Lerp(Main.hslToRgb(((float)Math.Sin((x + scroll) * (width / (float)Math.PI)) * (1f)) % 1f, 0.75f, 0.5f), lerptocolor, 0.5f);
+							}
+
+						}
+					}
+
+					SGAWorld.updatelasers = false;
+
+					SGAmod.hellionLaserTex.SetData(dataColors);
+				}
+			}
+
+		}
+
 		public override void AI()
 		{
 			if (projectile.ai[1] > 9 && projectile.ai[1] < 20)
@@ -2863,7 +2925,8 @@ namespace SGAmod.NPCs.Hellion
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-
+			if (Main.dedServ)
+				return false;
 
 			Color colortex = Color.White;
 			if (projectile.ai[1] < 100)

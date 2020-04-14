@@ -31,7 +31,7 @@ namespace SGAmod.Tiles
 
 		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 		{
-			return SGAWorld.downedMurk>0;
+			return SGAWorld.downedMurk>1;
 		}
 	}
 }

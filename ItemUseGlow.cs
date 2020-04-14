@@ -29,7 +29,7 @@ namespace SGAmod
             }
 
             Player drawPlayer = drawInfo.drawPlayer;
-            Mod mod = ModLoader.GetMod("QwertysRandomContent");
+            Mod mod = ModLoader.GetMod("SGAmod");
             if (!drawPlayer.HeldItem.IsAir)
             {
                 Item item = drawPlayer.HeldItem;

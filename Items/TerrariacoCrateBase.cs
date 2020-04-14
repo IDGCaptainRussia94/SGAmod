@@ -75,12 +75,13 @@ namespace SGAmod.Items
 		if (ply.CountItem(ItemID.NightKey)>0){whatkey=ItemID.NightKey;}
 		if (!NPC.AnyNPCs(mod.NPCType("Cratrosity"))){
 
-					if (Main.netMode >0)
+					if (Main.netMode > 0)
 					{
+						mod.Logger.Debug("Crate: Net Spawn");
 						ModPacket packet = mod.GetPacket();
-						packet.Write((byte)MessageType.CratrosityNetSpawn);
+						packet.Write(75);
 						packet.Write(mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
-						packet.Write((int)(-9999));
+						packet.Write(-9999);
 						packet.Write(-9999);
 						packet.Write(ply.whoAmI);
 						packet.Send();
@@ -88,8 +89,7 @@ namespace SGAmod.Items
 					}
 					else
 					{
-
-
+						mod.Logger.Debug("Crate: SP Spawn");
 						NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
 
 					}

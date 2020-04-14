@@ -10,7 +10,7 @@ namespace SGAmod.HavocGear.Items.Accessories
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Serrated Tooth");
-            Tooltip.SetDefault("Dealing more damage than 3 times an enemy's defense inflicts Massive Bleeding\nbase duration is 1 second and increases further over an enemy's defense your attack is\n+10 Armor Penetration");
+            Tooltip.SetDefault("Dealing more damage than 5 times an enemy's defense inflicts Massive Bleeding\nbase duration is 1 second and increases further over an enemy's defense your attack is\nHowever this is hard capped at 5 seconds\n+10 Armor Penetration");
         }
 
         public override void SetDefaults()

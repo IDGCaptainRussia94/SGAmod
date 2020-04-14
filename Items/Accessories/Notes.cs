@@ -50,7 +50,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void NetSend(BinaryWriter writer)
 		{
-			writer.Write(notetype);
+			writer.Write((short)notetype);
 		}
 
 		public override void NetRecieve(BinaryReader reader)

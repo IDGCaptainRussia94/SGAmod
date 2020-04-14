@@ -84,7 +84,13 @@ namespace SGAmod.HavocGear.Projectiles
 				dust3.velocity += projectile.velocity / 2f;
 			//}
 		}
-		
+
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			if (projectile.timeLeft>5)
+			damage += 2;
+		}
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 		if (!target.friendly)

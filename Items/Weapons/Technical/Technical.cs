@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.ID;
 using System.IO;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Projectiles;
@@ -481,7 +482,7 @@ namespace SGAmod.Items.Weapons.Technical
 			item.UseSound = SoundID.Item122;
 			item.autoReuse = true;
 			item.shoot = 14;
-			item.mana = 150;
+			item.mana = 200;
 			item.shootSpeed = 200f;
 		}
 
@@ -583,7 +584,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 85;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -621,11 +622,10 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LunarBar, 12);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddIngredient(ItemID.SnowmanCannon, 1);
-			recipe.AddIngredient(ItemID.SDMG, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 12);
-			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(mod.ItemType("MoneySign"), 8);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 8);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
 			recipe.AddIngredient(mod.ItemType("CalamityRune"), 3);
@@ -762,7 +762,7 @@ namespace SGAmod.Items.Weapons.Technical
 					if (projectile.ai[0] > 150)
 					{
 
-						int proj = Projectile.NewProjectile(projectile.Center, projectile.velocity, mod.ProjectileType("DakkaShot"), projectile.damage * 8, projectile.knockBack, player.whoAmI);
+						int proj = Projectile.NewProjectile(projectile.Center, projectile.velocity, mod.ProjectileType("DakkaShot"), projectile.damage * 6, projectile.knockBack, player.whoAmI);
 						Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 116, 0.75f, 0.5f);
 
 					}
@@ -1100,6 +1100,239 @@ namespace SGAmod.Items.Weapons.Technical
 				}
 			}
 		}
+	}
+
+	public class BeamCannon : SeriousSamWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Beam Cannon");
+			Tooltip.SetDefault("Fires discharged bolts of piercing plasma\nThe less mana you have, the more your bolts fork out from where you aim\nAlt fire drains Plasma Cells to fire a wide spread of bolts");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(7, 4));
+			SGAmod.UsesPlasma.Add(SGAmod.Instance.ItemType("BeamCannon"), 1000);
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 160;
+			item.magic = true;	
+			item.crit = 15;
+			item.width = 56;
+			item.height = 28;
+			item.useTime = 7;
+			item.useAnimation = 7;
+			item.useStyle = 5;
+			item.noMelee = true;
+			item.noUseGraphic = true;
+			item.knockBack = 1;
+			item.value = 1000000;
+			item.rare = 9;
+			item.UseSound = SoundID.Item115;
+			item.autoReuse = true;
+			item.shoot = mod.ProjectileType("BeamCannonHolding");
+			item.shootSpeed = 16f;
+			item.mana = 8;
+		}
+
+		public override bool AltFunctionUse(Player player)
+		{
+			return true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.ownedProjectileCounts[mod.ProjectileType("BeamCannonHolding")] > 0)
+				return false;
+			SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
+			if (player.altFunctionUse == 2)
+				return (modply.RefilPlasma());
+			else
+				return true;
+		}
+
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-6, 0);
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "StarMetalBar", 15);
+			recipe.AddIngredient(null, "PlasmaCell", 4);
+			recipe.AddIngredient(null, "ManaBattery", 6);
+			recipe.AddIngredient(null, "AdvancedPlating", 8);
+			recipe.AddIngredient(ItemID.ChargedBlasterCannon, 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
+			position = player.Center;
+			Vector2 offset = new Vector2(speedX, speedY);
+			offset.Normalize();
+			offset *= 16f;
+			//position += offset;
+
+			if (player.altFunctionUse == 2)
+			{
+				modply.plasmaLeftInClip -= 50;
+				player.itemTime *= 5;
+				player.itemAnimation *= 5;
+				if (modply.plasmaLeftInClip < 1)
+				{
+					player.itemTime = 90;
+				}
+				player.statMana -= (int)(50f * player.manaCost);
+				Main.PlaySound(SoundID.Item, player.Center,122);
+			}
+
+			for (float i = -80; i < 81; i += 40)
+			{
+				if (player.altFunctionUse == 2 || i == 0f)
+				{
+					Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(5));
+					Vector2 perturbedSpeed2 = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(Math.Max(1f,-20f+(60f-(float)((float)player.statMana/ (float)player.statManaMax2)*60f))));
+					float scale = 1f;// - (Main.rand.NextFloat() * .2f);
+					perturbedSpeed = perturbedSpeed * scale;
+
+					float rotation = MathHelper.ToRadians(3);
+					Vector2 speed = new Vector2(0f, 72f);
+					Vector2 starting = new Vector2(position.X + offset.X, position.Y + offset.Y);
+					float aithis = (perturbedSpeed2).ToRotation() + MathHelper.ToRadians(i);
+					int proj = Projectile.NewProjectile(starting.X+ Math.Sign(perturbedSpeed.X) * 6, starting.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CultistBossLightningOrbArc, damage, 15f, player.whoAmI, aithis, modply.timer);
+					Main.projectile[proj].friendly = true;
+					Main.projectile[proj].hostile = false;
+					//Main.projectile[proj].usesLocalNPCImmunity = true;
+					Main.projectile[proj].localNPCHitCooldown = 5;
+					Main.projectile[proj].penetrate = -1;
+					Main.projectile[proj].timeLeft = 300;
+					Main.projectile[proj].magic = true;
+					if (player.altFunctionUse != 2)
+					{
+						Main.projectile[proj].GetGlobalProjectile<SGAprojectile>().shortlightning = 14;
+						Main.projectile[proj].extraUpdates = 2;
+					}
+					Main.projectile[proj].ai[0] = aithis;
+					Main.projectile[proj].netUpdate = true;
+					IdgProjectile.Sync(proj);
+				}
+
+
+			}
+			offset /= 8f;
+			int prog = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, offset.X, offset.Y, mod.ProjectileType("BeamCannonHolding"), damage, knockBack, player.whoAmI);
+
+			return false;
+		}
+	}
+
+	public class BeamCannonHolding : ModProjectile
+	{
+		public virtual bool bounce => true;
+		//public virtual float trans => 1f;
+		public Player P;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Beam Gun");
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return false;
+		}
+
+		public override bool CanHitPlayer(Player target)
+		{
+			return false;
+		}
+
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = false;
+			projectile.magic = true;
+			projectile.timeLeft = 3;
+			projectile.penetrate = -1;
+			aiType = ProjectileID.WoodenArrowFriendly;
+			projectile.damage = 0;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + ProjectileID.RocketII; }
+		}
+
+		public override void AI()
+		{
+			projectile.localAI[0] += 1f;
+
+			Player player = Main.player[projectile.owner];
+
+			if (player != null && player.active)
+			{
+
+				SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
+
+				if (player.dead)
+				{
+					projectile.Kill();
+				}
+				else
+				{
+
+
+					player.heldProj = projectile.whoAmI;
+					player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * projectile.direction, projectile.velocity.X * projectile.direction);
+					projectile.rotation = player.itemRotation - MathHelper.ToRadians(90);
+					projectile.Center = (player.Center + new Vector2(player.direction * 6, 0)) + (projectile.velocity * 10f);
+
+
+					projectile.position -= projectile.velocity;
+					if (player.itemTime > 0)
+					projectile.timeLeft = 2;
+					Vector2 position = projectile.Center;
+					Vector2 offset = new Vector2(projectile.velocity.X, projectile.velocity.Y);
+					offset.Normalize();
+					offset *= 16f;
+
+				}
+			}
+			else
+			{
+				projectile.Kill();
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = ModContent.GetTexture("SGAmod/Items/Weapons/Technical/BeamCannon");
+			int frames = 4;
+			//Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProjGlow");
+			SpriteEffects effects = SpriteEffects.FlipHorizontally;
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / frames) / 2f;
+			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 0f);
+			Color color = projectile.GetAlpha(lightColor) * 1f; //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+			int timing = (int)(Main.GlobalTime*8f);
+			timing %= frames;
+			timing *= ((tex.Height) / frames);
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / frames), color, projectile.rotation - MathHelper.ToRadians(90*projectile.direction), drawOrigin, projectile.scale, projectile.direction < 1 ? effects : (SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally), 0f);
+			//spriteBatch.Draw(texGlow, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / frames), Color.White, projectile.rotation - MathHelper.ToRadians(90 * projectile.direction), drawOrigin, projectile.scale, projectile.direction < 1 ? effects : (SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally), 0f);
+
+			return false;
+		}
+
+
 	}
 
 

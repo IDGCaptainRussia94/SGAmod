@@ -41,7 +41,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.WoodenArrow, 50);
 			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 1);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 2);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 1);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);
 			recipe.AddRecipe();
@@ -78,7 +78,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("UnmanedArrow"), 50);
-			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 3);
+			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 2);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 50);
 			recipe.AddRecipe();

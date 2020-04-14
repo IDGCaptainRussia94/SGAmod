@@ -544,7 +544,7 @@ if (counter%6==0){
 
 Vector2 vis=new Vector2(P.Center.X+Main.rand.Next(-800,800),P.Center.Y);
 float aimer=Main.rand.Next(-1000,1000);
-if ((counter%600)>540){
+if ((counter%600)>540 && Main.expertMode){
 Idglib.Shattershots(new Vector2(P.Center.X-800,P.Center.Y),new Vector2(P.Center.X+800,P.Center.Y),new Vector2(0,0),mod.ProjectileType("CirnoBolt"),25,(float)Main.rand.Next(60,80)/8,0,1,true,(float)(aimer/9000),false,200);
 Idglib.Shattershots(new Vector2(P.Center.X+800,P.Center.Y),new Vector2(P.Center.X-800,P.Center.Y),new Vector2(0,0),mod.ProjectileType("CirnoBolt"),25,(float)Main.rand.Next(60,80)/8,0,1,true,(float)(aimer/9000),false,200);
 }

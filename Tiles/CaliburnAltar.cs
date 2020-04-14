@@ -69,14 +69,14 @@ namespace SGAmod.Tiles
                             }
                             else
                             {
-                                if (Main.netMode == 0)
+                                if (Main.netMode < 1)
                                 {
                                     NPC.NewNPC(i * 16, j * 16, mod.NPCType("CaliburnGuardian"), 0, 0, 0, summontype);
                                 }
                                 else
                                 {
                                     ModPacket packet = mod.GetPacket();
-                                    packet.Write((byte)1);
+                                    packet.Write((int)999);
                                     packet.Write((int)i * 16);
                                     packet.Write((int)j * 16);
                                     packet.Write(mod.NPCType("CaliburnGuardian"));

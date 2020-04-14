@@ -34,7 +34,7 @@ namespace SGAmod
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
                 {
                     text += "\nApocalyptical Strength: "+ (modplayer.apocalypticalStrength*100f)+"%";
-                    text += "\nAn Apocalyptical is when your crit-crits, resulting in massive damage";
+                    text += "\nAn Apocalyptical is when your crit-crits, resulting in 3X damage";
                     text += "\nItems and effects may add special effects on top of this";
                     text += "\nApocalyptical Strength however only really boosts these effects rather than the damage of the crit";
                     text += "\nStrength of 100% would only boost your damage increase up to 400% from 300%, but effects would be doubled";
@@ -172,7 +172,7 @@ namespace SGAmod
 
             if (sgaplayer.Dankset>0)
             {
-                damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.thrownDamage) - 4f) * 0.10f));
+                damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.thrownDamage) - 5f) * 0.10f));
 
 
             }
@@ -460,10 +460,9 @@ namespace SGAmod
             //projectile.velocity=new Vector2(projectile.velocity.X,0f);
             projectile.Center=owner.Center+new Vector2(owner.direction<0 ? -projectile.width*2 : 0,-4f);
 
-
-            projectile.Opacity=MathHelper.Clamp((float)projectile.timeLeft/10f,0f,1f);
-
         }
+
+
     }
 
 

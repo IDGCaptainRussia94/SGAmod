@@ -281,7 +281,7 @@ namespace SGAmod.Items.Weapons
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(cooldown);
-			writer.Write(guyihit);
+			writer.Write((short)guyihit);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)

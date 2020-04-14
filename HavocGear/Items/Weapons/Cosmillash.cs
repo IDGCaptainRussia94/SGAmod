@@ -36,6 +36,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.autoReuse = true;
 			item.shoot = 10;
 			item.shootSpeed = 30;
+			item.crit = 10;
 			Item.staff[item.type] = true;
 			if (!Main.dedServ)
 			{

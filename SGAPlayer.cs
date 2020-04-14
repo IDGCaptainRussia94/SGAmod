@@ -30,7 +30,10 @@ namespace SGAmod
 	{
 
 		public int myammo = 0;
+		public int timer=0;
 		public int beefield = 0;
+		public float morespawns = 1f;
+		public float damagetaken=1f;
 		public float mspeed = 1f;
 		public int beefieldtoggle = 0;
 		public int beefieldcounter = 0;
@@ -113,6 +116,8 @@ namespace SGAmod
 		public List<int> ExpertisePointsFromBossesPoints;
 		public int ExpertiseCollected = 0;
 		public int ExpertiseCollectedTotal = 0;
+
+		public int downedHellion = 0;
 
 
 		enum MessageType : byte
@@ -237,6 +242,11 @@ namespace SGAmod
 			DankShrineZone = (SGAWorld.MoistStonecount > 15 && Main.tile[(int)(player.Center.X/16), (int)(player.Center.Y / 16)].wall==mod.WallType("SwampWall"));
 		}
 
+		public override void PlayerDisconnect(Player player)
+		{
+			downedHellion = 0;
+		}
+
 		public override void ResetEffects()
 		{
 			HeavyCrates = false;
@@ -298,6 +308,9 @@ namespace SGAmod
 			IceFire = false;
 			FridgeflameCanister = false;
 			BIP = false;
+			morespawns = 1f;
+			damagetaken = 1f;
+			timer += 1;
 			for (int a = 0; a < devempowerment.Length; a++)
 				devempowerment[a] = Math.Max(devempowerment[a]-1,0);
 
@@ -343,7 +356,6 @@ namespace SGAmod
 			sgaplayer.ammoLeftInClip = ammoLeftInClip;
 			sgaplayer.sufficate = sufficate;
 			sgaplayer.PrismalShots = PrismalShots;
-			sgaplayer.devpower = devpower;
 			sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
 			sgaplayer.Redmanastar = Redmanastar;
 			sgaplayer.ExpertiseCollected = ExpertiseCollected;
@@ -369,7 +381,7 @@ namespace SGAmod
 					break;
 				}
 			}
-			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.devpower != devpower 
+			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots
 			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal)
 			mismatch = true;
 
@@ -386,13 +398,13 @@ namespace SGAmod
 			if (Main.netMode == 1)
 			{
 				ModPacket packet = SGAmod.Instance.GetPacket();
-				packet.Write((byte)MessageType.ClientSendInfo);
+				packet.Write(500);
 				packet.Write(player.whoAmI);
-				packet.Write(ammoLeftInClip);
+				packet.Write((short)ammoLeftInClip);
 				packet.Write(sufficate);
 				packet.Write(PrismalShots);
-				packet.Write(devpower);
 				packet.Write(plasmaLeftInClip);
+				packet.Write((short)Redmanastar);				
 				packet.Write(ExpertiseCollected);
 				packet.Write(ExpertiseCollectedTotal);
 				for (int i = 54; i < 58; i++)
@@ -504,6 +516,7 @@ namespace SGAmod
 
 		public override void PreUpdate()
 		{
+			downedHellion = SGAWorld.downedHellion;
 			playertimer += 1;
 			for (int i = 54; i < 58; i++)
 			{
@@ -528,6 +541,11 @@ namespace SGAmod
 		public override void PostUpdateEquips()
 		{
 
+			if (player.HasBuff(mod.BuffType("TechnoCurse")))
+			{
+				techdamage /= 2f;
+
+			}
 			DashBlink();
 
 			if (!granteditems)
@@ -1016,7 +1034,7 @@ modeproj.enhancedbees=true;
 				player.NinjaDodge();
 				return false;
 			}
-
+			damage = (int)(damage * damagetaken);
 			if (anticipation > 0)
 			{
 				anticipation = (int)(anticipation / 2);
@@ -1353,7 +1371,10 @@ modeproj.enhancedbees=true;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-			Color color = (Color.White * drawPlayer.stealth)* drawInfo.bodyColor.A;
+			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			if (drawPlayer.stealth > 0.95f)
+				color = Color.White*drawInfo.bodyColor.A;
+
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
 				color = drawInfo.bodyColor;
 
@@ -1375,7 +1396,10 @@ modeproj.enhancedbees=true;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			if (drawPlayer.stealth > 0.95f)
+				color = Color.White * drawInfo.bodyColor.A;
+
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
 				color = drawInfo.bodyColor;
 
@@ -1398,7 +1422,10 @@ modeproj.enhancedbees=true;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
 			//better version, from Qwerty's Mod
-			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			if (drawPlayer.stealth > 0.95f)
+				color = Color.White * drawInfo.bodyColor.A;
+
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
 				color = drawInfo.bodyColor;
 
@@ -1419,7 +1446,10 @@ modeproj.enhancedbees=true;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
 
-			Color color = (Color.White * drawPlayer.stealth) * drawInfo.bodyColor.A;
+			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			if (drawPlayer.stealth > 0.95f)
+				color = Color.White * drawInfo.bodyColor.A;
+
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
 				color = drawInfo.bodyColor;
 
@@ -1670,15 +1700,17 @@ modeproj.enhancedbees=true;
 
 		}
 
-		public void DoExpertiseCheck(NPC npc)
+		public void DoExpertiseCheck(NPC npc,bool tempc=false)
 		{
-
-			if (npc==null)
-				return;
-			if (!npc.active)
-				return;
-			if (npc.lifeMax < 100)
-				return;
+			if (tempc == false)
+			{
+				if (npc == null)
+					return;
+				if (!npc.active)
+					return;
+				if (npc.lifeMax < 100)
+					return;
+			}
 			if (ExpertisePointsFromBosses == null)
 			{
 				Main.NewText("The enemy list was somehow null... HOW?!");

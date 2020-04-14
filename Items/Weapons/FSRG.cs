@@ -5,21 +5,22 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using SGAmod.Items.Weapons.SeriousSam;
 
 namespace SGAmod.Items.Weapons
 {
-	public class FSRG : ModItem
+	public class FSRG : SeriousSamWeapon
 	{
 		private int varityshot=0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("F.S.R.G");
-			Tooltip.SetDefault("Furious Sting-Ray Gun\nRapidly fires mutli-hitting flaming stingers that cause very few immunity frames");
+			Tooltip.SetDefault("'Furious Sting-Ray Gun'\nRapidly fires mutli-hitting flaming stingers that cause no immunity frames\nThese inflict Gourged and leave behind poison clouds\nStingers are most effective against larger enemies");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 25;
+			item.damage = 80;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -28,12 +29,12 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 2;
-			item.value = 200000;
+			item.value = 750000;
 			item.rare = 11;
 			item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shoot = 10;
-			item.shootSpeed = 50f;
+			item.shootSpeed = 20f;
 			item.useAmmo = AmmoID.Bullet;
 		}
 
@@ -55,15 +56,16 @@ namespace SGAmod.Items.Weapons
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{
-				Vector2 perturbedSpeed = (new Vector2(speedX, speedY)*speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0,100)/100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				Vector2 perturbedSpeed = (new Vector2(speedX, speedY)*speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0,100)/100f)) * .3f; // Watch out for dividing by 0 if there is only 1 projectile.
 				int proj=Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("FlamingStinger"), damage, knockBack, player.whoAmI);
 				Main.projectile[proj].friendly=true;
 				Main.projectile[proj].hostile=false;
-				Main.projectile[proj].timeLeft=60;
-				Main.projectile[proj].penetrate=3;
 				Main.projectile[proj].knockBack=item.knockBack;
+				Main.projectile[proj].ai[0] = (int)Main.rand.Next(0, 80);
+				Main.projectile[proj].netUpdate = true;
 				IdgProjectile.AddOnHitBuff(proj,BuffID.OnFire,60*6);
-				IdgProjectile.AddOnHitBuff(proj, BuffID.Poisoned, 60 * 6);
+				IdgProjectile.AddOnHitBuff(proj, mod.BuffType("Gourged"), 60 * 6);
+				IdgProjectile.Sync(proj);
 			}
 			return false;
 		}
@@ -74,8 +76,13 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("Gatlipiller"), 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
-			recipe.AddIngredient(ItemID.SoulofFright, 15);
-			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
+			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(ItemID.SDMG, 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			//recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
             recipe.AddRecipe();
 		}
@@ -97,6 +104,11 @@ namespace SGAmod.Items.Weapons
 			projectile.width = 8;
 			projectile.height = 8;
 			projectile.ranged = true;
+			projectile.extraUpdates = 3;
+			projectile.penetrate = 5;
+			projectile.timeLeft = 300;
+			projectile.localNPCHitCooldown = 3;
+			projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override string Texture
@@ -112,17 +124,26 @@ namespace SGAmod.Items.Weapons
 
 		public override void AI()
 		{
-        int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 6);
+			projectile.ai[0] += 1;
+			if (projectile.ai[0] % 40 == 0)
+			{
+				Vector2 avel = projectile.velocity.RotatedBy(MathHelper.ToRadians(projectile.ai[0] % 80==0 ? 90 : -90))/5f;
+				int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, avel.X, avel.Y, ProjectileID.SporeGas3, projectile.damage*3, projectile.knockBack, projectile.owner);
+				Main.projectile[proj].usesLocalNPCImmunity = true;
+				Main.projectile[proj].localNPCHitCooldown = -1;
+				Main.projectile[proj].scale = 0.5f;
+				Main.projectile[proj].extraUpdates = 1;
+				Main.projectile[proj].netUpdate = true;
+				IdgProjectile.AddOnHitBuff(proj, mod.BuffType("AcidBurn"), 60 * 2);
+				IdgProjectile.Sync(proj);
+			}
+
+			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 6);
         Main.dust[dust].scale = 0.8f;
         Main.dust[dust].noGravity = false;
         Main.dust[dust].velocity = projectile.velocity*(float)(Main.rand.Next(20,100)*0.005f);
         projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 		}
-
-    public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-        target.immune[projectile.owner] = 15;
-        }
 
 	}
 

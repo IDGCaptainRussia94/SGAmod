@@ -63,10 +63,11 @@ namespace SGAmod.Items
 		if (!NPC.AnyNPCs(mod.NPCType("Cratrosity"))){
 		Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
 
-						if (Main.netMode == 1)
-						{
-							ModPacket packet = mod.GetPacket();
-							packet.Write((byte)MessageType.CratrosityNetSpawn);
+					ply.ConsumeItem(ItemID.TempleKey);
+					if (Main.netMode > 0)
+					{
+						ModPacket packet = mod.GetPacket();
+							packet.Write((int)75);
 							packet.Write(mod.NPCType("CratrosityPML"));
 							packet.Write((int)(ply.Center.X	- 1600));
 							packet.Write(3200);
@@ -74,7 +75,6 @@ namespace SGAmod.Items
 							packet.Send();
 							//packet.Send(-1, ply.whoAmI);
 						}else{
-				ply.ConsumeItem(ItemID.TempleKey);
 				NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType("CratrosityPML"));
 					for (int num172 = 0; num172 < Main.maxPlayers; num172 = num172+1){
 					Player ply2=Main.player[num172];

@@ -22,7 +22,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 15;
+			item.damage = 13;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;
@@ -39,7 +39,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("CobaltWraithShard"), 2);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 2);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
 			recipe.AddIngredient(ItemID.MusketBall, 50);
 			recipe.AddTile(TileID.MythrilAnvil);

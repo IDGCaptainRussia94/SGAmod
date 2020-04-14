@@ -49,7 +49,7 @@ namespace SGAmod.NPCs.Murk
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
-            return !spawnInfo.playerInTown && SGAWorld.downedMurk>0 && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneJungle ? 0.12f : 0f;
+            return !spawnInfo.playerInTown && SGAWorld.downedMurk>1 && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneJungle ? 0.12f : 0f;
         }
 
         public override void NPCLoot()

@@ -43,7 +43,7 @@ namespace SGAmod.NPCs
             	npc.netAlways = true;
             	npc.HitSound = SoundID.NPCHit7;
             	npc.DeathSound = SoundID.NPCDeath6;
-            	npc.value = Item.buyPrice(0, 2);
+            	npc.value = Item.buyPrice(0, 0,50);
         	}
 
 		public override void AI()

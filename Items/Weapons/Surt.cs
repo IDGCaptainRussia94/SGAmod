@@ -333,7 +333,7 @@ namespace SGAmod.Items.Weapons
 			return false;
 		}
 
-		public override bool? CanHitNPC(NPC target)
+		public override bool CanDamage()
 		{
 			return false;
 		}
@@ -503,6 +503,7 @@ namespace SGAmod.Items.Weapons
 			projectile.melee = true;
 			projectile.localNPCHitCooldown = 2;
 			projectile.usesLocalNPCImmunity = true;
+			projectile.netImportant = true;
 		}
 
 		public override string Texture
@@ -600,6 +601,7 @@ namespace SGAmod.Items.Weapons
 			projectile.tileCollide = false;
 			projectile.timeLeft = 90;
 			projectile.penetrate = -1;
+			projectile.netImportant = true;
 			aiType = 0;
 		}
 

@@ -38,6 +38,7 @@ namespace SGAmod.Items.Weapons
             item.useTime = 16;
             item.useAnimation = 16;
             item.useStyle = 5;
+			item.crit = 10;
             item.channel = true;
             item.melee = true;
 			item.noMelee = true;
@@ -163,7 +164,7 @@ namespace SGAmod.Items.Weapons
 							float randomx = 64f;//Main.rand.NextFloat(54f, 96f);
 							Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
-							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*2, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
+							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
 							Main.projectile[thisone].timeLeft = 2;
 							Main.projectile[thisone].width = 200;
 							Main.projectile[thisone].height = 200;
@@ -181,7 +182,7 @@ namespace SGAmod.Items.Weapons
 							float randomx = 48f;//Main.rand.NextFloat(54f, 96f);
 							Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
-							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*2, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
+							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
 							Main.projectile[thisone].timeLeft = 2;
 							Main.projectile[thisone].width = 200;
 							Main.projectile[thisone].penetrate = 1;

@@ -2,7 +2,7 @@
 #define DEBUG
 #define DefineHellionUpdate
 
-using System.IO;
+
 using System;
 using Terraria;
 using Terraria.Graphics;
@@ -19,16 +19,20 @@ using Terraria.UI;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI;
 using Idglibrary;
+using System.IO;
 using System.Diagnostics;
 using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.World;
 using SGAmod.NPCs;
 using SGAmod.NPCs.Wraiths;
+using SGAmod.NPCs.Hellion;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Murk;
 using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.Cratrosity;
+using SGAmod.Items;
+using SGAmod.Items.Consumable;
 using Terraria.Achievements;
 using Terraria.GameContent.Achievements;
 //using SubworldLibrary;
@@ -60,7 +64,7 @@ namespace SGAmod
 		}
 	}*/
 
-	class SGAmod : Mod
+	public class SGAmod : Mod
 	{
 
 
@@ -81,7 +85,41 @@ namespace SGAmod
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
+		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
+		public static bool cachedata = false;
+
+		public int OSDetect()
+		{
+
+			OperatingSystem os = Environment.OSVersion;
+			PlatformID pid = os.Platform;
+			switch (pid)
+			{
+				case PlatformID.Win32NT:
+				case PlatformID.Win32S:
+				case PlatformID.Win32Windows:
+				case PlatformID.WinCE:
+					SGAmod.filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
+					return 0;
+					break;
+				case PlatformID.Unix:
+					SGAmod.filePath = "/home/"+ userName + "/.local/share/Terraria/ModLoader/SGAmod";
+					return 1;
+					break;
+				case PlatformID.MacOSX:
+					SGAmod.filePath = "/Users/" + userName + "/Library/Application Support/Terraria/ModLoader";
+					return 2;
+					break;
+				default:
+					Logger.Error("SGAmod cannot detect your OS, files might not be saved in the right places");
+					break;
+			}
+			return -1;
+
+
+
+		}
 
 		public SGAmod()
 		{
@@ -94,27 +132,6 @@ namespace SGAmod
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
-		}
-
-		public static void HellionWelcomesYou()
-		{
-
-			if (!Directory.Exists(filePath))
-			{
-				Directory.CreateDirectory(filePath);
-
-			}
-			File.WriteAllLines(filePath + "/It's not over yet.txt", new string[]
-			{"Congrats, you beat me, and this world, and prevented me from getting the Dragon... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated the strength of your avatar "+Main.LocalPlayer.name+", but now I know who I'm really fighting against.",
-				"If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' "+Main.LocalPlayer.name+" if I wanted to, but that wouldn't gain either of us anything now would it?",
-				"Come now, lets see if your up for a REAL challenge and if your really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
-				"See you soon, I'll be waiting "+userName,
-				"#Helen 'Helion' Weygold"
-
-
-		});
-			Process.Start(@"" + filePath + "");
-
 		}
 
 		public override void PreSaveAndQuit()
@@ -136,6 +153,7 @@ namespace SGAmod
 			SGAmod.ScrapCustomCurrencySystem = new ScrapMetalCurrency(ModContent.ItemType<Items.Scrapmetal>(), 999L);
 			SGAmod.ScrapCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(SGAmod.ScrapCustomCurrencySystem);
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
+			OSType =OSDetect();
 
 			if (Directory.Exists(filePath))
 			{
@@ -157,7 +175,6 @@ namespace SGAmod
 			{
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
-				//Filters.Scene["SGAmod:Shockwave"].Load();
 			}
 
 
@@ -166,48 +183,21 @@ namespace SGAmod
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
 			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
 
-
-			/*for (int spriteindex = 0; spriteindex < 100; spriteindex++)
-			{
-				int width = 32; int height = 3;
-				hellionLaserTex[spriteindex] = new Texture2D(Main.graphics.GraphicsDevice, width, height);
-				Color[] dataColors = new Color[width * height];
-
-				Color lerptocolor = Color.White;
-				//if (projectile.ai[1] < 100)
-				//lerptocolor = Color.Green;
-				float scroll = (float)spriteindex/100f;
-
-				if (hellionLaserTex[spriteindex] != null)
-				{
-					for (int y = 0; y < height; y++)
-					{
-						for (int x = 0; x < width; x += 1)
-						{
-
-							dataColors[(int)x + y * width] = Color.Lerp(Main.hslToRgb((((float)(Math.Sin((x) * (width / (float)Math.PI))) * (1f)) + scroll) % 1f, 0.75f, 0.5f), lerptocolor, 0.25f);
-						}
-
-					}
-
-					hellionLaserTex[spriteindex].SetData(dataColors);
-				}
-			}*/
-
 			//On.Terraria.Player.KillMe += Player_KillMe;
 		}
 
-		/*private void Player_KillMe(On.Terraria.Player.orig_KillMe orig, Player self, Terraria.DataStructures.PlayerDeathReason damageSource, double dmg, int hitDirection, bool pvp)
-		{
-			// 'orig' is a delegate that lets you call back into the original method.
-			// 'self' is the 'this' parameter that would have been passed to the original method.
 
-			if ((self.statLife-dmg)<0)
-				self.statLife = self.statLifeMax2;
-			else
-			orig.Invoke(self,damageSource,dmg,hitDirection,pvp);
+/*private void Player_KillMe(On.Terraria.Player.orig_KillMe orig, Player self, Terraria.DataStructures.PlayerDeathReason damageSource, double dmg, int hitDirection, bool pvp)
+{
+	// 'orig' is a delegate that lets you call back into the original method.
+	// 'self' is the 'this' parameter that would have been passed to the original method.
 
-		}*/
+	if ((self.statLife-dmg)<0)
+		self.statLife = self.statLifeMax2;
+	else
+	orig.Invoke(self,damageSource,dmg,hitDirection,pvp);
+
+}*/
 
 		public override uint ExtraPlayerBuffSlots => 14;
 
@@ -347,7 +337,10 @@ namespace SGAmod
 			if (bossList != null)
 			{
 				//bossList.Call("AddBoss", "TPD", 5.5f, (Func<bool>)(() => ExampleWorld.SGAWorld.downedTPD));
-				bossList.Call("AddBossWithInfo", "Copper Wraith", 0.05f, (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting the furnace,bars, and anything else made there", ItemType("WraithCoreFragment")));
+				//bossList.Call("AddBossWithInfo", "Copper Wraith", 0.05f, (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting the furnace,bars, and anything else made there", ItemType("WraithCoreFragment")));
+				bossList.Call("AddBoss", 0.05f, ModContent.NPCType<CopperWraith>(), this, "Copper Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), ModContent.ItemType<WraithCoreFragment>(), new List<int>() { ItemID.Furnace }, new List<int>() { ModContent.ItemType<WraithFragment>(), ModContent.ItemType<WraithFragment2>(), ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre, ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre }, "Use an [i:" + ItemType("WraithCoreFragment") + "] at anytime, defeat this boss to unlock crafting the furnace, bars, and anything else made there", "Copper Wraith makes a hasty retreat", "SGAmod/NPCs/Wraiths/CopperWraithLog");
+
+
 				bossList.Call("AddMiniBossWithInfo", "The Caliburn Guardians", 1.4f, (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a sprite you can retrive your reward by breaking the Alter; each guardian is stronger than the previous");
 				bossList.Call("AddBossWithInfo", "Spider Queen", 3.5f, (Func<bool>)(() => SGAWorld.downedSpiderQueen), string.Format("Use a [i:{0}] underground, anytime", ItemType("AcidicEgg")));
 				bossList.Call("AddMiniBossWithInfo", "Killer Fly Swarm", 5.4f, (Func<bool>)(() => SGAWorld.downedMurk > 0), string.Format("Use a [i:{0}] in the jungle", ItemType("RoilingSludge")));
@@ -363,7 +356,8 @@ namespace SGAmod
 				bossList.Call("AddBossWithInfo", "Luminite Wraith (Rematch)", 14.8f, (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), string.Format("Use a [i:{0}] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", ItemType("WraithCoreFragment3")));
 				bossList.Call("AddBossWithInfo", "Cratrogeddon", 15f, (Func<bool>)(() => SGAWorld.downedCratrosityPML), string.Format("Use a [i:{1}] with a [i:{0}] at night", ItemType("SalvagedCrate"), ItemID.TempleKey));
 				bossList.Call("AddBossWithInfo", "Supreme Pinky", 16f, (Func<bool>)(() => SGAWorld.downedSPinky), string.Format("Use a [i:{0}] anywhere at night", ItemType("Prettygel")));
-				bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 17.5f, (Func<bool>)(() => SGAWorld.downedHellion>1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
+				bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 17.5f, (Func<bool>)(() => Main.LocalPlayer.GetModPlayer<SGAPlayer>().downedHellion > 1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
+
 			}
 
 			Mod yabhb = ModLoader.GetMod("FKBossHealthBar");
@@ -492,13 +486,13 @@ namespace SGAmod
 			ItemID.Detonator,
 			ItemID.MetalDetector
 			});
-			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
+			RecipeGroup.RegisterGroup("SGAmod:TechStuff", group6);
 			group6 = new RecipeGroup(() => "Putrid Scent or Flesh Knuckles", new int[]
 {
 			ItemID.FleshKnuckles,
 			ItemID.PutridScent
 });
-			RecipeGroup.RegisterGroup("SGAmod:TechStuff", group6);
+			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
 
 
 
@@ -540,11 +534,13 @@ namespace SGAmod
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
-			int atype = reader.ReadByte();
-			MessageType type = (MessageType)atype;
+			Logger.Debug("--HandlePacket:--");
+			int atype = reader.ReadInt32();
+			//MessageType type = (MessageType)atype;
 
-			if (type == MessageType.CratrosityNetSpawn && Main.netMode > 0) {
+			if (atype == 75) {
 
+				Logger.Debug("DEBUG server: Summon Cratrosity");
 				int crate = reader.ReadInt32();
 				int vec1 = reader.ReadInt32();
 				int vec2 = reader.ReadInt32();
@@ -554,7 +550,7 @@ namespace SGAmod
 					//SgaLib.Chat("Test1",255,255,255);
 
 					ModPacket packet = GetPacket();
-					packet.Write((byte)MessageType.LockedinSetter);
+					packet.Write((int)499);
 					packet.Write(vec1);
 					packet.Write(vec2);
 					packet.Write(ply.whoAmI);
@@ -567,12 +563,12 @@ namespace SGAmod
 
 				}
 
-
+				return;
 			}
 
-			if (atype == (byte)1 && Main.netMode > 0)
+			if (atype == (int)999)
 			{
-
+				Logger.Debug("DEBUG server: Summon NPC");
 				int wherex = reader.ReadInt32();
 				int wherey = reader.ReadInt32();
 				int npc = reader.ReadInt32();
@@ -583,26 +579,60 @@ namespace SGAmod
 
 				Player ply = Main.player[reader.ReadInt32()];
 				NPC.NewNPC(wherex, wherey, npc, 0, ai1, ai2, ai3, ai4);
+				return;
 
 
 			}
 
+			if (atype == 250) {
+				NPC npc = new NPC();
+				Logger.Debug("DEBUG client: Grant Expertise");
+				int raderz = reader.ReadInt32();
+				npc.SetDefaults(raderz);
+				Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>().DoExpertiseCheck(npc,true);
+				return;
+			}
 
-			if (type == MessageType.ClientSendInfo) {
+			/*				ModPacket packet = SGAmod.Instance.GetPacket();
+				packet.Write(500);
+				packet.Write(player.whoAmI);
+				packet.Write((short)ammoLeftInClip);
+				packet.Write(sufficate);
+				packet.Write(PrismalShots);
+				packet.Write(plasmaLeftInClip);
+				packet.Write((short)Redmanastar);				
+				packet.Write(ExpertiseCollected);
+				packet.Write(ExpertiseCollectedTotal);
+				for (int i = 54; i < 58; i++)
+				{
+					packet.Write(ammoinboxes[i - 54]);
+				}
+				packet.Send();*/
+
+			if (atype == 500) {
+				Logger.Debug("DEBUG both: Clone Client");
 				int player = reader.ReadInt32();
-				int ammoLeftInClip = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 1");
+				int ammoLeftInClip = reader.ReadInt16();
+				Logger.Debug("DEBUG both: Clone Client 2");
 				int sufficate = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 3");
 				int PrismalShots = reader.ReadInt32();
-				int devpower = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 4");
 				int plasmaLeftInClip = reader.ReadInt32();
-				int Redmanastar = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 5");
+				int Redmanastar = reader.ReadInt16();
+				Logger.Debug("DEBUG both: Clone Client 6");
 				int ExpertiseCollected = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 7");
 				int ExpertiseCollectedTotal = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 8");
+
+
 				SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
 				sgaplayer.ammoLeftInClip = ammoLeftInClip;
 				sgaplayer.sufficate = sufficate;
 				sgaplayer.PrismalShots = PrismalShots;
-				sgaplayer.devpower = devpower;
 				sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
 				sgaplayer.Redmanastar = Redmanastar;
 				sgaplayer.ExpertiseCollected = ExpertiseCollected;
@@ -611,9 +641,12 @@ namespace SGAmod
 				{
 					sgaplayer.ammoinboxes[i - 54] = reader.ReadInt32();
 				}
+				Logger.Debug("DEBUG both: Clone Client 9");
+				return;
 			}
 
-			if (type == MessageType.LockedinSetter) {
+			if (atype == 499) {
+				Logger.Debug("DEBUG both: Lock Player");
 				//Main.NewText("Test2",255,255,255);
 				Vector2 Vect = new Vector2(reader.ReadInt32(), reader.ReadInt32());
 				Player sender = Main.player[reader.ReadInt32()];
@@ -627,9 +660,19 @@ namespace SGAmod
 					modplayer = ply.GetModPlayer<SGAPlayer>();
 					modplayer.Locked = Vect;
 				}
+				return;
 			}
 
 
+		}
+
+		public override void UpdateUI(GameTime gameTime)
+		{
+			if (!Main.dedServ)
+			{
+				HellionBeam.UpdateHellionBeam();
+				ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
+			}
 		}
 
 

@@ -36,6 +36,8 @@ namespace SGAmod.Items.Weapons
 				grenadetypes.Add(ItemID.MolotovCocktail);
 				grenadetypes.Add(ItemID.Bone);
 				grenadetypes.Add(ItemID.Ale);
+				grenadetypes.Add(ItemID.SpikyBall);
+				grenadetypes.Add(mod.ItemType("ThrowableTrapSpikyball"));
 			}
 
 			if (level == 2)
@@ -117,20 +119,26 @@ namespace SGAmod.Items.Weapons
 
 			Vector2 basespeed = new Vector2(speedX, speedY);
 			float speedbase = basespeed.Length()*player.thrownVelocity;
+
 			basespeed.Normalize();
 
 			Item basetype2 = new Item();
-			basetype2.SetDefaults(FindItem(basetype));
+			int itemtype = FindItem(basetype);
+			basetype2.SetDefaults(itemtype);
 			float baseumtli = (item.useTime/player.GetModPlayer<SGAPlayer>().ThrowingSpeed) /60f;
 			player.itemAnimation = (int)(basetype2.useAnimation* baseumtli);
 			player.itemAnimationMax = (int)(basetype2.useAnimation* baseumtli);
 			player.itemTime = (int)(basetype2.useTime* baseumtli);
 			type = FindProjectile(basetype2.shoot, basetype);
+
+			if (itemtype == mod.ItemType("ThrowableTrapSpikyball"))
+				speedbase /= 4f;
+
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;
 			speedY = basespeed.Y;
 			//if (type!=mod.ProjectileType("CelestialCocktailProj"))
-			damage += (int)(basetype2.damage * player.thrownDamage);
+			damage += (int)((float)basetype2.damage * player.thrownDamage);
 			//else
 			//damage = (int)(basetype2.damage * player.thrownDamage);
 

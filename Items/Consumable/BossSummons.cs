@@ -47,7 +47,8 @@ namespace SGAmod.Items.Consumable
 		public override bool UseItem(Player player)
 		{
 			if (item.consumable==false){
-			Main.NewText("Our time has not yet come",25, 25, 80);
+				if (player == Main.LocalPlayer)
+					Main.NewText("Our time has not yet come",25, 25, 80);
 			return false;
 			}else{
 			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("LuminiteWraith"));
@@ -185,6 +186,7 @@ namespace SGAmod.Items.Consumable
 			if (player.ZoneBeach && !NPC.AnyNPCs(mod.NPCType("SharkvernHead"))){
 			return true;
 			}else{
+				if (player==Main.LocalPlayer)
 			Main.NewText("The couch blows but no waves are shaken by its ring...",100, 100, 250);
 			return false;
 
@@ -254,7 +256,8 @@ namespace SGAmod.Items.Consumable
 			}
 			else
 			{
-				Main.NewText("There are no spiders here, try using it underground", 30, 200, 30);
+				if (player == Main.LocalPlayer)
+					Main.NewText("There are no spiders here, try using it underground", 30, 200, 30);
 				return false;
 
 			}
@@ -305,7 +308,8 @@ namespace SGAmod.Items.Consumable
 			if (player.ZoneJungle && !NPC.AnyNPCs(mod.NPCType("Murk")) && !NPC.AnyNPCs(mod.NPCType("BossFlyMiniboss1"))){
 			return true;
 			}else{
-			Main.NewText("There is a lack of mud and sludge for Murk to even exist here...",40, 180, 60);
+				if (player == Main.LocalPlayer)
+					Main.NewText("There is a lack of mud and sludge for Murk to even exist here...",40, 180, 60);
 			return false;
 
 			}
@@ -352,7 +356,8 @@ namespace SGAmod.Items.Consumable
 			{
 			return true;
 			}else{
-			Main.NewText("this gel shimmers only in moonlight...",100, 40, 100);
+				if (player == Main.LocalPlayer)
+					Main.NewText("this gel shimmers only in moonlight...",100, 40, 100);
 			return false;
 			}
 		}
@@ -438,7 +443,8 @@ namespace SGAmod.Items.Consumable
 		{
 			if (item.consumable == false)
 			{
-				Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);
+				if (player == Main.LocalPlayer)
+					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);
 			}
 			else
 			{
@@ -505,7 +511,8 @@ namespace SGAmod.Items.Consumable
 		{
 			if (item.consumable == false || Main.dayTime)
 			{
-				Main.NewText("Their terror only rings at night", 150, 5, 5);
+				if (player == Main.LocalPlayer)
+					Main.NewText("Their terror only rings at night", 150, 5, 5);
 			}
 			else
 			{

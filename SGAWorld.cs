@@ -67,48 +67,58 @@ namespace SGAmod
         //Initialize all variables to their default values
         public override void Initialize()
         {
-            Instance = this;
-            Main.invasionSize = 0;
-            customInvasionUp = false;
-            downedCustomInvasion = false;
-            downedSPinky = false;
-            downedTPD = false;
-            downedSpiderQueen = false;
-            downedHarbinger = false;
-            downedWraiths = 0;
-            downedMurk = 0;
-            downedMurklegacy = false;
-            downedCaliburnGuardians = 0;
-            downedCaliburnGuardiansPoints = 0;
-            downedCirno = false;
-            downedSharkvern = false;
-            overalldamagedone = 0;
-            downedCratrosity = false;
-            tf2cratedrops = false;
-            tf2quest = 0;
-            bossprgressor = 0;
-            modtimer = 0;
-            for (int f = 0; f < CaliburnAlterCoordsX.Length; f++)
+            if (SGAmod.cachedata == false)
             {
-                CaliburnAlterCoordsX[f] = 0;
-                CaliburnAlterCoordsY[f] = 0;
+                Instance = this;
+                Main.invasionSize = 0;
+                customInvasionUp = false;
+                downedCustomInvasion = false;
+                downedSPinky = false;
+                downedTPD = false;
+                downedSpiderQueen = false;
+                downedHarbinger = false;
+                downedWraiths = 0;
+                downedMurk = 0;
+                downedMurklegacy = false;
+                downedCaliburnGuardians = 0;
+                downedCaliburnGuardiansPoints = 0;
+                downedCirno = false;
+                downedSharkvern = false;
+                overalldamagedone = 0;
+                downedCratrosity = false;
+                tf2cratedrops = false;
+                tf2quest = 0;
+                bossprgressor = 0;
+                modtimer = 0;
+                for (int f = 0; f < CaliburnAlterCoordsX.Length; f++)
+                {
+                    CaliburnAlterCoordsX[f] = 0;
+                    CaliburnAlterCoordsY[f] = 0;
+                }
+                WorldIsTin = WorldGen.oreTier1 != TileID.Copper;
+                int x = 0;
+                for (x = 0; x < questvars.Length; x++)
+                {
+                    questvars[x] = 0;
+                }
             }
-        WorldIsTin = WorldGen.oreTier1 != TileID.Copper;
-            int x = 0;
-            for (x = 0; x < questvars.Length; x++) {
-                questvars[x] = 0;
-            }
+            SGAmod.cachedata = false;
         }
 
 
         public static void QuestCheck(int questtype, Player ply)
         {
             ply.GetModPlayer<SGAPlayer>().upgradetf2();
+            if (tf2cratedrops == false)
+            {
+                tf2cratedrops = true;
+                Idglib.Chat("<Contracker> Crates have began to drop for everyone!", 255, 255, 255);
+            }
             if (tf2questcounter < 1) {
                 if (questtype == 0) {
                     if (tf2quest < 1 && GetInstance<SGAConfig>().Contracker) {
                         tf2quest = 1;
-                        SgaLib.Chat("<Contracker> The TF2 questline has began!", 255, 255, 255);
+                        Idglib.Chat("<Contracker> The TF2 questline has began!", 255, 255, 255);
                     }
                     if (tf2quest == 2) {
                         if (questvars[0] < 1000) { SgaLib.Chat("<Contracker> You have killed " + questvars[0] + "/1000 enemies", 255, 255, 255);
@@ -120,11 +130,11 @@ namespace SGAmod
                     if (tf2quest == 4) {
                         int goldcount = ply.CountItem(ItemID.GoldBar);
                         if (goldcount < 100) {
-                            SgaLib.Chat("<Contracker> You have " + goldcount + "/100 Gold Bars", 255, 255, 255);
+                            Idglib.Chat("<Contracker> You have " + goldcount + "/100 Gold Bars", 255, 255, 255);
                         } else {
                             for (int x = 0; x < 100; x++) { ply.ConsumeItem(ItemID.GoldBar); }
                             tf2quest = 5;
-                            SgaLib.Chat("Your world has been blessed with Australium!", 255, 255, 102);
+                            Idglib.Chat("Your world has been blessed with Australium!", 255, 255, 102);
                             GenAustralium();
                         }
                     }
@@ -304,6 +314,7 @@ namespace SGAmod
             //if (downedSPinky) downed.Add("downedSPinky");
             //if (downedTPD) downed.Add("downedTPD");
             TagCompound tag = new TagCompound();
+            tag["tf2cratedrops"] = tf2cratedrops;
             tag["downedCustomInvasion"] = downedCustomInvasion;
             tag["downedSPinky"] = downedSPinky;
             tag["downedTPD"] = downedTPD;
@@ -329,7 +340,6 @@ namespace SGAmod
                 string tagname = "questvars" + ((string)x.ToString());
                 tag[tagname] = questvars[x];
             }
-            tag["tf2cratedrops"] = tf2cratedrops;
             for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
             {
                 string tagname = "CaliburnAlterCoordsX_" + ((string)x.ToString());
@@ -353,6 +363,7 @@ namespace SGAmod
         {
             WorldIsTin = WorldGen.oreTier1 == TileID.Tin;
             //var downed = tag.GetList<string>("downed");
+            tf2cratedrops = tag.GetBool("tf2cratedrops");
             downedCustomInvasion = tag.GetBool("customInvasion");
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
@@ -378,7 +389,6 @@ namespace SGAmod
                 string tagname = "questvars" + ((string)x.ToString());
                 if (tag.ContainsKey(tagname)) { questvars[x] = tag.GetInt(tagname); }
             }
-            tf2cratedrops = tag.GetBool("tf2cratedrops");
             for (x = 0; x < CaliburnAlterCoordsX.Length; x++)
             {
                 string tagname = "CaliburnAlterCoordsX_" + ((string)x.ToString());
@@ -397,8 +407,12 @@ namespace SGAmod
         //Sync downed data
         public override void NetSend(BinaryWriter writer)
         {
+            writer.Write(tf2cratedrops);
             BitsByte flags = new BitsByte(); flags[0] = downedCustomInvasion; flags[1] = downedSPinky; flags[2] = downedTPD; flags[3] = downedCratrosity; flags[4] = downedCirno; flags[5] = downedSharkvern; flags[6] = downedHarbinger; writer.Write(flags);
             flags[7] = GennedVirulent; writer.Write(flags);
+            BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML;
+            flags[2] = downedCratrosityPML; flags[3] = downedCratrosityPML; flags[4] = downedCratrosityPML; flags[5] = downedCratrosityPML; flags[6] = downedCratrosityPML; flags[7] = downedCratrosityPML;
+            writer.Write(flags2);
             writer.Write(overalldamagedone);
             writer.Write(downedWraiths);
             writer.Write(downedMurk);
@@ -407,12 +421,9 @@ namespace SGAmod
             writer.Write(downedCaliburnGuardiansPoints);
             writer.Write(tf2quest);
             writer.Write(bossprgressor);
-            writer.Write(tf2cratedrops);
             writer.Write(modtimer);
-            writer.Write(NightmareHardcore);
+            writer.Write((short)NightmareHardcore);
             //writer.Write(NightmareHardcore);
-             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML;
-            writer.Write(flags2);
             int x = 0;
 
             for (x = 0; x < questvars.Length; x++)
@@ -433,7 +444,9 @@ namespace SGAmod
         //Sync downed data
         public override void NetReceive(BinaryReader reader)
         {
+            tf2cratedrops = reader.ReadBoolean();
             BitsByte flags = reader.ReadByte(); downedCustomInvasion = flags[0]; downedSPinky = flags[1]; downedTPD = flags[2]; downedCratrosity = flags[3]; downedCirno = flags[4]; downedSharkvern = flags[5]; downedHarbinger = flags[6];
+            BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0]; downedCratrosityPML = flags2[1];
             GennedVirulent = flags[7];
             overalldamagedone = reader.ReadInt32();
             downedWraiths = reader.ReadInt32();
@@ -443,11 +456,9 @@ namespace SGAmod
             downedCaliburnGuardiansPoints = reader.ReadInt32();
             tf2quest = reader.ReadInt32();
             bossprgressor = reader.ReadInt32();
-            tf2cratedrops = reader.ReadBoolean();
             modtimer = reader.ReadInt32();
             NightmareHardcore = reader.ReadInt16();
             //NightmareHardcore = reader.ReadInt32();
-            BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0]; downedCratrosityPML = flags2[0];
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
@@ -462,6 +473,7 @@ namespace SGAmod
             {
                 oretypesprehardmode[x] = reader.ReadInt32();
             }
+            reader.ReadByte();
         }
 
 
@@ -549,7 +561,10 @@ namespace SGAmod
 
         public static int RaycastDownWater(int x, int y, int check)
         {
-            while (Main.tile[x, y].liquid < check)
+            x = (int)MathHelper.Clamp(x, 0, Main.maxTilesX);
+            y = (int)MathHelper.Clamp(y, 0, Main.maxTilesY);
+            int startingy = y;
+            while (Main.tile[x, y].liquid < check && y > Main.maxTilesY-5)
             {
                 y++;
             }
@@ -609,9 +624,8 @@ namespace SGAmod
             }
             Hellion.HellionManager();
 
-
-
-            int width = 32; int height = 256;
+            /*
+             * int width = 32; int height = 256;
             SGAmod.hellionLaserTex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
             Color[] dataColors = new Color[width * height];
 
@@ -619,8 +633,6 @@ namespace SGAmod
             //if (projectile.ai[1] < 100)
             //    lerptocolor = Color.Green;
             float scroll = (float)SGAWorld.modtimer;
-
-            ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
 
             if (SGAWorld.updatelasers) {
 
@@ -638,7 +650,9 @@ namespace SGAmod
                 SGAWorld.updatelasers = false;
 
                 SGAmod.hellionLaserTex.SetData(dataColors);
+                
             }
+            */
 
             /*if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
             {

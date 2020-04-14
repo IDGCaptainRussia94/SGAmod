@@ -412,7 +412,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lifeforce Quintessence");
-			Tooltip.SetDefault("You consume healing potions instead of dying when taking fatal damage and use mana potions when needed\nEffects of Obsidian Rose, 5% reduced mana costs");
+			Tooltip.SetDefault("You consume healing potions instead of dying when taking fatal damage\nUse mana potions when needed\nEffects of Obsidian Rose, 5% reduced mana costs");
 		}
 
 		public override void SetDefaults()
@@ -906,7 +906,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 15% increased Tech damage, and Grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jagged Overgrown Spike and Jury Rigged Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 20% increased Trap armor penetration\n15% increased Technological damage, and Grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jagged Overgrown Spike and Jury Rigged Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -932,6 +932,7 @@ public class BlinkTechGear : IdolOfMidas
 			player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.thrownCrit += 5;
 			player.GetModPlayer<SGAPlayer>().maxblink += hideVisual ? 0 : 60 * 6;
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.25f;
+			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.20f;
 			player.GetModPlayer<SGAPlayer>().techdamage += 0.15f;
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<JaggedOvergrownSpike>().UpdateAccessory(player, hideVisual);
@@ -1167,7 +1168,7 @@ public class BlinkTechGear : IdolOfMidas
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Flawed Imm0rtality Pr0t0call");
+			DisplayName.SetDefault("Flawed 1mm0rtal1ty Pr0t0call");
 			Tooltip.SetDefault("'A fragment of Hellion's sheer power... Too bad it hardly even works'\nGrants 1000 defense! But getting hit causes you to lose it for 5 seconds");
 		}
 
@@ -1661,6 +1662,151 @@ public class BlinkTechGear : IdolOfMidas
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			target.AddBuff(BuffID.Frostburn, 60 * 4);
+		}
+
+	}
+
+	public class GreenApocalypse : DarkApocalypse
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Herald of Death");
+			Tooltip.SetDefault("'and now, the 4th seal is broken'\ngrants 50% increased Apocalyptical Strength\nAnd 4% throwing Apocalyptical chance while mounted\n" + Idglib.ColorText(Color.Red, "But your damage taken is slightly increased"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.rare = 8;
+			item.accessory = true;
+		}
+
+		public override void OnWear(SGAPlayer player)
+		{
+			player.damagetaken += 0.1f;
+			player.apocalypticalChance[3] += 4.0;
+		}
+	}
+
+	public class FireApocalypse : DarkApocalypse
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Herald of War");
+			Tooltip.SetDefault("'then the 2nd seal was broken'\ngrants 50% increased Apocalyptical Strength\nAnd 4% melee Apocalyptical chance while mounted\n" + Idglib.ColorText(Color.Red, "But enemy spawn rates are increased"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.rare = 8;
+			item.accessory = true;
+		}
+
+		public override void OnWear(SGAPlayer player)
+		{
+			player.morespawns += 0.5f;
+			player.apocalypticalChance[2] += 4.0;
+		}
+	}
+
+	public class WhiteApocalypse : DarkApocalypse
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Herald of Pestilence");
+			Tooltip.SetDefault("'the 1st seal is broken'\ngrants 50% increased Apocalyptical Strength\nAnd 4% magic Apocalyptical chance while mounted\n" + Idglib.ColorText(Color.Red, "But may inflict bleeding randomly"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.rare = 8;
+			item.accessory = true;
+		}
+
+		public override void OnWear(SGAPlayer player)
+		{
+			if (Main.rand.Next(0,300)==1)
+			player.player.AddBuff(BuffID.Bleeding, 200);
+			player.apocalypticalChance[2] += 4.0;
+		}
+	}
+
+		public class DarkApocalypse : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Herald of Famine");
+			Tooltip.SetDefault("'thus the 3nd seal was broken'\ngrants 50% increased Apocalyptical Strength\nAnd 4% ranged Apocalyptical chance while mounted\n" + Idglib.ColorText(Color.Red,"But will nullify the effects of Well Fed"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.rare = 8;
+			item.accessory = true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "Limited to 1 saddle at a time")));
+			tooltips.Add(new TooltipLine(mod, "saddletext", SGAGlobalItem.apocalypticaltext));
+		}
+
+		public virtual void OnWear(SGAPlayer player)
+		{
+			player.player.buffImmune[BuffID.WellFed] = true;
+			player.apocalypticalChance[1] += 4.0;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			if (player.mount.Active)
+			{
+				OnWear(sgaplayer);
+				sgaplayer.apocalypticalStrength += 0.50f;
+			}
+		}
+
+		public override bool CanEquipAccessory(Player player, int slot)
+		{
+			bool canequip = true;
+			for (int x = 3; x < 8 + player.extraAccessorySlots; x++)
+			{
+				if (player.armor[x].modItem != null)
+				{
+					Type myclass = player.armor[x].modItem.GetType();
+					if (myclass.BaseType == typeof(DarkApocalypse) || myclass == typeof(DarkApocalypse))
+					{
+
+						//if (myType==mod.ItemType("MiningCharmlv1") || myType==mod.ItemType("MiningCharmlv2") || myType == mod.ItemType("MiningCharmlv3")){
+						canequip = false;
+						break;
+					}
+				}
+			}
+			return canequip;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SlimySaddle, 1);
+			recipe.AddIngredient(ItemID.HardySaddle, 1);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 
 	}

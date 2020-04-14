@@ -252,11 +252,9 @@ namespace SGAmod.Items.Weapons
 					for (int i = 2; i < 8; i += 1)
 					{
 
-						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), (new Vector2(perturbedSpeed.X, perturbedSpeed.Y) * 2f).RotatedByRandom((MathHelper.ToRadians((i * 75))) * accuracy).RotatedByRandom(MathHelper.ToRadians(160f)* accuracy), ProjectileID.UFOLaser, (int)((projectile.damage*0.60f) * damagescale), projectile.knockBack / 10f, owner.whoAmI);
+						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), (new Vector2(perturbedSpeed.X, perturbedSpeed.Y) * 2f).RotatedByRandom((MathHelper.ToRadians((i * 75))) * accuracy).RotatedByRandom(MathHelper.ToRadians(160f)* accuracy), mod.ProjectileType("RainbowBolt"), (int)((projectile.damage*0.60f) * damagescale), projectile.knockBack / 10f, owner.whoAmI);
 						Main.projectile[proj].magic = true;
 						Main.projectile[proj].minion = false;
-						Main.projectile[proj].timeLeft = 200;
-						Main.projectile[proj].penetrate = 1;
 						IdgProjectile.Sync(proj);
 					}
 
@@ -352,6 +350,70 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+	public class RainbowBolt : ModProjectile
+	{
+		Color rainbows = Color.White;
+		public override void SetDefaults()
+		{
+			projectile.width = 4;
+			projectile.height = 4;
+			projectile.aiStyle = -1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = 1;
+			projectile.magic = true;
+			projectile.timeLeft = 200;
+			projectile.light = 0.1f;
+			projectile.extraUpdates = 300;
+			aiType = -1;
+			Main.projFrames[projectile.type] = 1;
+			rainbows = Main.hslToRgb(((Main.rand.NextFloat() * 0.40f) + Main.GlobalTime) % 1f, 0.9f, 0.75f);
+		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/HavocGear/Projectiles/BoulderBlast"; }
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Enmity Bolt");
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.Kill();
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 1f;
+				int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.AncientLight, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, rainbows, 2.0f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].velocity *= 0.5f;
+			}
+
+
+			return true;
+		}
+
+		public override void AI()
+		{
+			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.AncientLight, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, rainbows, 1.5f);
+			Main.dust[num655].noGravity = true;
+			Main.dust[num655].velocity *= 0.5f;
+
+			if (projectile.localAI[1] == 0f)
+			{
+				projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X) + 1.57f;
+			}
+		}
+	}
+
 
 	public class Maldal : ElementalCascade
 	{
@@ -421,6 +483,7 @@ namespace SGAmod.Items.Weapons
 					int probg = Projectile.NewProjectile(player.Center.X + a*10f, player.Center.Y+i*10f, 0,0, type, damage, knockBack, player.whoAmI);
 					Main.projectile[probg].friendly = true;
 					Main.projectile[probg].hostile = false;
+					Main.projectile[probg].netUpdate = true;
 					IdgProjectile.Sync(probg);
 
 				}
@@ -468,6 +531,8 @@ namespace SGAmod.Items.Weapons
 					Main.projectile[thisone].localNPCHitCooldown = -1;
 					Main.projectile[thisone].scale = 0.001f;
 					Main.projectile[thisone].netUpdate = true;
+					IdgProjectile.Sync(thisone);
+
 
 				}
 			}
@@ -482,8 +547,7 @@ namespace SGAmod.Items.Weapons
 				projectile.friendly = true;
 				projectile.tileCollide = true;
 				projectile.magic = true;
-				projectile.timeLeft = 900;
-				projectile.extraUpdates = 1;
+				projectile.timeLeft = 450;
 				aiType = ProjectileID.Bullet;
 			}
 

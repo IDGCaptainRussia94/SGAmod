@@ -35,4 +35,21 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().Gourged = true;
 		}
 	}
+	public class TechnoCurse : ModBuff
+	{
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/AcidBurn";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Techno Curse");
+			Description.SetDefault("Technological damage is reduced by 50%");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}
 }

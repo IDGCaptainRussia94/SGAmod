@@ -1004,7 +1004,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("EA Logo");
-			Tooltip.SetDefault("While in your inventory: you can reforge unique prefixes for accessories that let you charge maximum mirco-transactions against your town NPCs\nYou automatically collect taxes while you have a Tax Collector\nPress the 'Collect Taxes' hotkey to collect a gold coin from your tax collector's purse\n'EA! It's NOT in the game, that's DLC!'");
+			Tooltip.SetDefault("Lets you charge maximum mirco-transactions against your town NPCs\nWhile in your inventory: you can reforge unique prefixes for accessories\nYou automatically collect taxes while you have a Tax Collector\nPress the 'Collect Taxes' hotkey to collect a gold coin from your tax collector's purse\n'EA! It's NOT in the game, that's DLC!'");
 		}
 
 	}

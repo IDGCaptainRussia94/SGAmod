@@ -103,7 +103,7 @@ if (npc.ai[0]%1800>1200){
 				dust.color=Main.hslToRgb((float)(npc.ai[0]/300)%1, 1f, 1f);
 
 if (npc.ai[0]%1800>1350 && npc.ai[0]%6==0 && npc.ai[0]%1800<1700){
-List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0f,8f),ProjectileID.PhantasmalBolt,18,(float)Main.rand.Next(200,240)*0.1f,30,1,true,npc.ai[0]/300f,false,250);
+List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0f,8f),ProjectileID.PhantasmalBolt,20,(float)Main.rand.Next(200,240)*0.1f,30,1,true,npc.ai[0]/300f,false,250);
 }
 }else{
 
@@ -127,7 +127,7 @@ npc.velocity+=orgin/800f;
 if (npc.ai[0]%300>200){
 npc.velocity/=2f;
 if (npc.ai[0]%300>260 && npc.ai[0]%10==0){
-List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PhantasmalBolt,18,(float)Main.rand.Next(160,200)*0.1f,30,1,true,(float)Main.rand.Next(-200,200)/2000f,false,250);
+List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PhantasmalBolt,10,(float)Main.rand.Next(160,200)*0.1f,30,1,true,(float)Main.rand.Next(-200,200)/2000f,false,250);
 }}
 }
 
@@ -807,10 +807,10 @@ public void DoAIStuff(Player P){
 					npc.damage = (int)npc.defDamage * 5;
 					itt = (P.Center - npc.Center + new Vector2((float)Math.Cos((float)angle) * npc.ai[1], (float)Math.Sin((float)angle) * npc.ai[1]));
 					npc.rotation = npc.rotation + (0.65f * npc.spriteDirection);
-					if (npc.ai[0] % 30 == 0)
+					if (npc.ai[0] % 50 == 0)
 					{
 						Vector2 itt2 = itt; itt2.Normalize();
-						npc.velocity = (itt2 * 40f);
+						npc.velocity = (itt2 * 60f);
 					}
 					npc.velocity = npc.velocity * 0.95f;
 
@@ -1033,11 +1033,11 @@ public void DoAIStuff(Player P){
 			if (npc.ai[3]==ItemID.SpectreRobe){
 
 			if (npc.ai[0]%400<100 && npc.ai[0]%8==0){
-			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,25,(float)(Main.rand.Next(180,220))*0.1f,30,1,true,0,false,400);
+			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,20,(float)(Main.rand.Next(180,220))*0.1f,30,1,true,0,false,400);
 			//itz[0].aiStyle=0;
 			}
 			if (npc.ai[0]%500==0){
-			List<Projectile> itz=Idglib.Shattershots(npc.position,npc.position+new Vector2(0,200),new Vector2(0,0),ProjectileID.DiamondBolt,50,10,360,20,true,0,true,400);
+			List<Projectile> itz=Idglib.Shattershots(npc.position,npc.position+new Vector2(0,200),new Vector2(0,0),ProjectileID.DiamondBolt,40,10,360,20,true,0,true,400);
 			//itz[0].aiStyle=0;
 			}
 
@@ -1190,13 +1190,13 @@ public void DoAIStuff(Player P){
 
 					if (npc.ai[3]==ItemID.SpectrePants){
 
-			if (npc.ai[0]%500<200 && npc.ai[0]%5==0){
-			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,25,10f,30,1,true,0,false,200);
+			if (npc.ai[0]%500<200 && npc.ai[0]%8==0){
+			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,20,10f,30,1,true,0,false,200);
 			itz[0].damage=50;
 			float ogspeed=itz[0].velocity.Length();
 			itz[0].velocity.Normalize();
 			itz[0].velocity.X/=2f;
-			itz[0].velocity.Y+=itz[0].velocity.Y>0 ? 2f : -2;
+			itz[0].velocity.Y+=itz[0].velocity.Y>0 ? 1.25f : -1.25f;
 			itz[0].velocity*=ogspeed;
 			//itz[0].aiStyle=0;
 			}
@@ -1271,7 +1271,7 @@ public void DoAIStuff(Player P){
 					if (npc.ai[3]==ItemID.TikiMask){
 
 			if (npc.ai[0]%600<100 && npc.ai[0]%15==0){
-			List<Projectile> itz=Idglib.Shattershots(new Vector2(Main.rand.Next(-15,15)+npc.Center.X,npc.Center.Y+Main.rand.Next(0,30)),P.position,new Vector2(P.width,P.height-300),ProjectileID.BeeHive,20,Main.rand.Next(120,250)/10,30,1,true,0,false,80);
+			List<Projectile> itz=Idglib.Shattershots(new Vector2(Main.rand.Next(-15,15)+npc.Center.X,npc.Center.Y+Main.rand.Next(0,30)),P.position,new Vector2(P.width,P.height-300),ProjectileID.BeeHive,10,Main.rand.Next(120,250)/10,30,1,true,0,false,80);
 			itz[0].damage=50;
 			//int newguy=NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-12,12), (int)npc.Center.Y-10, NPCID.Bee);
 			//itz[0].aiStyle=0;
@@ -1295,7 +1295,7 @@ public void DoAIStuff(Player P){
 			if (npc.ai[3]==ItemID.VortexHelmet){
 
 			if (npc.ai[0]%400<200 && npc.ai[0]%20==0){
-			List<Projectile> itz=Idglib.Shattershots(new Vector2(Main.rand.Next(-500,500)+npc.Center.X,npc.Center.Y+Main.rand.Next(-250,-100)),P.position,new Vector2(P.width,P.height),ProjectileID.VortexVortexLightning,50,0f,30,1,true,0,false,400);
+			List<Projectile> itz=Idglib.Shattershots(new Vector2(Main.rand.Next(-500,500)+npc.Center.X,npc.Center.Y+Main.rand.Next(-250,-100)),P.position,new Vector2(P.width,P.height),ProjectileID.VortexVortexLightning,30,0f,30,1,true,0,false,400);
 			itz[0].damage=150;
 			//itz[0].aiStyle=0;
 			}

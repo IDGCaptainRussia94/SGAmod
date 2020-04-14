@@ -40,6 +40,7 @@ namespace SGAmod
 		public bool HellionArmy = false;
 		public bool Sodden = false;
 		public bool ELS = false;
+		public bool TimeSlowImmune = false;
 		bool fireimmunestate=false;
 		bool[] otherimmunesfill=new bool[3];
 
@@ -68,6 +69,7 @@ truthbetold=reader.ReadFloat32();
 
 		public override void ResetEffects(NPC npc)
 		{
+			immunitetolightning -= 1;
 			MassiveBleeding = false;
 			thermalblaze = false; acidburn = false;
 			Gourged =false;
@@ -90,6 +92,13 @@ truthbetold=reader.ReadFloat32();
 
 			}
 			return true;
+		}
+
+		public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+		{
+			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
+			spawnRate = (int)(spawnRate/ spawnrate2);
+			maxSpawns += (int)((spawnrate2-1) * 10f);
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -390,7 +399,6 @@ return true;
         InfinityWarStormbreakerint=10;
         if (InfinityWarStormbreakerint>0)
         InfinityWarStormbreakerint-=1;
-        immunitetolightning-=1;
 
         fireimmunestate=npc.buffImmune[BuffID.OnFire];
         for (int i = 0; i < SGAmod.otherimmunes.Length;i++ ){
@@ -445,11 +453,9 @@ return true;
 						npc.immune[i] = Math.Max(npc.immune[i]-3,0);
 				}
 			}
-			if (TimeSlow > 0)
+			if (TimeSlow > 0 && !TimeSlowImmune)
 			{
 				npc.position -= npc.velocity-(npc.velocity / (1+TimeSlow));
-
-
 			}
 			TimeSlow = 0;
 		}
@@ -554,13 +560,22 @@ return true;
 
 		public override void NPCLoot(NPC npc)
 		{
-
 			for (int playerid = 0; playerid < Main.maxPlayers; playerid += 1)
 			{
 				Player ply = Main.player[playerid];
 				if (ply.active)
 				{
-					ply.GetModPlayer<SGAPlayer>().DoExpertiseCheck(npc);
+					if (!Main.dedServ)
+					{
+						ply.GetModPlayer<SGAPlayer>().DoExpertiseCheck(npc);
+					}
+					else
+					{
+						ModPacket packet = mod.GetPacket();
+						packet.Write(250);
+						packet.Write(npc.type);
+						packet.Send(ply.whoAmI);
+					}
 					if (ply.HasItem(mod.ItemType("EntropyTransmuter")))
 					{
 						if (npc.Distance(ply.Center) < 1000)
@@ -598,6 +613,16 @@ return true;
 				if (Main.netMode < 1)
 				{
 					Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
+				}
+			}
+
+			if (npc.type == NPCID.MoonLordCore && SGAWorld.bossprgressor < 2)
+			{
+				SGAWorld.bossprgressor = 2;
+				if (Main.netMode != 2)
+				{
+					Idglib.Chat("The Underground Hallow's creatures glow brighter...", 200, 90, 80);
+					Idglib.Chat("A being from below the folds of reality notices you...", 50, 50, 50);
 				}
 			}
 
@@ -685,7 +710,7 @@ return true;
 
 		public override bool? CanBeHitByProjectile(NPC npc,Projectile projectile)
 		{
-		if (projectile.type==ProjectileID.CultistBossLightningOrbArc && projectile.penetrate>900 && immunitetolightning>0){
+		if (projectile.type==ProjectileID.CultistBossLightningOrbArc && immunitetolightning>0){
 		return false;
 		}else{
 		return base.CanBeHitByProjectile(npc,projectile);
@@ -705,8 +730,10 @@ return true;
 		public void DoApoco(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
-			int chance = 0;
+			int chance = -1;
 			if (projectile != null) {
+				if (projectile.melee)
+					chance = 0;
 				if (projectile.ranged)
 					chance = 1;
 				if (projectile.magic)
@@ -716,6 +743,8 @@ return true;
 			}
 			if (item != null)
 			{
+				if (item.melee)
+					chance = 0;
 				if (item.ranged)
 					chance = 1;
 				if (item.magic)
@@ -767,7 +796,7 @@ return true;
 			if (acidburn)
 				damage += (int)(Math.Min(npc.defense, 5)/2);
 			if (Gourged)
-				damage += npc.defense / 2;
+				damage += (npc.defense / 2)/2;
 			if (MoonLightCurse)
 				damage += (int)(Math.Min(npc.defense, 50)/2);
 			if (Sodden)
@@ -896,10 +925,9 @@ return true;
 
 			if (isproj)
 			{
-				if (projectile.type == ProjectileID.CultistBossLightningOrbArc && projectile.penetrate > 900)
+				if (projectile.type == ProjectileID.CultistBossLightningOrbArc)
 				{
-					immunitetolightning = 7;
-					npc.AddBuff(BuffID.DryadsWard, 60 * 1);
+					immunitetolightning = projectile.localNPCHitCooldown;
 				}
 
 				bool trapdamage = false;
@@ -966,8 +994,8 @@ SGAWorld.overalldamagedone=((int)damage)+SGAWorld.overalldamagedone;
 			}
 
 if (moddedplayer.SerratedTooth==true){
-if (damage>npc.defense*3)
-npc.AddBuff(mod.BuffType("MassiveBleeding"), (int)(1f+((float)damage-(float)npc.defense*3f)*0.02f)*60);
+if (damage>npc.defense*5)
+npc.AddBuff(mod.BuffType("MassiveBleeding"), Math.Min((int)(1f+((float)damage-(float)npc.defense*5f)*0.02f)*60,60*5));
 }
 
 if (moddedplayer.Blazewyrmset){
@@ -1038,6 +1066,18 @@ return true;
 						"Draken seems upset over his past, I feel sorry for his past."};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
+					else
+					{
+						if (Main.rand.Next(0, 3) == 0)
+							chat = "I think I see something flying above, maybe if you clear the area of powerful monsters, it might land...";
+
+					}
+					if (SGAWorld.downedWraiths == 0 && Main.rand.Next(0, 2) == 0)
+						chat = "A creature has made you lose you knowledge to make a furnace it seems, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment") + "]";
+					if (SGAWorld.downedWraiths == 1 && Main.rand.Next(0, 2) == 0 && Main.hardMode)
+						chat = "Another creature has made you lose you knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "]";
+					if (SGAWorld.downedWraiths < 4 && Main.rand.Next(0, 2) == 0 && NPC.downedAncientCultist)
+						chat = "Yet Another creature has stolen the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "]. Rematch will unlock Luminite bars but require defeating Moonlord first.";
 					break;
 				case NPCID.ArmsDealer:
 					if (Main.rand.Next(0, 5) == 0)

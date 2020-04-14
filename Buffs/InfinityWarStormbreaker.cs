@@ -98,6 +98,40 @@ namespace SGAmod.Buffs
 			player.lavaRose = true;
 		}
 	}
+	public class RagnarokBrew : ModBuff
+	{
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/MatrixBuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Ragnarok's Brew");
+			Description.SetDefault("Grants increased Apocalyptical chance for your equiped weapon damage type as your HP drops");
+			Main.pvpBuff[Type] = false;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			double gg = (1.00-((double)player.statLife / (double)player.statLifeMax))*3.00;
+
+			if (player.HeldItem != null)
+			{
+				if (player.HeldItem.melee)
+				player.GetModPlayer<SGAPlayer>().apocalypticalChance[0] += gg;
+				if (player.HeldItem.ranged)
+					player.GetModPlayer<SGAPlayer>().apocalypticalChance[1] += gg;
+				if (player.HeldItem.magic)
+					player.GetModPlayer<SGAPlayer>().apocalypticalChance[2] += gg;
+				if (player.HeldItem.thrown)
+					player.GetModPlayer<SGAPlayer>().apocalypticalChance[3] += gg;
+			}
+			player.lavaRose = true;
+		}
+	}
 	public class DankSlow : ModBuff
 	{
 

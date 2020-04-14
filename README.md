@@ -3,7 +3,102 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
-2.50-(4/6/20)-Patch #4:
+2.600-(4/14/20)-Patch #5:
+
+
+--Added
+
+-Radiation Cure Potion, Beam Cannon, Heralds of the 4 Horsemen
+
+-Copper Wraith supports the full Boss Checklist
+
+-More lines to hint at what the player needs to do next (Talk to the guide)
+
+-Killing Moonlord gives hints to what is happening in the underground Hallow and what is to come for the world
+
+
+--Changed:
+
+-Nerfed many of Luminite Wraith's attacks, reduced attack rate and increased attack speed of Solar Flare Axe
+
+-Beam gun damage nerfed and made cheaper to craft
+
+-Buffed Cosmillash, the projectiles do 2X contact damage (since explosions aren't affected by this, this won't be a super duper buff)
+
+-Most weapons from the mod should now cloak along with the player
+
+-Touching Hellion Core's Arms inflicts a new debuff
+
+-Reality Shaper's crafting recipe has a new item, crit increased by 5%, and mana costs reduced
+
+-Added Spiky Balls (Both Types) to the Rioter's Glove of throwable ammos
+
+-Novus and Notchus Arrows are cheaper to craft
+
+-Tech Master's Gear boosts Trap Armor Penetration now as well
+
+-Blaze Bullets nerfed slighty
+
+-Massacre Prototype's mana costs have been increased again to 200
+
+-F.S.R.G Has been changed to be a post moonlord and Technological gun: stronger damage, more debuffs and spawns spores!
+
+-Big dakka's explosion damage and base damage has been reduced a bit, weapon has been moved to be Post Cratogeddon
+
+-Creeper's Explosion Throw's crit chance increased by 10%, explosion damage halved
+
+-Emnity's main projectiles have been changed cosmetically, we need more RAINBOWS!
+
+-Healing Wraiths heal Hellion Core far less, and they can now heal Hellion more
+
+-Hellion Core Arm contract damage reduced to 100 (from 200), damage of all subphase 1 and 2 attacks reduced
+
+-Hellion is now Immune to all forms of Time Slowing
+
+
+--Fixed:
+
+-Changed the mod for the Caliburn Compass to better support lower-res games
+
+-Crafting recipe for the Reverse Engineering Station
+
+-Dank Wood Armor/Photosynthesizer giving you a free 10% damage increase to everything
+
+-Fixed the Expertise and several issues with netplay
+
+-Tidal Elemental dropping 2K Platinum (lol)
+
+-Dank Walls can no longer be destroyed by bombs (before Murk is beaten)
+
+-Blaze Bullets being free to craft
+
+-Further tweaks to the glowmasks
+
+-Cirno using an expert-only attack during her 2nd phase in normal mode
+
+-Sharkvern despawning when he flys too far out of bounds and during his 2nd phase
+
+-Hellion's defeat event triggering when the mod is first installed
+
+-Improved the Shrine Generation code, this was largely placeholder code I forgot to replace. If it still generates in the temple/dungeon, I will shoot myself through the foot
+
+-Improved the armor glowmask code a bit more, related to netcode and stealth
+
+-Due to serrated tooth being combined into the Soul of Secrets, I have nerfed the damage over time bleeding
+
+-Weapons being able to cut glass and break pots for no reason
+
+-More item descriptions being too long on lower-res games
+
+-Alot of netcode related stuff, and to avoid common errors during normal gameplay, however, there's still some issues that I cannot really fix, and summoning Cratrosity/Caliburns might be broken now, my system is "rejecting" net messages for some reason so I cannot test this
+
+-Furthermore, alot of things I know may not work online, but online functionality is seriously frustrating, sometimes it works and then it doesn't, I'll work on it a bit at a time but don't be surprised if your favorite item doesn't work
+
+-Various other Bugs
+
+
+
+2.500-(4/6/20)-Patch #4:
 
 --Added
 
@@ -33,11 +128,13 @@ Changelog:
 
 --Fixed:
 
+-Terraria Co Supply Crates not dropping at all after activating the contracker
+
 -Fixed a major bug involving shaders that stopped network games (I hope)
 
 -Cratrosity and Cratrogeddon no longer despawn, and Murk is less likely to despawn during the fly swarm phases
 
--Doom Harbinger's death not counting, also him dropping
+-Doom Harbinger's death not counting, also him dropping items when he shouldn't
 
 -Items that shouldn't cause melee hits (the yoyos largely)
 

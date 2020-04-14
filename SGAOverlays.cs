@@ -30,17 +30,18 @@ namespace SGAmod
 		public static bool DrawHUD()
 		{
 
-			if (Main.gameMenu || SGAmod.Instance == null && Main.netMode != 1)
+			if (Main.gameMenu || SGAmod.Instance == null && !Main.dedServ)
 				return true;
 			Player locply = Main.LocalPlayer;
 			if (locply != null && locply.whoAmI == Main.myPlayer)
 			{
 				SpriteBatch spriteBatch = Main.spriteBatch;
-				spriteBatch.End();
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
 				if (locply.HeldItem.type == SGAmod.Instance.ItemType("CaliburnCompess"))
 				{
-
+				spriteBatch.End();
+					Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Custommatrix);
 					for (int i = 0; i < SGAWorld.CaliburnAlterCoordsX.Length; i += 1)
 					{
 						string[] texs = { "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeC" };
@@ -58,10 +59,11 @@ namespace SGAmod
 						//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
 					}
-				}
-
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				}
+
+
 
 				if (SGAmod.UsesPlasma.ContainsKey(locply.HeldItem.type))
 				{

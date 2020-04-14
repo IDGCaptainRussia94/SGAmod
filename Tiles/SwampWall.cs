@@ -17,6 +17,11 @@ namespace SGAmod.Tiles
 			num = fail ? 1 : 3;
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return SGAWorld.downedMurk > 1;
+		}
+
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			//r = 0.4f;

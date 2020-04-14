@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.damage = 360;
-			item.crit = 10;
+			item.crit = 15;
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
@@ -36,7 +36,7 @@ namespace SGAmod.Items.Weapons
 			item.autoReuse = false;
 			item.useTurn = false;
 			item.channel = true;
-			item.mana = 30;
+			item.mana = 20;
 			if (!Main.dedServ)
 			{
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/RealityShaper_Glow");
@@ -128,9 +128,10 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.SkyFracture, 1);
 			recipe.AddIngredient(ItemID.ChristmasTreeSword, 1);
 			recipe.AddIngredient(ItemID.InfluxWaver, 1);
+			recipe.AddIngredient(mod.ItemType("CircuitBreakerBlade"), 1);
 			recipe.AddIngredient(ItemID.DD2SquireBetsySword, 1);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
-			recipe.AddIngredient(mod.ItemType("OmniSoul"), 10);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 8);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);

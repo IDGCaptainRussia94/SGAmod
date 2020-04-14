@@ -11,6 +11,8 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
+using SGAmod.Tiles;
+using Idglibrary;
 
 namespace SGAmod.Generation
 {
@@ -21,12 +23,13 @@ namespace SGAmod.Generation
             //PlaceCaiburnShrine(new Vector2(80, 30));
             for (int num = 0; num < SGAWorld.CaliburnAlterCoordsX.Length; num++)
             {
-                NormalWorldGeneration.PlaceCaiburnShrine(new Vector2(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow+400, Main.maxTilesY - 300)),num);
+                GenCaliburnShrine(num);
+                //NormalWorldGeneration.PlaceCaiburnShrine(new Vector2(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow+400, Main.maxTilesY - 300)),num);
                 //GenCaliburnShrine();
             }
 
         }
-        public static void GenCaliburnShrine()
+        public static void GenCaliburnShrine(int type)
         {
             bool foundspot = false;
             Vector2 here= new Vector2();
@@ -35,26 +38,26 @@ namespace SGAmod.Generation
 
             for (int tries = 0; tries < 50000; tries++)
             {
-                here = new Vector2(WorldGen.genRand.Next(1000, Main.maxTilesX - 100), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow, Main.maxTilesY - 300));
+                startover:
+                here = new Vector2(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow + 400, Main.maxTilesY - 300));
                 tstart = Framing.GetTileSafely(here);// tile1.type=TileID.RainCloud; tile1.active(true);
-
-                int buffersizex = 15 + WorldGen.genRand.Next(7);
-                int buffersizey = 10 + WorldGen.genRand.Next(3);
+                int buffersizex = 100;
+                int buffersizey = 100;
                 int x = (int)here.X;
                 int y = (int)here.Y;
                 int xbuffer = -buffersizex;
                 int ybuffer = -buffersizey;
                 bool foundspot2 = true;
-                ushort[] stoneTypes = new ushort[] {0, TileID.Stone, TileID.IceBlock, TileID.SnowBlock, TileID.Dirt, TileID.Mud, TileID.ClayBlock, TileID.Sand, TileID.HardenedSand, TileID.Slush};
+                ushort[] stoneTypes = new ushort[] {TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick, TileID.LihzahrdBrick,(ushort)ModContent.TileType<MoistStone>()};
                 for (xbuffer = -buffersizex; xbuffer < buffersizex; xbuffer++)
                 {
                     for (ybuffer = -buffersizey; ybuffer < buffersizey; ybuffer++)
                     {
-                        Tile tile = Framing.GetTileSafely(here + new Vector2(xbuffer, ybuffer));
-                        if (stoneTypes.Any(iii => iii != tile.type))
+                        Tile tile = Framing.GetTileSafely((int)here.X+xbuffer, (int)here.Y+ybuffer);
+                        if (stoneTypes.Any(iii => iii == tile.type))
                         {
-                            foundspot2 = true;
-                            continue;
+                            foundspot2 = false;
+                            goto startover;
                         }
 
 
@@ -70,11 +73,11 @@ namespace SGAmod.Generation
             }
 
             if (foundspot)
-            NormalWorldGeneration.PlaceCaiburnShrine(here,0);
+            NormalWorldGeneration.PlaceCaiburnShrine(here,type);
 
         }
 
-        public static void PlaceMulti(Vector2 placementspot2,int type,int size, int wall=-1)
+        /*public static void PlaceMulti(Vector2 placementspot2,int type,int size, int wall=-1)
         {
             for (int x2 = -size+1; x2 < size; x2++)
             {
@@ -97,7 +100,7 @@ namespace SGAmod.Generation
                 }
             }
 
-        }
+        }*/
 
         public static void PlaceCaiburnHallway(Vector2 placementspot, int width, int height, int direction, ref List<Vector2> deways, int generation, int tiletype, int walltype)
         {
@@ -115,7 +118,7 @@ namespace SGAmod.Generation
                 for (ybuffer = -buffersizey; ybuffer < buffersizey; ybuffer++)
                 {
                     Tile tile = Framing.GetTileSafely((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
-                    NormalWorldGeneration.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), tiletype, 4, walltype);
+                    IDGWorldGen.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), tiletype, 4, walltype);
                     deways.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer));
                     if (generation > 1000)
                     {
@@ -219,7 +222,7 @@ namespace SGAmod.Generation
                 for (ybuffer = -buffersizey; ybuffer < buffersizey; ybuffer++)
                 {
                     Tile tile = Framing.GetTileSafely((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
-            NormalWorldGeneration.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), SGAmod.Instance.TileType("MoistStone"), 4, SGAmod.Instance.WallType("SwampWall"));
+                    IDGWorldGen.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), SGAmod.Instance.TileType("MoistStone"), 4, SGAmod.Instance.WallType("SwampWall"));
                     dewaysMainroom.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer));
 
                 }

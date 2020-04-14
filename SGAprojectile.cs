@@ -24,6 +24,7 @@ namespace SGAmod
 	public bool raindown=false;
 		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
+		public int shortlightning = 0;
 
 		/*private List<int> debuffs=new List<int>();
 		private List<int> debufftime=new List<int>();
@@ -62,6 +63,25 @@ namespace SGAmod
 		{
 			if (onehit)
 				projectile.Kill();
+		}
+		public override void PostAI(Projectile projectile)
+		{
+			if (shortlightning > 0)
+			{
+
+				for (int i = 0; i < Math.Min(shortlightning, projectile.oldPos.Length); i++)
+				{
+					projectile.oldPos[i].X = projectile.position.X;
+					projectile.oldPos[i].Y = projectile.position.Y;
+				}
+
+			}
+			if (projectile.modProjectile != null)
+			{
+				Player projowner = Main.player[projectile.owner];
+				if (projectile.modProjectile.mod==SGAmod.Instance && projowner.active && projowner.heldProj==projectile.whoAmI)
+				projectile.Opacity = MathHelper.Clamp(projowner.stealth, 0.1f, 1f);
+			}
 		}
 		public override bool PreAI(Projectile projectile)
 		{
