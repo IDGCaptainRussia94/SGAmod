@@ -169,7 +169,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 120;
 			item.melee = true;
 			item.width = 40;
 			item.height = 40;
@@ -191,7 +191,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("PortableMakeshiftSpearTrap"), 1);
 			recipe.AddIngredient(ItemID.SpearTrap, 5);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 2);
-			recipe.AddIngredient(ItemID.LihzahrdBrick, 75);
+			recipe.AddIngredient(ItemID.LihzahrdBrick, 25);
 			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -460,7 +460,7 @@ namespace SGAmod.Items.Weapons
 			item.thrown = true;
 			item.damage = 90;
 			item.shootSpeed = 8f;
-			item.shoot = mod.ProjectileType("AvariceCoin");
+			item.shoot = ProjectileID.SpikyBallTrap;
 			item.useTurn = true;
 			//ProjectileID.CultistBossLightningOrbArc
 			item.width = 8;
@@ -480,7 +480,6 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			type = ProjectileID.SpikyBallTrap;
 			int probg = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI);
 			Main.projectile[probg].thrown = true;
 			Main.projectile[probg].friendly = true;
@@ -491,6 +490,7 @@ namespace SGAmod.Items.Weapons
 			Main.projectile[probg].owner = player.whoAmI;
 			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
 			modeproj.myplayer = player;
+			Main.projectile[probg].netUpdate = true;
 			IdgProjectile.Sync(probg);
 			return false;
 		}
@@ -499,10 +499,10 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
-			recipe.AddIngredient(ItemID.SpikyBall, 25);
+			recipe.AddIngredient(ItemID.SpikyBall, 100);
 			recipe.AddIngredient(ItemID.SpikyBallTrap, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this,25);
+			recipe.SetResult(this,100);
 			recipe.AddRecipe();
 		}
 

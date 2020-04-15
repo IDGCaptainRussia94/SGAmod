@@ -69,7 +69,7 @@ namespace SGAmod.NPCs.TownNPCs
 			npc.knockBackResist = 0.5f;
 			animationType = NPCID.Guide;
 			npc.homeless = true;
-			Color c = Main.hslToRgb((float)(Main.GlobalTime/2)%1f, 0.5f, 0.35f);
+			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
 		}
 
@@ -85,7 +85,7 @@ namespace SGAmod.NPCs.TownNPCs
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 
-			for(int gg = 0; gg < Main.maxPlayers; gg += 1)
+			for (int gg = 0; gg < Main.maxPlayers; gg += 1)
 			{
 
 				if (Main.player[gg].active)
@@ -104,7 +104,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override bool CheckConditions(int left, int right, int top, int bottom)
 		{
-		return true;
+			return true;
 		}
 
 		public override string TownNPCName()
@@ -148,23 +148,23 @@ namespace SGAmod.NPCs.TownNPCs
 				Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
 				Vector2 drawPos = ((npc.Center - Main.screenPosition)) + new Vector2(0f, -12f);
 				Color color = drawColor;
-				int timing = (int)(Main.GlobalTime*10f);
+				int timing = (int)(Main.GlobalTime * 10f);
 				timing %= 4;
 
-				if (timing==0)
+				if (timing == 0)
 				{
 					drawPos.Y -= 8f;
 				}
 
 				timing *= ((tex.Height) / 4);
-				spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing+2, tex.Width, (tex.Height - 1) / 4), color, 0, drawOrigin, npc.scale, npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing + 2, tex.Width, (tex.Height - 1) / 4), color, 0, drawOrigin, npc.scale, npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 
 
 
 
 			}
 			return false;
-	}
+		}
 
 		public override void FindFrame(int frameHeight)
 		{
@@ -184,7 +184,7 @@ namespace SGAmod.NPCs.TownNPCs
 			if (Math.Abs(npc.velocity.X) < 0.25f)
 				walkframe = 0f;
 			else
-				walkframe += Math.Abs(npc.velocity.X)*0.15f;
+				walkframe += Math.Abs(npc.velocity.X) * 0.15f;
 		}
 
 
@@ -228,7 +228,7 @@ namespace SGAmod.NPCs.TownNPCs
 				{
 					chat.Add("There's a strange man hanging around here, he's creeping me out.");
 					chat.Add("I heard of someone called " + Main.npc[Tnpc2].GivenName + " who has been hanging out in the back alleyways at night, selling strange items.");
-				}				/*if (ModLoader.GetMod("CalamityMod") != null)
+				}               /*if (ModLoader.GetMod("CalamityMod") != null)
 				{
 					npc = NPC.FindFirstNPC(ModLoader.GetMod("CalamityMod").NPCType("FAP"));
 					if (npc >= 0 && Main.rand.Next(2) == 0)
@@ -286,14 +286,14 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				if (ModLoader.Mods.Length > 30)
 				{
-				chat.Add("I think you might be running too many mods, tone back the hot sauce, yeah? I know I don't like sauce.");
+					chat.Add("I think you might be running too many mods, tone back the hot sauce, yeah? I know I don't like sauce.");
 				}
 				if (ModLoader.GetMod("BossChecklist") != null)
 				{
 					chat.Add("Oh, I see you brought your notepad, nice!");
 					chat.Add("Need to keep a checklist handy? It's always good to be planned.");
 				}
-					if (ModLoader.GetMod("CalamityMod")!=null)
+				if (ModLoader.GetMod("CalamityMod") != null)
 				{
 					chat.Add("I have no idea what this 'Calamity' your talking about is.");
 					chat.Add("I have no idea what this 'Yharim' your talking about is.");
@@ -306,7 +306,7 @@ namespace SGAmod.NPCs.TownNPCs
 					chat.Add("Terraria Co? Supply Crates? What are those?");
 					chat.Add("What is a 'TF2' ?");
 					if (SGAWorld.downedCratrosity)
-					chat.Add("Greed huh? That alone is what powered that thing? I guess the desire for a quick buck matters more than our lives...",2.0);
+						chat.Add("Greed huh? That alone is what powered that thing? I guess the desire for a quick buck matters more than our lives...", 2.0);
 				}
 				if (Main.LocalPlayer.wingTimeMax > 0)
 				{
@@ -317,9 +317,9 @@ namespace SGAmod.NPCs.TownNPCs
 				if (SGAWorld.downedMurk > 1)
 				{
 					if (SGAWorld.GennedVirulent)
-					chat.Add("The Very essence of the Murk has seeped into the Jungle, but yet, it is only a fraction of the power I've sensed here...",2.0);
+						chat.Add("The Very essence of the Murk has seeped into the Jungle, but yet, it is only a fraction of the power I've sensed here...", 2.0);
 					else
-					chat.Add("What Terrible secrets was that jungle-slime-creature hiding? An army of killer flies at its command...",2.0);
+						chat.Add("What Terrible secrets was that jungle-slime-creature hiding? An army of killer flies at its command...", 2.0);
 				}
 				if (SGAWorld.downedSpiderQueen)
 				{
@@ -373,8 +373,8 @@ namespace SGAmod.NPCs.TownNPCs
 				{
 					chat.Add("These Shrines are strange, they are so old and forgotten, yet yield a relic you now possess. It makes wonder what their purpose is...", 2.0);
 					if (SGAWorld.downedCaliburnGuardians > 1)
-					if (SGAWorld.downedCaliburnGuardians < 3)
-						chat.Add("Another shrine, only more questions...", 2.0);
+						if (SGAWorld.downedCaliburnGuardians < 3)
+							chat.Add("Another shrine, only more questions...", 2.0);
 					if (SGAWorld.downedCaliburnGuardians > 2)
 						chat.Add("I am sensing no other Shrines left uncovered on this planet, you are already a powerful friend. But I must wonder... These... Swords, weapons. I don't want to think whoever they belonged to, were meant to kill our kind long ago...", 2.0);
 				}
@@ -395,15 +395,15 @@ namespace SGAmod.NPCs.TownNPCs
 			//chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
 			//chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);
 
-			if (SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths>3)
+			if (SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3)
 			{
-			if (SGAWorld.downedHellion == 0)
+				if (SGAWorld.downedHellion == 0)
 				{
 					if (!Main.LocalPlayer.GetModPlayer<SGAPlayer>().gothellion && Main.expertMode)
 					{
 						Main.LocalPlayer.QuickSpawnItem(mod.ItemType("HellionSummon"));
 						Main.LocalPlayer.GetModPlayer<SGAPlayer>().gothellion = true;
-						return Main.LocalPlayer.name + "! Something bad happened! Something REALLY bad! She found us! I was in my place when suddenly this appeared... This is just what I saw manifest itself outside planets before they burned."+"\n" + Main.LocalPlayer.name+
+						return Main.LocalPlayer.name + "! Something bad happened! Something REALLY bad! She found us! I was in my place when suddenly this appeared... This is just what I saw manifest itself outside planets before they burned." + "\n" + Main.LocalPlayer.name +
 							" you need to stop her! You need to stop Hellion before she destroys you all and enslaves me again!";
 					}
 
@@ -419,8 +419,8 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 			//button = Language.GetTextValue("LegacyInterface.28");
 			button = "Spend Expertise";
-			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)){
-			button = "Check Expertise";	
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
+				button = "Check Expertise";
 			}
 			button2 = "More Info";
 		}
@@ -445,29 +445,70 @@ namespace SGAmod.NPCs.TownNPCs
 					{
 
 						him2 = new NPC();
-						if (modplayer.ExpertisePointsFromBossesModded[0]!="")
-						him2.SetDefaults(mod.NPCType(modplayer.ExpertisePointsFromBossesModded[0]));
+						if (modplayer.ExpertisePointsFromBossesModded[0] != "")
+							him2.SetDefaults(mod.NPCType(modplayer.ExpertisePointsFromBossesModded[0]));
 						else
-						him2.SetDefaults(modplayer.ExpertisePointsFromBosses[0]);
+							him2.SetDefaults(modplayer.ExpertisePointsFromBosses[0]);
 						if (him2 != null)
 						{
-							adder = " The very next target is a(n) " + him2.FullName;
+							adder = " The very next target is a(n) " + him2.FullName+". "+ GetNextItem();
 						}
 						else
 						{
 							adder = " The very next target is... ugh.... (ERROR) 0_0";
 						}
 					}
-					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal+"." + adder;
+					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal + "." + adder;
 
 				}
 				else
 				{
 					shop = true;
 				}
-			}else{
-			Main.npcChatText = "Button 2";
+			} else {
+				Main.npcChatText = "Button 2";
 			}
+		}
+
+
+
+		public int[,] itemsinshop = new int[8, 2];
+		public string GetNextItem()
+		{
+			itemsinshop = new [,]{
+				{ SGAmod.Instance.ItemType("EmptyCharm"),50 },
+			{ SGAmod.Instance.ItemType("CaliburnCompess"),300 },
+			{ SGAmod.Instance.ItemType("RedManaStar"),500 },
+			{ ItemID.Arkhalis,1000 },
+			{ ItemID.RodofDiscord,2000 },
+			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
+			{ ItemID.AviatorSunglasses,10000 },
+			{ ItemID.RedPotion,100000000 },
+		};
+
+			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
+			int index = 0;
+			int expmax = modplayer.ExpertiseCollectedTotal;
+			while (expmax > 0 && index< itemsinshop.Length)
+			{
+					expmax -= itemsinshop[index, 1];
+					index += 1;
+			}
+			int math = itemsinshop[index, 1] - modplayer.ExpertiseCollectedTotal;
+			string str;
+			if (math >= 50000)
+			{
+			str = "You unlocked everything so far, stay safe friend <3";
+			}
+			else
+			{
+				Item itm = new Item();
+				itm.SetDefaults(itemsinshop[index, 0]);
+			str = "You are " + (math) + " away from the next item unlocking: "+ itm.Name;
+			}
+
+
+			return str;
 		}
 
 		public override void SetupShop(Chest shop, ref int nextSlot)

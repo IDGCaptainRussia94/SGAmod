@@ -11,7 +11,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Red Mana Star");
-			Tooltip.SetDefault("" +
+			Tooltip.SetDefault("'Otherwise known as the Lucky Star'" +
 				"'Less Stable than its counterpart; it emanates heat but is thankfully only warm to the touch'" +
 				"\nIncreases Max Mana by 20 each time it is used, up to 3 times depending on progression.");
 		}

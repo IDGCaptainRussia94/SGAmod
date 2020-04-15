@@ -714,7 +714,7 @@ namespace SGAmod.NPCs.Murk
                     Main.npc[num664].ai[1] = Master.whoAmI;
                     Main.npc[num664].life = (int)((double)(Master.lifeMax* (Main.hardMode ? 1.5 : 0.5)));
                     Main.npc[num664].lifeMax = Main.npc[num664].life;
-                    Main.npc[num664].damage = Main.hardMode ? 80 : 30;
+                    Main.npc[num664].damage = Main.hardMode ? (Main.expertMode ? 80 : 50) : 25;
                     Main.npc[num664].netUpdate = true;
                     if (!Main.hardMode)
                     Main.npc[num664].dontTakeDamage = true;

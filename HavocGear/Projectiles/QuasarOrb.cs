@@ -87,8 +87,11 @@ namespace SGAmod.HavocGear.Projectiles
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if (projectile.timeLeft>5)
-			damage += 2;
+			if (projectile.timeLeft > 5)
+			{
+				damage = (int)(damage * 1.5f);
+				projectile.timeLeft = 90000;
+			}
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -99,8 +102,11 @@ namespace SGAmod.HavocGear.Projectiles
 
 		public override bool PreKill(int timeLeft)
 		{
-
-                     for (int num172 = 0; num172 < Main.maxNPCs; num172 +=1)
+			if (projectile.timeLeft > 90000-10 && projectile.timeLeft<90010)
+			{
+				projectile.damage = (int)(projectile.damage / 1.5f);
+			}
+			for (int num172 = 0; num172 < Main.maxNPCs; num172 +=1)
                     {
                     NPC target=Main.npc[num172];
 				float damagefalloff = 1f-((target.Center - projectile.Center).Length()/180f);

@@ -447,7 +447,7 @@ return false;
 		warninglevel+=5;
 		npc.life=npc.lifeMax;
 		npc.netUpdate=true;
-		Idglib.Chat(warninglevel<60 ? "This is proving more than We expected..." : (warninglevel<66 ? "How is he still alive?!" : "Failure is an option we can't affourd!"),25, 25, 80);
+		Idglib.Chat(warninglevel<60 ? "This is proving more than We expected..." : (warninglevel<66 ? "How is he still alive?!" : "Failure is an option we can't afford!"),25, 25, 80);
 		}}}}
 
 		if (warninglevel>69 && warninglevel<1000 && npc.life<(int)(npc.lifeMax*0.75)){warninglevel=1000;

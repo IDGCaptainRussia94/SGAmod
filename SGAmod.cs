@@ -153,7 +153,7 @@ namespace SGAmod
 			SGAmod.ScrapCustomCurrencySystem = new ScrapMetalCurrency(ModContent.ItemType<Items.Scrapmetal>(), 999L);
 			SGAmod.ScrapCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(SGAmod.ScrapCustomCurrencySystem);
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
-			OSType =OSDetect();
+			OSType = OSDetect();
 
 			if (Directory.Exists(filePath))
 			{
@@ -176,8 +176,6 @@ namespace SGAmod
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 			}
-
-
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
@@ -884,6 +882,10 @@ namespace SGAmod.Achivements
 					SGAAchivements.SGAchivement.Call("Luminite Wraith", who);
 				if (value == "SPinky")
 					SGAAchivements.SGAchivement.Call("SPinky", who);
+				if (value == "Cratrogeddon")
+					SGAAchivements.SGAchivement.Call("Cratrogeddon", who);
+				if (value == "Hellion")
+					SGAAchivements.SGAchivement.Call("Hellion", who);
 				if (value == "Offender")
 				{
 					if (SGAWorld.downedWraiths>2 &&

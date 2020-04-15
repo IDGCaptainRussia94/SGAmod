@@ -24,10 +24,11 @@ namespace SGAmod.Items.Weapons
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 125;
+			item.damage = 150;
 			item.noMelee = true;
 			item.magic = true;
 			item.mana = 25;
+			item.crit = 20;
 			item.width = 22;
 			item.height = 22;
 			item.useTime = 15;
@@ -95,7 +96,7 @@ namespace SGAmod.Items.Weapons
 			projectile.aiStyle = -1;
 			projectile.friendly = true;
 			projectile.hostile = false;
-			projectile.penetrate = 5;
+			projectile.penetrate = 6;
 			projectile.magic = true;
 			projectile.timeLeft = 300;
 			projectile.light = 0.1f;
@@ -128,7 +129,7 @@ namespace SGAmod.Items.Weapons
 			for (int i = 0; i < 1; i++)
 			{
 				int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, Vector2.Zero.X, Vector2.Zero.Y, mod.ProjectileType("QuasarOrbLessParticles"), projectile.damage, projectile.knockBack, projectile.owner);
-				Main.projectile[proj].timeLeft = 10;
+				Main.projectile[proj].timeLeft = 2;
 				Main.projectile[proj].netUpdate = true;
 				IdgProjectile.Sync(proj);
 				Main.projectile[proj].Kill();
@@ -142,7 +143,7 @@ namespace SGAmod.Items.Weapons
 			{
 				Vector2 velorand = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
 				velorand.Normalize();
-				int a = Projectile.NewProjectile(where.X, where.Y, velorand.X * Main.rand.NextFloat(0.5f, 3f), velorand.Y * Main.rand.NextFloat(0.5f, 3f), ProjectileID.ShadowBeamFriendly, (int)(damage * 1f), 0, owner);
+				int a = Projectile.NewProjectile(where.X, where.Y, velorand.X * Main.rand.NextFloat(0.5f, 3f), velorand.Y * Main.rand.NextFloat(0.5f, 3f), ProjectileID.ShadowBeamFriendly, (int)(damage * 1.25f), 0, owner);
 				Main.projectile[a].tileCollide = true;
 				Main.projectile[a].timeLeft = (int)((120 + Main.rand.Next(80)));
 				Main.projectile[a].netUpdate = true;

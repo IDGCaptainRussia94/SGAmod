@@ -270,6 +270,7 @@ namespace SGAmod.Items.Weapons
 					int proj2 = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed2.X * 2f, perturbedSpeed2.Y * 2f, mod.ProjectileType("BoulderBlast"), (int)((float)damage * 0.75f), knockBack / 3f, player.whoAmI);
 					Main.projectile[proj2].melee = true;
 					Main.projectile[proj2].magic = false;
+					Main.projectile[proj2].timeLeft = 15;
 					Main.projectile[proj2].usesLocalNPCImmunity = true;
 					Main.projectile[proj2].localNPCHitCooldown = -1;
 					Main.projectile[proj2].netUpdate = true;

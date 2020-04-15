@@ -52,6 +52,7 @@ namespace SGAmod
         public static int[] questvars = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static bool WorldIsTin = false;
         public static bool updatelasers = false;
+        public static int dungeonlevel = 0;
 
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
@@ -70,6 +71,7 @@ namespace SGAmod
             if (SGAmod.cachedata == false)
             {
                 Instance = this;
+                dungeonlevel = 0;
                 Main.invasionSize = 0;
                 customInvasionUp = false;
                 downedCustomInvasion = false;
@@ -187,6 +189,7 @@ namespace SGAmod
             }
 
             harbingercounter += 1;
+            if (NPC.downedAncientCultist)
             stolecrafting += 1;
             if (Main.netMode < 1) {
                 if (harbingercounter == 5) {
@@ -564,7 +567,7 @@ namespace SGAmod
             x = (int)MathHelper.Clamp(x, 0, Main.maxTilesX);
             y = (int)MathHelper.Clamp(y, 0, Main.maxTilesY);
             int startingy = y;
-            while (Main.tile[x, y].liquid < check && y > Main.maxTilesY-5)
+            while (Main.tile[x, y].liquid < check && y < Main.maxTilesY-5)
             {
                 y++;
             }

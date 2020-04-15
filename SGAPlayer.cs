@@ -1148,7 +1148,7 @@ modeproj.enhancedbees=true;
 
 				}
 			}
-			if (NPC.CountNPCS(mod.NPCType("Murk")) > 0 && Main.hardMode)
+			if (NPC.CountNPCS(mod.NPCType("Murk")) > 0 && Main.hardMode && Main.expertMode)
 			{
 				player.AddBuff(mod.BuffType("MurkyDepths"), damage * 5);
 			}

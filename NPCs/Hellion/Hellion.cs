@@ -692,7 +692,7 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.ai[1] == 900)
 				{
 					//RippleBoom.MakeShockwave(npc.Center, 15f, 3f, 100f, 200, 1.5f, true);
-					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 10f, 100, 3f, true);
+					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 20f, 100, 3f, true);
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "TYRANT'S GLARE!", true, false);
 					hell.HellionTaunt("No need to hold back anymore!");
 					hell.tyrant = 1;
@@ -2331,6 +2331,7 @@ namespace SGAmod.NPCs.Hellion
 				SGAWorld.downedHellion = 2;
 				HellionAttacks.HellionWelcomesYou();
 			}
+			Achivements.SGAAchivements.UnlockAchivement("Hellion", Main.LocalPlayer);
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -2851,7 +2852,7 @@ namespace SGAmod.NPCs.Hellion
 				Color lerptocolor = Color.Red;
 				//if (projectile.ai[1] < 100)
 				//    lerptocolor = Color.Green;
-				float scroll = (float)SGAWorld.modtimer;
+				float scroll = Main.GlobalTime*3f;
 
 				if (SGAWorld.updatelasers)
 				{

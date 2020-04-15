@@ -52,6 +52,7 @@ namespace SGAmod.NPCs.Cratrosity
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKeyUber"));
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MoneySign"), Main.rand.Next(15, Main.expertMode ? 35 : 25));
+			Achivements.SGAAchivements.UnlockAchivement("Cratrogeddon", Main.LocalPlayer);
 			if (SGAWorld.downedCratrosityPML == false)
 			{
 				SGAWorld.AdvanceHellionStory();

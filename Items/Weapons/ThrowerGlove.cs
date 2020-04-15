@@ -132,7 +132,7 @@ namespace SGAmod.Items.Weapons
 			type = FindProjectile(basetype2.shoot, basetype);
 
 			if (itemtype == mod.ItemType("ThrowableTrapSpikyball"))
-				speedbase /= 4f;
+				speedbase /= 1f;
 
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;
@@ -147,7 +147,10 @@ namespace SGAmod.Items.Weapons
 			Projectile proj = Main.projectile[Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI)];
 			proj.thrown = true;
 			proj.ranged = false;
+			proj.friendly = true;
+			proj.hostile = false;
 			proj.netUpdate = true;
+			IdgProjectile.Sync(proj.whoAmI);
 
 			return false;
 		}
@@ -179,7 +182,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Rioter's Glove");
-			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, and Bones!\n" + disc);
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, Spiky balls, and Bones!\n" + disc);
 		}
 
 		public override void SetDefaults()
@@ -292,7 +295,11 @@ namespace SGAmod.Items.Weapons
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			int damage = (int)(basetype2.damage * player.thrownDamage);
 
-			Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, basespeed.X, basespeed.Y, type, damage, basetype2.knockBack, player.whoAmI);
+			int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, basespeed.X, basespeed.Y, type, damage, basetype2.knockBack, player.whoAmI);
+			Main.projectile[proj].friendly = true;
+			Main.projectile[proj].hostile = false;
+			Main.projectile[proj].netUpdate = true;
+			IdgProjectile.Sync(proj);
 
 			player.ConsumeItem(basetype);
 

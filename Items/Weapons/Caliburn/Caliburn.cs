@@ -756,7 +756,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.velocity.ToRotation() + (facingleft ? MathHelper.ToRadians(0) : MathHelper.ToRadians(180)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor*projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? MathHelper.ToRadians(0) : MathHelper.ToRadians(180)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
 

@@ -3,6 +3,45 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
+2.650-(4/15/2020)-Hot Fix #2:
+
+
+--Added
+
+-Draken now tells you what is unlocked next in his shop and how much Total Expertise you need for it
+
+-Corrorded Shield resprite
+
+-Tooltips for the Furnace, Hardmode anvil, and Luminite Bars that hint at them being uncraftable for the time being
+
+
+--Changed:
+
+-Buffed Brimflame Harbinger: flames have more reach
+
+-Buffed Cosmic Grasp: can hit one more target (6 targets) and damage and crit up, Cosmillash nerfed (direct hit does 1.5X damage)
+
+-Merky Depths debuff moved to be expert exclusive, and damage of killer fly swarm in hardmode Murk's fight in normal mode reduced
+
+-Trap Weapons balanced a bit more, some buffed
+
+-Many items made cheaper to craft (largely the trap stuff)
+
+
+--Fixed:
+
+-An oversight that made Sharkvern fly upwards and despawn half way through the fight
+
+-Cosmillash only +2 damage instead of 2X damage on direct hits
+
+-More spelling mistakes
+
+-Rioter's Glove not mentioning it can throw spiky balls
+
+-'Throwable' Trap SpikyBall throwing Avarice coins when used by the Rioter's Glove
+
+
+
 2.600-(4/14/20)-Patch #5:
 
 
@@ -67,6 +106,8 @@ Changelog:
 -Fixed the Expertise and several issues with netplay
 
 -Tidal Elemental dropping 2K Platinum (lol)
+
+-Lack of support for where files get written on Linux and Mac (Thanks Kyoto!)
 
 -Dank Walls can no longer be destroyed by bombs (before Murk is beaten)
 

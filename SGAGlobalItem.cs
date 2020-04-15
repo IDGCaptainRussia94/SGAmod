@@ -89,6 +89,31 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, "This weapon has a clip and requires manual reloading")));
                 }
             }
+
+            if (item.type == ItemID.Furnace)
+            {
+                if (SGAWorld.downedWraiths < 1)
+                {
+                    Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A being has locked it away from your possession, talk to the guide")));
+                }
+            }
+            if (item.type == ItemID.MythrilAnvil || item.type == ItemID.OrichalcumAnvil)
+            {
+                if (SGAWorld.downedWraiths < 2)
+                {
+                    Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A stronger being has locked it away from your possession, talk to the guide")));
+                }
+            }
+            if (item.type == ItemID.LunarBar)
+            {
+                if (SGAWorld.downedWraiths < 4)
+                {
+                    Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
+                }
+            }
         }
 
         public override string IsArmorSet(Item head, Item body, Item legs)
