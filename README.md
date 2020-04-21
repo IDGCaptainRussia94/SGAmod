@@ -3,6 +3,68 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
+2.700-(4/20)-Patch 6:
+
+--Added
+
+-Cataclysmic Catalyst, Golden Cog, Jindosh Buckler, Book of Jones (is using landslide sprite atm)
+
+-Expertise rewards to the Lunar Pillars
+
+-EALogo Got a new passive ability
+
+-Walk Mode: a Hotkey activated mode that disabled the speed boosts of Demonsteppers&Luminary Wings (To help with moving around uncontrollably)
+
+
+--Changed:
+
+-Removed F.S.R.G from Technological weapons, damage slightly buffed, spores can now crit
+
+-Changed the way the wraiths gate progession, you now need their respective shards to craft their items (except Luminite Bars which are still just locked), however if you try to craft anything at a furnace before beating Copper Wraith, they spawn in and attack you
+
+-updated glowmask codes yet again to add more features and fix bugs (Emnity changes rainbow colors!)
+
+-Hellion DPS drones have far less HP, but now instead have 120 defense
+
+-Cosmic Grasp Mana costs reduced
+
+-Beam Cannon damage slightly nerfed
+
+-Novus Ore is now destructable by bombs after Copper Wraith is beaten
+
+-Fridgeflame and Blink Tech Canisters now boost Technological Damage by 5% each
+
+-Quagmire rebalance-reduced damage, now inflicts Dank Slow instead of Poison
+
+-Jab-lins now display their crit chance and damage properly, melee attacks have a solid 50% to not be consumed, and both modes are boosted further by throwing item saving chances
+
+-Caliburn Altar code has been changed yet again to try to prevent the alters from getting messed up
+
+-Spider Queen has a delay now before they start spinning acid in their main attack (this is cued with a sound effect as well)
+
+-Copper Wraith's speed has been decreased in Expert and Normal (same in Nightmare), Cobalt Wraith's speed has been increased in all difficulties
+
+-In mutliplayer, players need to be close to a slain expertise-giving enemy to recive the expertise
+
+-Crafting Recipes
+
+
+--Fixed:
+
+-Entrophite Tranmuter working online hopefully
+
+-Hellion and Craterogeddon now properly reset when loading into a new world (they were not properly reset in the mod, whoops)
+
+-Murk and Cobalt Wraith have been made far less likely to randomly despawn from you get too far from them
+
+-Sharkvern no longer uses water as a means to tell how high he should be, and should no longer be just a head online
+
+-Hopefully fixed Luminite Wraith online
+
+-Tech Master's Gear was gaining too much trap damage
+
+
+
 2.650-(4/15/2020)-Hot Fix #2:
 
 
