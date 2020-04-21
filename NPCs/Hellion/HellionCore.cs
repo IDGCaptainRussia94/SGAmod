@@ -122,7 +122,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            target.AddBuff(mod.BuffType("TechnoCurse"), 120);
+            target.AddBuff(mod.BuffType("TechnoCurse"), 60*5);
         }
 
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)

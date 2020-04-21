@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -79,13 +80,62 @@ namespace SGAmod.Items.Weapons.Javelins
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            foreach( string line in Normaltext){
+            TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
+            if (tt != null)
+            {
+                string[] thetext = tt.text.Split(' ');
+                string newline = "";
+                List<string> valuez = new List<string>();
+                foreach (string text2 in thetext)
+                {
+                    valuez.Add(text2 + " ");
+                }
+                valuez.Insert(1, "Melee/Throwing ");
+                foreach (string text3 in valuez)
+                {
+                    newline += text3;
+                }
+                tt.text = newline;
+            }
+
+            tt = tooltips.FirstOrDefault(x => x.Name == "CritChance" && x.mod == "Terraria");
+            if (tt != null)
+            {
+                string[] thetext = tt.text.Split(' ');
+                string newline = "";
+                List<string> valuez = new List<string>();
+                int counter = 0;
+                foreach (string text2 in thetext)
+                {
+                    counter += 1;
+                    if (counter>1)
+                    valuez.Add(text2 + " ");
+                }
+                int thecrit = Main.GlobalTime % 3f >= 1.5f ? Main.LocalPlayer.meleeCrit : Main.LocalPlayer.thrownCrit;
+                string thecrittype = Main.GlobalTime % 3f >= 1.5f ? "Melee " : "Throwing ";
+                valuez.Insert(0, thecrit+"% "+ thecrittype);
+                foreach (string text3 in valuez)
+                {
+                    newline += text3;
+                }
+                tt.text = newline;
+            }
+
+            foreach ( string line in Normaltext){
             tooltips.Add(new TooltipLine(mod, "JavaLine", line));
             }
-            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Recives damage boosts from both melee and throwing and benefits from melee attack speed"));
-            tooltips.Add(new TooltipLine(mod, "JavaLine1b", "Thrown jab-lins stick into foes and do extra damage"));
-            tooltips.Add(new TooltipLine(mod, "JavaLine2", "Left click to quickly jab like a spear (melee damage done, breaks after using)"));
-            tooltips.Add(new TooltipLine(mod, "JavaLine3", "Right click to more slowly throw (throwing damage done, benefits from throwing velocity)"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Left click to quickly jab like a spear (melee damage done, may break after using)"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Right click to more slowly throw (throwing damage done, benefits from throwing velocity)"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Melee attacks have a solid 50% to not be consumed"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "Thrown jab-lins stick into foes and do extra damage"));
+            tooltips.Add(new TooltipLine(mod, "JavaLine1", "benefits from Throwing item saving chance and melee attack speed"));
+        }
+
+        public override bool ConsumeItem(Player player)
+        {
+            if (player.altFunctionUse != 2 && Main.rand.Next(0, 100) < 50)
+                return false;
+            return TrapDamageItems.SavingChanceMethod(player,true);
         }
 
         public override void SetDefaults()

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.Enums;
 using SGAmod.Items.Weapons;
+using SGAmod.Projectiles;
 using Idglibrary;
 
 namespace SGAmod.Items.Weapons
@@ -386,7 +388,7 @@ namespace SGAmod.Items.Weapons
 			item.thrown = true;
 			item.damage = 160;
 			item.shootSpeed = 1f;
-			item.shoot = mod.ProjectileType("AvariceCoin");
+			item.shoot = ProjectileID.Boulder;
 			item.useTurn = true;
 			//ProjectileID.CultistBossLightningOrbArc
 			item.width = 8;
@@ -406,7 +408,6 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			type = ProjectileID.Boulder;
 			int probg = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI);
 			Main.projectile[probg].thrown = true;
 			Main.projectile[probg].friendly = true;
@@ -746,12 +747,248 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
+	public class BookOfJones : TrapWeapon
+	{
+		public override void SetDefaults()
+		{
+			item.damage = 160;
+			item.width = 16;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = 3;
+			item.noMelee = true;
+			item.useStyle = 4;
+			item.useAnimation = 40;
+			item.useTime = 40;
+			item.knockBack = 10f;
+			item.scale = 1f;
+			item.shoot = mod.ProjectileType("JonesBoulderSummon");
+			item.shootSpeed = 14f;
+			item.UseSound = SoundID.Item1;
+			item.magic = true;
+			item.mana = 40;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Book Of Jones");
+			Tooltip.SetDefault("'Their turn to go running escaping danger'\nSummons portals above the player that rains down boulders in both directions" +
+				"\nCounts as trap damage, doesn't crit");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/HavocGear/Items/Weapons/Landslide"); }
+		}
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			int numberProjectiles = 8;// + Main.rand.Next(2);
+			for (int i = 0; i < numberProjectiles; i++)
+			{
+				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(360));
+				HalfVector2 half = new HalfVector2(player.Center.X+(i - (numberProjectiles / 2)) * 20, player.Center.Y - 200);
+				int prog = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI,ai1: ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue));
+				Main.projectile[prog].netUpdate = true;
+				IdgProjectile.Sync(prog);
+			}
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Landslide"), 1);
+			recipe.AddIngredient(ItemID.StaffofEarth, 1);
+			recipe.AddIngredient(mod.ItemType("ThrowableBoulderTrap"), 100);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+
+
+	}
+
+
+	public class JonesBoulderSummon : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rod of Enforcing");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + 14); }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = 10;
+			projectile.light = 0.5f;
+			projectile.width = 48;
+			projectile.timeLeft = 3;
+			projectile.height = 48;
+			projectile.magic = true;
+			projectile.tileCollide = true;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			Main.PlaySound(SoundID.Item45, projectile.Center);
+
+			int proj = Projectile.NewProjectile(projectile.Center, new Vector2(projectile.velocity.X, projectile.velocity.Y/3f), mod.ProjectileType("ProjectilePortalJones"), projectile.damage, projectile.knockBack, projectile.owner, ProjectileID.Boulder);
+			Main.projectile[proj].penetrate = 2;
+			Main.projectile[proj].netUpdate = true;
+			IdgProjectile.Sync(proj);
+
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.timeLeft += 2;
+			bool cond = projectile.timeLeft == 4;
+			for (int num621 = 0; num621 < (cond ? 15 : 1); num621++)
+			{
+				int num622 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 226, projectile.velocity.X * (cond ? 1.5f : 0.5f), projectile.velocity.Y * (cond ? 1.5f : 0.5f), 20, Color.Red, 0.5f);
+				Main.dust[num622].velocity *= 1f;
+				if (Main.rand.Next(2) == 0)
+				{
+					Main.dust[num622].scale = 0.5f;
+					Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+				}
+				Main.dust[num622].noGravity = true;
+			}
+
+
+			Player player = Main.player[projectile.owner];
+			projectile.ai[0] += 1;
+
+
+			Vector2 speedz = projectile.velocity;
+			float atspeed = speedz.Length();
+			Vector2 gohere = new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.ai[1]) }.ToVector2();
+			//ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+			speedz = gohere - projectile.Center;
+			speedz.Normalize(); speedz *= atspeed;
+			projectile.velocity = speedz;
+
+			if ((projectile.Center- gohere).Length()< atspeed + 8 || projectile.timeLeft>300)
+			{
+				projectile.Kill();
+			}
+
+		}
+	}
+
+	public class ProjectilePortalJones : ProjectilePortal
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Spawner");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 32;
+			projectile.height = 32;
+			//projectile.aiStyle = 1;
+			projectile.friendly = true;
+			//projectile.magic = true;
+			//projectile.penetrate = 1;
+			projectile.timeLeft = 70;
+			projectile.tileCollide = false;
+			aiType = -1;
+		}
+
+		public override void Explode()
+		{
+
+			if (projectile.timeLeft == 30 && projectile.ai[0] > 0)
+			{
+				Player owner = Main.player[projectile.owner];
+				if (owner != null && !owner.dead)
+				{
+
+					Vector2 gotohere = new Vector2();
+					gotohere = projectile.velocity;//Main.MouseScreen - projectile.Center;
+					gotohere.Normalize();
+
+					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(20)) * projectile.velocity.Length();
+					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), (int)projectile.ai[0], projectile.damage, projectile.knockBack, owner.whoAmI);
+					Main.projectile[proj].magic = true;
+					Main.projectile[proj].friendly = true;
+					Main.projectile[proj].hostile = false;
+					Main.projectile[proj].netUpdate = true;
+					IdgProjectile.Sync(proj);
+				}
+
+			}
+
+		}
+
+	}
+
 
 }
 
 //Trap Acc's
 namespace SGAmod.Items.Accessories
 {
+
+	public class JindoshBuckler : TrapWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Jindosh Buckler");
+			Tooltip.SetDefault("'Might as well call this Improvised Warfare'\nTrap Damage ignores 50% of enemy defense\nTrap damage may inflict Massive Bleeding\n10% of extra trap damage is dealt directly to your enemy's life\nThis ignores defense and damage reduction\n" +
+				"Trap Damage increased by 10%\nYou reflect 2 times the damage you take back to melee attackers");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(0, 1, 50, 0);
+			item.rare = 8;
+			item.defense = 5;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().JaggedWoodenSpike = true;
+			mod.GetItem("JuryRiggedSpikeBuckler").UpdateAccessory(player, hideVisual);
+			mod.GetItem("GoldenCog").UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SilkRopeCoil, 2);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 5);
+			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 4);
+			recipe.AddIngredient(mod.ItemType("GoldenCog"), 1);
+			recipe.AddIngredient(mod.ItemType("JuryRiggedSpikeBuckler"), 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
 
 	public class JaggedOvergrownSpike : TrapWeapon
 	{
@@ -766,7 +1003,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 18;
 			item.height = 18;
 			item.value = Item.sellPrice(0, 0, 50, 0);
-			item.rare = 8;
+			item.rare = 7;
 			item.accessory = true;
 		}
 
@@ -778,7 +1015,41 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.WoodenSpike, 20);
+			recipe.AddIngredient(ItemID.WoodenSpike, 10);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class GoldenCog : TrapWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Golden Cog");
+			Tooltip.SetDefault("10% of extra trap damage is dealt directly to your enemy's life\nThis ignores defense and damage reduction");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.rare = 6;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.GetModPlayer<SGAPlayer>().GoldenCog = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Cog, 100);
+			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 5);
+			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

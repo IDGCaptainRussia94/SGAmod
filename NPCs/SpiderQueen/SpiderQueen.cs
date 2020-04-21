@@ -270,6 +270,8 @@ namespace SGAmod.NPCs.SpiderQueen
 				{
 					npc.dontTakeDamage = true;
 				}
+				npc.ai[3] -= 1;
+				if (npc.ai[3]<1)
 				npc.ai[0] += 1;
 
 				Vector2 playerangledif = P.Center - npc.Center;
@@ -321,25 +323,34 @@ namespace SGAmod.NPCs.SpiderQueen
 					}
 					else
 					{
-						float angle1; float angle2;
+						if (npc.ai[0] % 1200 == 601) {
+							npc.ai[0] += 1;
+							npc.ai[3] = 60;
+							Main.PlaySound(SoundID.NPCHit, (int)npc.Center.X, (int)npc.Center.Y, 37, 0.50f, -0.25f);
+						}
+						if (npc.ai[0] % 1200 > 602) {
+							float angle1; float angle2;
 						GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
 						float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
 						rotSpeed *= 1f + ((float)(angle2 - angle1) * 0.2f);
 
-						if (npc.ai[0] % 150 < 60)
-						{
-							npc.rotation += rotSpeed;
-							if (npc.ai[0] % (Main.expertMode ? 5 : 10) == 0)
+							if (npc.ai[0] % 150 < 60)
 							{
-								int type = mod.ProjectileType("SpiderVenom");
-								Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35+(phase * 15), 1+phase, true, 0, true, 1600);
-								Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
-							}
+								npc.rotation += rotSpeed;
+								if (npc.ai[0] % (Main.expertMode ? 5 : 10) == 0 && npc.ai[3]<1)
+								{
+									int type = mod.ProjectileType("SpiderVenom");
+									Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35 + (phase * 15), 1 + phase, true, 0, true, 1600);
+									Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
+								}
 
-							if (npc.ai[0] % 150 == 61)
-							{
-								npc.localAI[1] = P.Center.X;
-								npc.localAI[2] = P.Center.Y;
+								if (npc.ai[0] % 150 == 61)
+								{
+									npc.localAI[1] = P.Center.X;
+									npc.localAI[2] = P.Center.Y;
+								}
+
+
 							}
 
 

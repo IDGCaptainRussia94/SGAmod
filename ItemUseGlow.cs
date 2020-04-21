@@ -18,22 +18,25 @@ namespace SGAmod
         public int glowOffsetX = 0;
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
+
+        public Func<Item, Player, Color> GlowColor = delegate (Item item, Player player)
+        {
+            return Color.White;
+        };
     }
     public class PlayerUseGlow : ModPlayer
     {
-        public static readonly PlayerLayer ItemUseGlow = new PlayerLayer("SGAmod", "ItemUseGlow", PlayerLayer.HeldItem, delegate (PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer ItemUseGlow = new PlayerLayer("QwertysRandomContent", "ItemUseGlow", PlayerLayer.HeldItem, delegate (PlayerDrawInfo drawInfo)
         {
-            if (drawInfo.shadow != 0f)
-            {
-                return;
-            }
+
 
             Player drawPlayer = drawInfo.drawPlayer;
-            Mod mod = ModLoader.GetMod("SGAmod");
+            Mod mod = ModLoader.GetMod("QwertysRandomContent");
             if (!drawPlayer.HeldItem.IsAir)
             {
                 Item item = drawPlayer.HeldItem;
                 Texture2D texture = item.GetGlobalItem<ItemUseGlow>().glowTexture;
+                Color glowcolor = item.GetGlobalItem<ItemUseGlow>().GlowColor(item, drawPlayer);
                 Vector2 zero2 = Vector2.Zero;
 
 
@@ -71,7 +74,7 @@ namespace SGAmod
                             }
 
 
-                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + zero3.X + (float)num105)), (float)((int)(value2.Y - Main.screenPosition.Y + (float)num106))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), Color.White, num104, zero3, item.scale, drawInfo.spriteEffects, 0);
+                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + zero3.X + (float)num105)), (float)((int)(value2.Y - Main.screenPosition.Y + (float)num106))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, num104, zero3, item.scale, drawInfo.spriteEffects, 0);
                             Main.playerDrawData.Add(value);
 
                         }
@@ -98,7 +101,7 @@ namespace SGAmod
                             //Main.playerDrawData.Add(value);
 
 
-                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + vector10.X)), (float)((int)(value2.Y - Main.screenPosition.Y + vector10.Y))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), Color.White, drawPlayer.itemRotation, origin5, item.scale, drawInfo.spriteEffects, 0);
+                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + vector10.X)), (float)((int)(value2.Y - Main.screenPosition.Y + vector10.Y))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, drawPlayer.itemRotation, origin5, item.scale, drawInfo.spriteEffects, 0);
                             Main.playerDrawData.Add(value);
 
 
@@ -111,7 +114,7 @@ namespace SGAmod
                         DrawData value = new DrawData(texture,
                             new Vector2((float)((int)(value2.X - Main.screenPosition.X)),
                             (float)((int)(value2.Y - Main.screenPosition.Y))), new Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)),
-                            Color.White,
+                            glowcolor,
                             drawPlayer.itemRotation,
                              new Vector2(texture.Width * 0.5f - texture.Width * 0.5f * (float)drawPlayer.direction, drawPlayer.gravDir == -1 ? 0f : texture.Height),
                             item.scale,

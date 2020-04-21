@@ -29,6 +29,7 @@ namespace SGAmod
 	public class SGAPlayer : ModPlayer
 	{
 
+		public bool Walkmode = false;
 		public int myammo = 0;
 		public int timer=0;
 		public int beefield = 0;
@@ -83,7 +84,7 @@ namespace SGAmod
 		public int PrismalShots = 0;
 		public int devpower = 0;
 		public float beedamagemul = 1f;
-		public bool JaggedWoodenSpike = false;		public bool JuryRiggedSpikeBuckler = false;
+		public bool JaggedWoodenSpike = false;		public bool JuryRiggedSpikeBuckler = false; public bool GoldenCog = false;
 		public bool devpowerbool = false; public int Redmanastar = 0;
 		public int MidasIdol = 0; public bool OmegaSigil = false;
 		public bool MurkyDepths=false;
@@ -110,6 +111,10 @@ namespace SGAmod
 		public bool BIP = false;
 		public string[] armorglowmasks=new string[4];
 		public int[] devempowerment = { 0, 0, 0, 0 };
+		public Func<int,Player, Color> armorglowcolor = delegate (int index, Player player)
+		{
+			return Color.White;
+		};
 
 		public List<int> ExpertisePointsFromBosses;
 		public List<string> ExpertisePointsFromBossesModded;
@@ -281,7 +286,7 @@ namespace SGAmod
 			devpowerbool = false;
 			MisterCreeperset = false;
 			Noselfdamage = false;
-			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false;
+			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; GoldenCog = false;
 			MidasIdol = 0;
 			OmegaSigil = false;
 			MurkyDepths = false;
@@ -318,6 +323,10 @@ namespace SGAmod
 			{
 				armorglowmasks[i] = null;
 			}
+			armorglowcolor = delegate (int index, Player player)
+			{
+				return Color.White;
+			};
 		}
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -360,6 +369,7 @@ namespace SGAmod
 			sgaplayer.Redmanastar = Redmanastar;
 			sgaplayer.ExpertiseCollected = ExpertiseCollected;
 			sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
+			sgaplayer.entropycollected = entropycollected;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -381,7 +391,7 @@ namespace SGAmod
 					break;
 				}
 			}
-			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots
+			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropycollected != entropycollected
 			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal)
 			mismatch = true;
 
@@ -407,6 +417,7 @@ namespace SGAmod
 				packet.Write((short)Redmanastar);				
 				packet.Write(ExpertiseCollected);
 				packet.Write(ExpertiseCollectedTotal);
+				packet.Write(entropycollected);
 				for (int i = 54; i < 58; i++)
 				{
 					packet.Write(ammoinboxes[i - 54]);
@@ -962,10 +973,15 @@ modeproj.enhancedbees=true;
 
 			if (player.HeldItem != null)
 			{
-				if (player.HeldItem.type == mod.ItemType("CorrodedShield"))
+
+				Dictionary<int, int> shieldtypes = new Dictionary<int, int>();
+				shieldtypes.Add(mod.ItemType("CorrodedShield"), mod.ProjectileType("CorrodedShieldProj"));
+				int projtype;
+				if (shieldtypes.ContainsKey(player.HeldItem.type))
 				{
-					if (player.ownedProjectileCounts[mod.ProjectileType("CorrodedShieldProj")] < 1)
-					Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("CorrodedShieldProj"), (int)25, 0f, player.whoAmI);
+					shieldtypes.TryGetValue(player.HeldItem.type,out projtype);
+					if (player.ownedProjectileCounts[projtype] < 1)
+					Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, (int)25, 0f, player.whoAmI);
 				}
 			}
 
@@ -1093,14 +1109,20 @@ modeproj.enhancedbees=true;
 
 			if (player.HeldItem != null)
 			{
-				if (player.HeldItem.type == mod.ItemType("CorrodedShield"))
+				Dictionary<int,int> shieldtypes = new Dictionary<int,int>();
+				shieldtypes.Add(mod.ItemType("CorrodedShield"),mod.ProjectileType("CorrodedShieldProj"));
+
+
+				if (shieldtypes.ContainsKey(player.HeldItem.type))
 				{
 					int foundhim = -1;
 
 					int xxxz = 0;
+					int thetype;
+					shieldtypes.TryGetValue(player.HeldItem.type,out thetype);
 					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
 					{
-						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == mod.ProjectileType("CorrodedShieldProj") && Main.projectile[xxxz].owner == player.whoAmI)
+						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == thetype && Main.projectile[xxxz].owner == player.whoAmI)
 						{
 							foundhim = xxxz;
 							break;
@@ -1245,6 +1267,15 @@ modeproj.enhancedbees=true;
 					}
 				}
 			}
+			if (SGAmod.WalkHotKey.JustPressed)
+			{
+				Walkmode = Walkmode ? false : true;
+				if (Main.LocalPlayer == player)
+				{
+					Main.PlaySound(17, -1,-1, 0, 1f, Walkmode ? -0.25f : 0.35f);
+
+				}
+			}
 		}
 
 		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
@@ -1370,13 +1401,14 @@ modeproj.enhancedbees=true;
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+			Color GlowColor = modply.armorglowcolor(3, drawPlayer);
 
-			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			Color color = (Color.Lerp(drawInfo.bodyColor, GlowColor, drawPlayer.stealth));
 			if (drawPlayer.stealth > 0.95f)
-				color = Color.White*drawInfo.bodyColor.A;
+				color = GlowColor * drawInfo.bodyColor.A;
 
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
-				color = drawInfo.bodyColor;
+				color = drawInfo.bodyColor*drawInfo.bodyColor.A;
 
 			if (modply.armorglowmasks[0] != null && !drawPlayer.mount.Active)
 			{
@@ -1395,13 +1427,14 @@ modeproj.enhancedbees=true;
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+			Color GlowColor = modply.armorglowcolor(3, drawPlayer);
 
-			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			Color color = (Color.Lerp(drawInfo.bodyColor, GlowColor, drawPlayer.stealth));
 			if (drawPlayer.stealth > 0.95f)
-				color = Color.White * drawInfo.bodyColor.A;
+				color = GlowColor * drawInfo.bodyColor.A;
 
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
-				color = drawInfo.bodyColor;
+				color = drawInfo.bodyColor * drawInfo.bodyColor.A;
 
 			if (modply.armorglowmasks[1] != null && !drawPlayer.mount.Active)
 			{
@@ -1420,14 +1453,15 @@ modeproj.enhancedbees=true;
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+			Color GlowColor = modply.armorglowcolor(3, drawPlayer);
 
 			//better version, from Qwerty's Mod
-			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			Color color = (Color.Lerp(drawInfo.bodyColor, GlowColor, drawPlayer.stealth));
 			if (drawPlayer.stealth > 0.95f)
-				color = Color.White * drawInfo.bodyColor.A;
+				color = GlowColor * drawInfo.bodyColor.A;
 
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
-				color = drawInfo.bodyColor;
+				color = drawInfo.bodyColor * drawInfo.bodyColor.A;
 
 			if (modply.armorglowmasks[2] != null && !drawPlayer.mount.Active)
 			{
@@ -1445,13 +1479,14 @@ modeproj.enhancedbees=true;
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+			Color GlowColor = modply.armorglowcolor(3, drawPlayer);
 
-			Color color = (Color.Lerp(drawInfo.bodyColor, Color.White, drawPlayer.stealth));
+			Color color = (Color.Lerp(drawInfo.bodyColor, GlowColor, drawPlayer.stealth));
 			if (drawPlayer.stealth > 0.95f)
-				color = Color.White * drawInfo.bodyColor.A;
+				color = GlowColor * drawInfo.bodyColor.A;
 
 			if (drawPlayer.immune && !drawPlayer.immuneNoBlink && drawPlayer.immuneTime > 0)
-				color = drawInfo.bodyColor;
+				color = drawInfo.bodyColor * drawInfo.bodyColor.A;
 
 			if (modply.armorglowmasks[3] != null && !drawPlayer.mount.Active)
 			{
@@ -1815,7 +1850,7 @@ modeproj.enhancedbees=true;
 			addtolist(NPCID.WallofFlesh, 500);
 
 
-			//Hardmode Bosses (+7400 total)
+			//Hardmode Bosses (+8500 total)
 
 			addtolistmodded("CobaltWraith", 300);
 			addtolistmodded("Cirno", 300);
@@ -1824,14 +1859,18 @@ modeproj.enhancedbees=true;
 			addtolist(NPCID.Spazmatism, 150);
 			addtolist(NPCID.Retinazer, 150);//1500
 			addtolistmodded("SharkvernHead", 500);
-			addtolist(NPCID.Plantera, 500);//2500
+			addtolist(NPCID.Plantera, 600);//2500
 			addtolistmodded("Cratrosity", 700);
 			addtolist(NPCID.Golem, 500);
 			addtolist(NPCID.DD2Betsy, 700);
 			addtolist(NPCID.CultistBoss, 500);//4900
 			addtolistmodded("TPD", 800);
 			addtolistmodded("Harbinger", 700);
-			addtolist(NPCID.MoonLordCore, 1000);//7400
+			addtolist(NPCID.LunarTowerNebula, 250);
+			addtolist(NPCID.LunarTowerSolar, 250);
+			addtolist(NPCID.LunarTowerStardust, 250);
+			addtolist(NPCID.LunarTowerVortex, 250);
+			addtolist(NPCID.MoonLordCore, 1000);//8400
 
 			//Post-moonlord Bosses (+7500 total)
 

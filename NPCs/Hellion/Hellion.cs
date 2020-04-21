@@ -29,8 +29,9 @@ namespace SGAmod.NPCs.Hellion
 
 		public static void HellionWelcomesYou()
 		{
-			if (SGAWorld.downedHellion > 1)
-			{
+			if (SGAWorld.downedHellion < 2)
+				return;
+
 				if (!Directory.Exists(SGAmod.filePath))
 				{
 					Directory.CreateDirectory(SGAmod.filePath);
@@ -46,7 +47,6 @@ namespace SGAmod.NPCs.Hellion
 
 			});
 				Process.Start(@"" + SGAmod.filePath + "");
-			}
 
 		}
 
@@ -1463,7 +1463,7 @@ namespace SGAmod.NPCs.Hellion
 					{
 						int num154 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("DPSDrones"), npc.whoAmI, 0f, 0f, 0f, 0f, 255);
 						Main.npc[num154].target = npc.target;
-						Main.npc[num154].lifeMax = (int)(npc.lifeMax * 0.02);
+						Main.npc[num154].lifeMax = (int)(npc.lifeMax * 0.005);
 						Main.npc[num154].life = Main.npc[num154].lifeMax;
 						Main.npc[num154].netUpdate = true;
 					}
@@ -2541,6 +2541,7 @@ namespace SGAmod.NPCs.Hellion
 		public override void AI()
 		{
 			projectile.ai[0] += 1;
+			SGAmod.updateportals = true;
 			if (doinit == false)
 			{
 				doinit = true;
@@ -2613,31 +2614,35 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (type == 0)
 			{
-				int width = 32; int height = 32;
-
-				SGAmod.ParadoxMirrorTex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
-				var dataColors = new Color[width * height];
-
-
-				///
-
-
-				for (int y = 0; y < height; y++)
+				if (SGAmod.updateportals == true)
 				{
-					for (int x = 0; x < width; x++)
+					int width = 32; int height = 32;
+
+					SGAmod.ParadoxMirrorTex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+					var dataColors = new Color[width * height];
+
+
+					///
+
+
+					for (int y = 0; y < height; y++)
 					{
-						float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
-						if (dist < width / 3)
+						for (int x = 0; x < width; x++)
 						{
-							//float alg = ((-Main.GlobalTime + ((float)(dist) / 10f)) / 3f);
-							float alg = ParadoxMirror.colorgen(dist, x, y);
-							dataColors[x + y * width] = Main.hslToRgb(alg % 1f, 0.75f, 0.5f);
+							float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
+							if (dist < width / 3)
+							{
+								//float alg = ((-Main.GlobalTime + ((float)(dist) / 10f)) / 3f);
+								float alg = ParadoxMirror.colorgen(dist, x, y);
+								dataColors[x + y * width] = Main.hslToRgb(alg % 1f, 0.75f, 0.5f);
+							}
 						}
 					}
+
+
+					SGAmod.ParadoxMirrorTex.SetData(0, null, dataColors, 0, width * height);
+					SGAmod.updateportals = false;
 				}
-
-
-				SGAmod.ParadoxMirrorTex.SetData(0, null, dataColors, 0, width * height);
 			}
 			else
 			{
@@ -2673,7 +2678,7 @@ namespace SGAmod.NPCs.Hellion
 			npc.width = 16;
 			npc.height = 16;
 			npc.damage = 10;
-			npc.defense = 0;
+			npc.defense = 120;
 			npc.lifeMax = 10000;
 			npc.HitSound = SoundID.NPCHit5;
 			npc.DeathSound = SoundID.NPCDeath6;
@@ -2841,7 +2846,7 @@ namespace SGAmod.NPCs.Hellion
 			get { return "Terraria/Item_"+ItemID.GeyserTrap; }
 		}
 
-		public static void UpdateHellionBeam()
+		public static void UpdateHellionBeam(int timer)
 		{
 			if (!Main.dedServ)
 			{
@@ -2852,9 +2857,9 @@ namespace SGAmod.NPCs.Hellion
 				Color lerptocolor = Color.Red;
 				//if (projectile.ai[1] < 100)
 				//    lerptocolor = Color.Green;
-				float scroll = Main.GlobalTime*3f;
+				float scroll = (float)timer;
 
-				if (SGAWorld.updatelasers)
+				if (SGAmod.updatelasers)
 				{
 
 					if (SGAmod.hellionLaserTex != null)
@@ -2869,9 +2874,12 @@ namespace SGAmod.NPCs.Hellion
 						}
 					}
 
-					SGAWorld.updatelasers = false;
+					SGAmod.updatelasers = false;
 
 					SGAmod.hellionLaserTex.SetData(dataColors);
+
+
+
 				}
 			}
 
@@ -2907,7 +2915,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public override void MoreAI(Vector2 dustspot)
 		{
-			SGAWorld.updatelasers = true;
+			SGAmod.updatelasers = true;
 		}
 		public override void OnHitPlayer(Player player, int damage, bool crit)
 		{

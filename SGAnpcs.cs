@@ -43,6 +43,8 @@ namespace SGAmod
 		public bool TimeSlowImmune = false;
 		bool fireimmunestate=false;
 		bool[] otherimmunesfill=new bool[3];
+		public bool Mircotransactions;
+		public int counter = 0;
 
 
 		public int FindBuffIndex(NPC npc,int type)
@@ -415,6 +417,18 @@ return true;
 
 		public override void PostAI(NPC npc)
 		{
+			counter++;
+			if (Mircotransactions)
+			{
+				if (Main.netMode != 2)
+				{
+						if (counter % 150 == 0 && npc.value > Item.buyPrice(0, 1, 0, 0))
+						{
+							npc.value -= Item.buyPrice(0, 0, 50, 0);
+							Item.NewItem(npc.position, new Vector2(npc.width, npc.height),50,noGrabDelay: true);
+						}
+					}
+			}
 
 			if (ELS)
 			{
@@ -571,10 +585,13 @@ return true;
 					}
 					else
 					{
-						ModPacket packet = mod.GetPacket();
-						packet.Write(250);
-						packet.Write(npc.type);
-						packet.Send(ply.whoAmI);
+						if ((ply.Center - npc.Center).Length() < 1400)
+						{
+							ModPacket packet = mod.GetPacket();
+							packet.Write(250);
+							packet.Write(npc.type);
+							packet.Send(ply.whoAmI);
+						}
 					}
 					if (ply.HasItem(mod.ItemType("EntropyTransmuter")))
 					{
@@ -887,6 +904,12 @@ return true;
 						//damage += (int)((npc.defense * 0.1) / 2.00);
 					}
 					totaldamage = Math.Min(totaldamage, 1f);
+					if (moddedplayer.GoldenCog)
+					{
+						npc.life = npc.life-(int)(damage * 0.10);
+						if (Main.netMode==2)
+						NetMessage.SendData(23, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+					}					
 					damage += (int)((npc.defense * totaldamage) / 2.00);
 				}
 

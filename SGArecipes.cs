@@ -110,15 +110,44 @@ namespace SGAmod
         return true;
         }
 
+        public override void OnCraft(Item item, Recipe recipe)
+        {
+            if ((recipe.createItem.type == ItemID.Furnace || recipe.requiredTile.Any(tile => tile == TileID.Furnaces)) && (SGAWorld.downedWraiths < 1))
+            {
+
+                if (!NPC.AnyNPCs(mod.NPCType("CopperWraith")))
+                {
+
+                    if (Main.netMode > 0)
+                    {
+                        mod.Logger.Debug("Copper Wraith: Net Spawn");
+                        ModPacket packet = mod.GetPacket();
+                        packet.Write(75);
+                        packet.Write(mod.NPCType("CopperWraith"));
+                        packet.Write(-9999);
+                        packet.Write(-9999);
+                        packet.Write(Main.LocalPlayer.whoAmI);
+                        packet.Send();
+                    }
+                    else
+                    {
+                        mod.Logger.Debug("Copper Wraith: SP Spawn");
+                        NPC.SpawnOnPlayer(Main.LocalPlayer.whoAmI, mod.NPCType("CopperWraith"));
+
+                    }
+
+                }
+            }
+        }
+
         public override bool RecipeAvailable(Recipe recipe)
         {
 
             bool canwemakeit=base.RecipeAvailable(recipe);
             if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
                 canwemakeit = false;
-            if (((recipe.createItem.type==ItemID.Furnace || recipe.requiredTile.Any(tile => tile == TileID.Furnaces)) && (SGAWorld.downedWraiths<1))
-            || (((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
-            || (recipe.createItem.type==ItemID.LunarBar && SGAWorld.downedWraiths<4))
+            //if ((((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
+            if ((recipe.createItem.type==ItemID.LunarBar && SGAWorld.downedWraiths<4))
                 return false;
             else
                 return canwemakeit;//return SgaLib.EnforceDuplicatesInRecipe(recipe as ModRecipe); //base.RecipeAvailable(recipe);

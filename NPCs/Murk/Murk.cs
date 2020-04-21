@@ -154,6 +154,10 @@ namespace SGAmod.NPCs.Murk
                     }
                 }
             }
+            else
+            {
+                npc.timeLeft = 100;
+            }
 
             if (!Main.player[npc.target].dead && npc.ai[2] >= 300f && npc.ai[1] < 5f && npc.velocity.Y == 0f)
             {

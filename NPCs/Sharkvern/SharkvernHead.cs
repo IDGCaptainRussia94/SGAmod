@@ -18,6 +18,7 @@ namespace SGAmod.NPCs.Sharkvern
         public int rage=0;
         public bool touchwater=false;
         public Vector2 Summoncenter=new Vector2(0,0);
+        public List<int> averagey;
 
 
         public override void SetStaticDefaults()
@@ -111,6 +112,9 @@ namespace SGAmod.NPCs.Sharkvern
         
         public override bool PreAI()
         {
+            if (averagey == null)
+                averagey = new List<int>();
+
             if (Main.netMode != 1)
             {
                 if (npc.ai[0] == 0)
@@ -123,35 +127,26 @@ namespace SGAmod.NPCs.Sharkvern
                     int randomWormLength = Main.rand.Next(1, 1);
                     for (int i = 0; i < randomWormLength; ++i)
                     {
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernNeck"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernNeck"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody2"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody2"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody3"), npc.whoAmI, 0, latestNPC);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody3"), npc.whoAmI, 0, latestNPC,ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
                     }
-                    latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernTail"), npc.whoAmI, 0, latestNPC);
+                    latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernTail"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                     Main.npc[(int)latestNPC].realLife = npc.whoAmI;
                     Main.npc[(int)latestNPC].ai[3] = npc.whoAmI;
 
@@ -243,8 +238,9 @@ namespace SGAmod.NPCs.Sharkvern
             targetXPos=(float)(Main.maxTilesX*0.6f);
             if (npc.Center.X>(Main.maxTilesX/2)*16)
             targetXPos=(float)(Main.maxTilesX*16)-(Main.maxTilesX*0.6f);
-            targetYPos=(float)SGAWorld.RaycastDownWater((int)targetXPos/16,(int)(1),50)*16;
-            Summoncenter=new Vector2(targetXPos,targetYPos-500f);
+            targetYPos = averagey[0];
+            //targetYPos=(float)SGAWorld.RaycastDownWater((int)targetXPos/16,(int)(1),50)*16;
+            Summoncenter =new Vector2(targetXPos,targetYPos-500f);
             double angle=(npc.ai[3]/30f)+ 2.0* Math.PI;
             targetXPos+=(float)((Math.Cos(angle) * 800f) * -1f);
             targetYPos+=(float)((Math.Sin(angle) * 400f) * -1f)-500f;
@@ -421,8 +417,25 @@ namespace SGAmod.NPCs.Sharkvern
                 }
             }
 
+            if (npc.life > npc.lifeMax * 0.50)
+            {
+                averagey.Add((int)npc.Center.Y);
+            }
+
             if (npc.ai[3]<1000 && npc.ai[3]>-1 && npc.life<(int)npc.lifeMax*0.50){
             npc.ai[3]+=1;
+
+                if (averagey.Count > 2)
+                {
+                    int thereat = 0;
+                    for(int i=0;i< averagey.Count; i += 1)
+                    {
+                        thereat += averagey[i];
+                    }
+                    thereat = (int)(thereat / averagey.Count);
+                    averagey.Clear();
+                    averagey.Add(thereat);
+                }
 
             if (npc.ai[3]>150){
             if (npc.ai[3]%160==0 && Main.netMode!=1){

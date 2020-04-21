@@ -49,7 +49,7 @@ namespace SGAmod.Tiles
 
         public override bool CanExplode(int i, int j)
         {
-            return false;
+            return SGAWorld.downedWraiths>0;
         }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)  
         {

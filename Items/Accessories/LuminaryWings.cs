@@ -59,9 +59,12 @@ namespace SGAmod.Items.Accessories
 
 			if (mytile.active() || player.velocity.Y==0)
 			{
-				player.maxRunSpeed += 2.5f;
-				player.accRunSpeed += 3f;
-				player.runAcceleration += 0.50f;
+				if (!player.GetModPlayer<SGAPlayer>().Walkmode)
+				{
+					player.maxRunSpeed += 2.5f;
+					player.accRunSpeed += 3f;
+					player.runAcceleration += 0.50f;
+				}
 				player.rocketBoots = 2;
 			}
 			player.maxFallSpeed *= 2f;

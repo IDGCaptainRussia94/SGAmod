@@ -276,7 +276,23 @@ return false;
 			NPCID.Sets.NeedsExpertScaling[npc.type] = true;
 		}
 
-        public override void BossLoot(ref string name, ref int potionType)
+		public override void SendExtraAI(BinaryWriter writer)   
+{
+writer.Write((short)warninglevel);
+			writer.Write((short)warninglevel2);
+			writer.Write((short)quitermode);
+			writer.Write((short)fighttversion);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+{
+			warninglevel = (int)reader.ReadInt16();
+			warninglevel2 = (int)reader.ReadInt16();
+			quitermode = (int)reader.ReadInt16();
+			fighttversion = (int)reader.ReadInt16();
+		}
+
+		public override void BossLoot(ref string name, ref int potionType)
         {
         potionType=ItemID.GreaterHealingPotion;
         }
@@ -541,6 +557,8 @@ public void DoAIStuff(Player P){
 			npc.GivenName="The Luminite Wraith";
 			if (fighttversion==0 && warninglevel>30){
 		quitermode+=1;
+				if (quitermode % 10 == 0)
+					npc.netUpdate = true;
 		npc.dontTakeDamage=true;
 		music=MusicID.Title;
 		if (quitermode==100)
@@ -963,6 +981,23 @@ public void DoAIStuff(Player P){
 		public int timeswentdown = 0;
 			public bool droploot=false;
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((int)mytargetis.X);
+			writer.Write((int)mytargetis.Y);
+			writer.Write((short)timeswentdown);
+			writer.Write((short)attachedID);
+			writer.Write(hitstate);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			mytargetis = new Vector2((float)reader.ReadInt32(), (float)reader.ReadInt32());
+			timeswentdown = (int)reader.ReadInt16();
+			attachedID = reader.ReadInt16();
+			hitstate = reader.ReadBoolean();
+		}
+
 		public override void ArmorMalfunction()
         { 
         int theitem=0;
@@ -1024,6 +1059,7 @@ public void DoAIStuff(Player P){
 				newguy2.ai[1]=npc.whoAmI;
 				newguy2.ai[2]=myself.attachedID;
 				(newguy2.modNPC as LuminiteWraithTarget).delay=delay;
+					newguy2.netUpdate = true;
 				npc.ai[1]=newguy;
 				}
 				NPC myowner=Main.npc[myself.attachedID];

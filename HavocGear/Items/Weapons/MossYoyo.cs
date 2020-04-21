@@ -13,14 +13,14 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quagmire");
-            Tooltip.SetDefault("Hits will poison your foes");
+            Tooltip.SetDefault("Hits apply Dank Slow against your foes\nContinous hits make the slow stronger\nEnemies who are immune to Poison are also immune to Dank Slow");
         }
         
 		public override void SetDefaults()
         {
             Item refItem = new Item();
 			refItem.SetDefaults(ItemID.Amarok);                                 
-            item.damage = 35;
+            item.damage = 25;
             item.useTime = 24;
             item.useAnimation = 22;
             item.useStyle = 5;

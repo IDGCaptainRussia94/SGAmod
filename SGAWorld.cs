@@ -51,7 +51,6 @@ namespace SGAmod
         public static int tf2questcounter = 0;
         public static int[] questvars = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static bool WorldIsTin = false;
-        public static bool updatelasers = false;
         public static int dungeonlevel = 0;
 
         public static int harbingercounter = 0;
@@ -88,6 +87,8 @@ namespace SGAmod
                 downedSharkvern = false;
                 overalldamagedone = 0;
                 downedCratrosity = false;
+                downedCratrosityPML = false;
+                downedHellion = 0;
                 tf2cratedrops = false;
                 tf2quest = 0;
                 bossprgressor = 0;

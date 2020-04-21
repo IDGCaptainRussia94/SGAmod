@@ -64,6 +64,18 @@ namespace SGAmod
 		}
 	}*/
 
+	public class PostDrawCollection
+	{
+		public Vector3 light;
+
+		public PostDrawCollection(Vector3 light)
+		{
+			this.light = light;
+
+		}
+
+	}
+
 	public class SGAmod : Mod
 	{
 
@@ -87,7 +99,13 @@ namespace SGAmod
 		public static Texture2D ParadoxMirrorTex;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
+		internal static ModHotKey WalkHotKey;
 		public static bool cachedata = false;
+		public static bool updatelasers = false;
+		public static bool updateportals = false;
+		private int localtimer=0;
+		public static List<PostDrawCollection> PostDraw;
+		public static RenderTarget2D drawnscreen;
 
 		public int OSDetect()
 		{
@@ -153,7 +171,11 @@ namespace SGAmod
 			SGAmod.ScrapCustomCurrencySystem = new ScrapMetalCurrency(ModContent.ItemType<Items.Scrapmetal>(), 999L);
 			SGAmod.ScrapCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(SGAmod.ScrapCustomCurrencySystem);
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
+			WalkHotKey = RegisterHotKey("Walk Mode", "C");
 			OSType = OSDetect();
+			SGAmod.PostDraw = new List<PostDrawCollection>();
+			if (!Main.dedServ)
+			SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
 
 			if (Directory.Exists(filePath))
 			{
@@ -208,6 +230,8 @@ namespace SGAmod
 			Instance = null;
 			Calamity = false;
 			otherimmunes = null;
+			if (!Main.dedServ)
+				SGAmod.drawnscreen.Dispose();
 		}
 
 		public override void AddRecipes()
@@ -218,6 +242,27 @@ namespace SGAmod
 			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(ItemID.IceMachine);
 			recipe.AddRecipe();
+
+			RecipeFinder finder = new RecipeFinder();
+			finder.SetResult(ItemID.Furnace);
+			foreach (Recipe recipe2 in finder.SearchRecipes())
+			{
+				RecipeEditor editor = new RecipeEditor(recipe2);
+				editor.AcceptRecipeGroup("SGAmod:BasicWraithShards");
+				editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment"),10);
+			}
+
+			int[] stuff = { ItemID.MythrilAnvil, ItemID.OrichalcumAnvil };
+			for (int i = 0; i < 2; i += 1)
+			{
+				finder = new RecipeFinder();
+				finder.SetResult(stuff[i]);
+				foreach (Recipe recipe2 in finder.SearchRecipes())
+				{
+					RecipeEditor editor = new RecipeEditor(recipe2);
+					editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment4"), 10);
+				}
+			}
 
 			/*recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("IceFairyDust"), 5);
@@ -625,6 +670,8 @@ namespace SGAmod
 				Logger.Debug("DEBUG both: Clone Client 7");
 				int ExpertiseCollectedTotal = reader.ReadInt32();
 				Logger.Debug("DEBUG both: Clone Client 8");
+				int Entrophite = reader.ReadInt32();
+				Logger.Debug("DEBUG both: Clone Client 9");
 
 
 				SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
@@ -635,6 +682,7 @@ namespace SGAmod
 				sgaplayer.Redmanastar = Redmanastar;
 				sgaplayer.ExpertiseCollected = ExpertiseCollected;
 				sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
+				sgaplayer.entropycollected = Entrophite;
 				for (int i = 54; i < 58; i++)
 				{
 					sgaplayer.ammoinboxes[i - 54] = reader.ReadInt32();
@@ -668,9 +716,11 @@ namespace SGAmod
 		{
 			if (!Main.dedServ)
 			{
-				HellionBeam.UpdateHellionBeam();
+				localtimer += 1;
+				HellionBeam.UpdateHellionBeam((int)(localtimer));
 				ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
 			}
+
 		}
 
 

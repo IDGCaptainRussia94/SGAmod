@@ -250,7 +250,12 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void AI()
 		{
-		CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			float speedmulti = 0.75f;
+			if (!Main.expertMode)
+				speedmulti = 0.5f;
+			if (SGAWorld.NightmareHardcore > 0)
+				speedmulti = 1f;
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
 		int npctype=mod.NPCType(myself.attachedType);
 		NPC myowner=Main.npc[myself.attachedID];
 		if (myowner.active==false){
@@ -272,7 +277,7 @@ namespace SGAmod.NPCs.Wraiths
 		if (npc.ai[0]%1500>1250){
 		itt=(P.position-npc.position+new Vector2(3f*npc.ai[1]*npc.spriteDirection,npc.ai[2]*2f));
 		}
-		float locspeed=0.25f;
+		float locspeed=0.25f* speedmulti;
 		if (npc.ai[0]%900>550){
 		Vector2 cas=new Vector2(npc.position.X-P.position.X,npc.position.Y-P.position.Y);
 		double dist=cas.Length();
@@ -292,7 +297,7 @@ namespace SGAmod.NPCs.Wraiths
 		}else{
 		if (Math.Abs(npc.velocity.X)>2){ npc.spriteDirection=npc.velocity.X>0 ? -1 : 1; }
 		npc.rotation=(float)npc.velocity.X*0.09f;
-		locspeed=0.5f;
+		locspeed=0.5f* speedmulti;
 		}
 		npc.velocity=npc.velocity*0.96f;
 		itt.Normalize();
@@ -339,7 +344,12 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void AI()
 		{
-		CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			float speedmulti = 0.75f;
+			if (!Main.expertMode)
+				speedmulti = 0.5f;
+			if (SGAWorld.NightmareHardcore>0)
+				speedmulti = 1f;
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
 		int npctype=mod.NPCType(myself.attachedType);
 		NPC myowner=Main.npc[myself.attachedID];
 		if (myowner.active==false){
@@ -349,7 +359,7 @@ namespace SGAmod.NPCs.Wraiths
 		npc.ai[0]+=1;
 		npc.spriteDirection=npc.velocity.X>0 ? -1 : 1;
 		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
-		float locspeed=0.25f;
+		float locspeed=0.25f* speedmulti;
 		if (npc.ai[0]%600>350){
 
 		npc.damage = (int)npc.defDamage*3;
@@ -366,11 +376,11 @@ namespace SGAmod.NPCs.Wraiths
 		}else{
 		npc.damage = (int)npc.defDamage;
 		if (npc.ai[0]%300<60){
-		locspeed=2.5f;
+		locspeed=2.5f* speedmulti;
 		npc.velocity=npc.velocity*0.92f;
 		}
 		npc.rotation=(float)npc.velocity.X*0.09f;
-		locspeed=0.5f;
+		locspeed=0.5f* speedmulti;
 		}
 		npc.velocity=npc.velocity*0.96f;
 		itt.Normalize();
@@ -530,8 +540,28 @@ namespace SGAmod.NPCs.Wraiths
 		public override void AI()
 		{
 
-					//npc.netUpdate = true;
-						Player P = Main.player[npc.target];
+			float speedmulti = 0.75f;
+			if (GetType() == typeof(CopperWraith))
+			{
+				if (!Main.expertMode)
+					speedmulti = 0.5f;
+				if (SGAWorld.NightmareHardcore > 0)
+					speedmulti = 1f;
+
+			}
+
+			if (GetType() == typeof(CobaltWraith))
+			{
+				speedmulti = 1.25f;
+				if (!Main.expertMode)
+					speedmulti = 1f;
+				if (SGAWorld.NightmareHardcore > 0)
+					speedmulti = 1.4f;
+
+			}
+
+			//npc.netUpdate = true;
+			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
 				npc.TargetClosest(false);
@@ -579,7 +609,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		if (npc.ai[0]%600<250){
 		Vector2 itt=((P.Center+OffsetPoints)-npc.position); itt.Normalize();
-		npc.velocity=npc.velocity+(itt*speed);
+		npc.velocity=npc.velocity+(itt*(speed* speedmulti));
 		}
 		npc.velocity=npc.velocity*0.98f;
 
@@ -592,7 +622,7 @@ namespace SGAmod.NPCs.Wraiths
 		}else{
 		Vector2 itt=((P.Center+OffsetPoints+new Vector2(0,-250))-npc.position); itt.Normalize();
 		float speedz=(float)level+0.45f;
-		npc.velocity=npc.velocity+(itt*speedz);
+		npc.velocity=npc.velocity+((itt*speedz)* speedmulti);
 		}
 		float fric=0.96f+((float)level*0.01f);
 		npc.velocity=npc.velocity*fric;

@@ -215,7 +215,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (expgathered > 800)
 					chat.Add("I feel safer with someone like you around.");
 				if (expgathered > 2000)
-					chat.Add("I hope all those you've slain were meant to harm us... I can't bare idea of innocients dying.");
+					chat.Add("I hope all those you've slain were meant to harm us... I can't bear idea of innocents dying.");
 
 				int Tnpc1 = NPC.FindFirstNPC(NPCID.Dryad);
 				if (Tnpc1 >= 0)
@@ -483,7 +483,8 @@ namespace SGAmod.NPCs.TownNPCs
 			{ ItemID.RodofDiscord,2000 },
 			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
 			{ ItemID.AviatorSunglasses,10000 },
-			{ ItemID.RedPotion,100000000 },
+			{ ItemID.RedPotion,1000000 },
+			{ ItemID.RedPotion,1000000 },
 		};
 
 			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();

@@ -9,7 +9,7 @@ using SGAmod.Items.Weapons.SeriousSam;
 
 namespace SGAmod.Items.Weapons
 {
-	public class FSRG : SeriousSamWeapon
+	public class FSRG : ModItem
 	{
 		private int varityshot=0;
 		public override void SetStaticDefaults()
@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 80;
+			item.damage = 85;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -133,6 +133,7 @@ namespace SGAmod.Items.Weapons
 				Main.projectile[proj].localNPCHitCooldown = -1;
 				Main.projectile[proj].scale = 0.5f;
 				Main.projectile[proj].extraUpdates = 1;
+				Main.projectile[proj].ranged = true;
 				Main.projectile[proj].netUpdate = true;
 				IdgProjectile.AddOnHitBuff(proj, mod.BuffType("AcidBurn"), 60 * 2);
 				IdgProjectile.Sync(proj);

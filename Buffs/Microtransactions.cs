@@ -21,9 +21,9 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().Microtransactions = true;
 		}
 
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.GetGlobalNPC<SGAnpcs>().Mircotransactions = true;
+		}
 	}
 }

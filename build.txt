@@ -1,5 +1,5 @@
 author = IDGCaptainRussia
-version = 2.600
+version = 2.700
 displayName = [i:2730][i:2718][i:2712]mod - [i:3040] [c/C54D0D:Hellion's Wraith] [i:3725]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true

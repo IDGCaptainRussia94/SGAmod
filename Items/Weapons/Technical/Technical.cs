@@ -606,6 +606,7 @@ namespace SGAmod.Items.Weapons.Technical
 			if (!Main.dedServ)
 			{
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/BigDakka_Glow");
+				item.GetGlobalItem<ItemUseGlow>().glowOffsetX = -26;
 			}
 		}
 
@@ -1114,7 +1115,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 160;
+			item.damage = 150;
 			item.magic = true;	
 			item.crit = 15;
 			item.width = 56;

@@ -154,6 +154,7 @@ namespace SGAmod.Items.Weapons
 					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(50)) * projectile.velocity.Length();
 					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), (int)projectile.ai[0], projectile.damage, projectile.knockBack, owner.whoAmI);
 					Main.projectile[proj].melee = true;
+					Main.projectile[proj].netUpdate = true;
 					IdgProjectile.Sync(proj);
 				}
 

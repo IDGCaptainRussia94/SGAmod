@@ -90,20 +90,19 @@ namespace SGAmod
                 }
             }
 
-            if (item.type == ItemID.Furnace)
+            if (SGAWorld.downedWraiths < 1)
             {
-                if (SGAWorld.downedWraiths < 1)
+
+                RecipeFinder finder = new RecipeFinder();
+                finder.AddTile(TileID.Furnaces);
+                List<Recipe> reclist = finder.SearchRecipes();
+
+                Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
+
+                if (foundone != null)
                 {
-                    Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A being has locked it away from your possession, talk to the guide")));
-                }
-            }
-            if (item.type == ItemID.MythrilAnvil || item.type == ItemID.OrichalcumAnvil)
-            {
-                if (SGAWorld.downedWraiths < 2)
-                {
-                    Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A stronger being has locked it away from your possession, talk to the guide")));
+                    Color c = Main.hslToRgb(0.5f, 0.10f, 0.1f);
+                    tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "Crafting this will anger something...")));
                 }
             }
             if (item.type == ItemID.LunarBar)
@@ -256,6 +255,21 @@ namespace SGAmod
         public override bool OnPickup(Item item, Player player)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
+                if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
+                {
+                    if (player.HasItem(mod.ItemType("EALogo")))
+                        player.QuickSpawnItem(ItemID.SilverCoin, 8);
+                }
+                if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
+                {
+                    if (player.HasItem(mod.ItemType("EALogo")))
+                        player.QuickSpawnItem(ItemID.SilverCoin, 4);
+                }
+            //lifesteal/gain
+            //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);
+
+
             if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol<3)
             {
                 /*int[] count = {player.CountItem(ItemID.CopperCoin), player.CountItem(ItemID.SilverCoin), player.CountItem(ItemID.GoldCoin), player.CountItem(ItemID.PlatinumCoin) };
@@ -815,10 +829,25 @@ namespace SGAmod
             return base.NewPreReforge(item);
         }
 
+        public static bool SavingChanceMethod(Player player, bool accountforbuiltinchecks = false)
+        {
+            if (accountforbuiltinchecks)
+            {
+                if (Main.rand.Next(100) < 33 && player.thrownCost33)
+                    return false;
+                if (Main.rand.Next(100) < 50 && player.thrownCost50)
+                    return false;
+            }
+
+
+            return Main.rand.Next(100) > (int)(player.GetModPlayer<SGAPlayer>().Thrownsavingchance * 100f);
+
+        }
+
         public override bool ConsumeItem(Item item, Player player)
         {
             if (item.thrown)
-                return Main.rand.Next(100) > (int)(player.GetModPlayer<SGAPlayer>().Thrownsavingchance * 100f);
+                return TrapDamageItems.SavingChanceMethod(player);
             else
                 return true;
         }

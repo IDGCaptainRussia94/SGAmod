@@ -245,7 +245,7 @@ namespace SGAmod.NPCs.Wraiths
 					Main.npc[(int)npc.ai[1]].active=false;
 				}
 				}else{
-		npc.ai[0]+=1;
+					npc.ai[0] += 1;
 		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
 		if (npc.ai[0]%1500>1250){
 		itt=(P.position-npc.position+new Vector2(3f*npc.ai[1]*npc.spriteDirection,npc.ai[2]*2f));
@@ -628,7 +628,7 @@ return true;
 		public override void AI()
 		{
 
-						Player P = Main.player[npc.target];
+			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
 				npc.TargetClosest(false);
@@ -639,6 +639,8 @@ return true;
 					Main.npc[(int)npc.ai[1]].active=false;
 				}
 				}else{
+				if ((P.Center - npc.Center).Length() < 700)
+					npc.timeLeft = 400;
 				base.AI();
 				if (npc.ai[0]>10){npc.ai[0]++;}
 				if (npc.ai[0]==1){

@@ -325,24 +325,27 @@ namespace SGAmod.Generation
                 tile.active(false);
             }
 
-            for (int kk = 3; kk < 6; kk += 1)
-            {
-                Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - kk].active(false);
-                Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - kk].active(false);
-                Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - kk].active(false);
-                Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - kk].active(false);
-                Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - kk].active(false);
+                for (int kk = 3; kk < 6; kk += 1)
+                {
+                    Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - kk].active(false);
+                for (int xx = 0; xx < 6; xx += 1)
+                {
+                    Main.tile[(int)placementspot.X - xx, (int)placementspot.Y + buffersizey - kk].active(false);
+                    Main.tile[(int)placementspot.X + xx, (int)placementspot.Y + buffersizey - kk].active(false);
+                }
             }
-
             Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 1].active(true);
-            Main.tile[(int)placementspot.X-1, (int)placementspot.Y + buffersizey - 1].active(true);
-            Main.tile[(int)placementspot.X+1, (int)placementspot.Y + buffersizey - 1].active(true);
-            Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 1].active(true);
-            Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 1].active(true);
+            for (int xx = 0; xx < 4; xx += 1)
+            {
+                Main.tile[(int)placementspot.X - xx, (int)placementspot.Y + buffersizey - 1].active(true);
+                Main.tile[(int)placementspot.X + xx, (int)placementspot.Y + buffersizey - 1].active(true);
+            }
 
             Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true);
             Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2].active(true);
             Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2].active(true);
 
             WorldGen.PlaceObject((int)placementspot.X, (int)placementspot.Y + buffersizey - 3, type==0 ? SGAmod.Instance.TileType("CaliburnAltar")
                 : (type==1 ? SGAmod.Instance.TileType("CaliburnAltarB") : SGAmod.Instance.TileType("CaliburnAltarC")), false, 0);

@@ -129,7 +129,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2Emblem"), 1);
-			recipe.AddIngredient(ItemID.ManaPotion, 30);
+			recipe.AddIngredient(ItemID.GreaterManaPotion, 30);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

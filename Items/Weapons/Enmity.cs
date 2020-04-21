@@ -46,6 +46,10 @@ namespace SGAmod.Items.Weapons
 			if (!Main.dedServ)
 			{
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/Enmity_Glow");
+				item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+				{
+					return Main.hslToRgb((Main.GlobalTime*1.5f)%1f,0.8f,0.75f);
+				};
 			}
 
 		}
