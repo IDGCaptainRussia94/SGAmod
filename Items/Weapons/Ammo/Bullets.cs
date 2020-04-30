@@ -139,14 +139,14 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 20;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;
 			item.maxStack = 999;
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
 			item.knockBack = 2.0f;
-			item.value = 500;
+			item.value = 300;
 			item.rare = 10;
 			item.shoot = mod.ProjectileType("AimBotBullet");   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 1f;                  //The speed of the projectile
@@ -200,7 +200,7 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void SetDefaults()
 		{
-			item.damage = 18;
+			item.damage = 17;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;

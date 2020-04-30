@@ -366,10 +366,11 @@ namespace SGAmod.Items.Weapons
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 25;
-			item.useAnimation = 25;
+			item.useTime = 15;
+			item.useAnimation = 15;
 			item.useStyle = 1;
 			item.knockBack = 2;
+			item.crit = 5;
 			item.value = Item.sellPrice(0, 15, 0, 0);
 			item.rare = 5;
 			item.UseSound = SoundID.Item1;

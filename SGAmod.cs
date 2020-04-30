@@ -90,6 +90,7 @@ namespace SGAmod
 		,{ItemID.PalladiumOre,ItemID.CobaltOre},{ItemID.OrichalcumOre,ItemID.MythrilOre},{ItemID.TitaniumOre,ItemID.AdamantiteOre}};
 		public static Dictionary<int, int> UsesClips;
 		public static Dictionary<int, int> UsesPlasma;
+		public static Dictionary<int, int> NonStationDefenses;
 		public static int[] otherimmunes = new int[3];
 		public static bool Calamity = false;
 		public static bool NightmareUnlocked = false;
@@ -164,6 +165,7 @@ namespace SGAmod
 			Instance = this;
 			SGAmod.UsesClips = new Dictionary<int, int>();
 			SGAmod.UsesPlasma = new Dictionary<int, int>();
+			SGAmod.NonStationDefenses = new Dictionary<int, int>();
 			SGAmod.otherimmunes = new int[3];
 			SGAmod.otherimmunes[0] = BuffID.Daybreak;
 			SGAmod.otherimmunes[1] = this.BuffType("ThermalBlaze");
@@ -172,6 +174,7 @@ namespace SGAmod
 			SGAmod.ScrapCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(SGAmod.ScrapCustomCurrencySystem);
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
 			WalkHotKey = RegisterHotKey("Walk Mode", "C");
+			DrakeniteBar.CreateTextures();
 			OSType = OSDetect();
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			if (!Main.dedServ)
@@ -197,7 +200,8 @@ namespace SGAmod
 			{
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
-			}
+					//AddEquipTexture(new Items.Armors.Dev.Dragonhead(), null, EquipType.Head, "Dragonhead", "SGAmod/Items/Armors/Dev/IDGHead_SmallerHead");
+				}
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
@@ -244,13 +248,13 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			RecipeFinder finder = new RecipeFinder();
-			finder.SetResult(ItemID.Furnace);
+			/*finder.SetResult(ItemID.Furnace);
 			foreach (Recipe recipe2 in finder.SearchRecipes())
 			{
 				RecipeEditor editor = new RecipeEditor(recipe2);
 				editor.AcceptRecipeGroup("SGAmod:BasicWraithShards");
 				editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment"),10);
-			}
+			}*/
 
 			int[] stuff = { ItemID.MythrilAnvil, ItemID.OrichalcumAnvil };
 			for (int i = 0; i < 2; i += 1)
@@ -381,7 +385,7 @@ namespace SGAmod
 			{
 				//bossList.Call("AddBoss", "TPD", 5.5f, (Func<bool>)(() => ExampleWorld.SGAWorld.downedTPD));
 				//bossList.Call("AddBossWithInfo", "Copper Wraith", 0.05f, (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting the furnace,bars, and anything else made there", ItemType("WraithCoreFragment")));
-				bossList.Call("AddBoss", 0.05f, ModContent.NPCType<CopperWraith>(), this, "Copper Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), ModContent.ItemType<WraithCoreFragment>(), new List<int>() { ItemID.Furnace }, new List<int>() { ModContent.ItemType<WraithFragment>(), ModContent.ItemType<WraithFragment2>(), ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre, ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre }, "Use an [i:" + ItemType("WraithCoreFragment") + "] at anytime, defeat this boss to unlock crafting the furnace, bars, and anything else made there", "Copper Wraith makes a hasty retreat", "SGAmod/NPCs/Wraiths/CopperWraithLog");
+				bossList.Call("AddBoss", 0.05f, ModContent.NPCType<CopperWraith>(), this, "Copper Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), ModContent.ItemType<WraithCoreFragment>(), new List<int>() { ItemID.Furnace }, new List<int>() { ModContent.ItemType<WraithFragment>(), ModContent.ItemType<WraithFragment2>(), ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre, ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre }, "Use an [i:" + ItemType("WraithCoreFragment") + "] at anytime, will also spawn should you craft too many bars at a furnace before beating it", "Copper Wraith makes a hasty retreat", "SGAmod/NPCs/Wraiths/CopperWraithLog");
 
 
 				bossList.Call("AddMiniBossWithInfo", "The Caliburn Guardians", 1.4f, (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a sprite you can retrive your reward by breaking the Alter; each guardian is stronger than the previous");
@@ -627,6 +631,15 @@ namespace SGAmod
 
 			}
 
+			if (atype == (int)995)
+			{
+				Logger.Debug("DEBUG server: Craft Warning");
+				SGAWorld.CraftWarning();
+				return;
+
+
+			}
+
 			if (atype == 250) {
 				NPC npc = new NPC();
 				Logger.Debug("DEBUG client: Grant Expertise");
@@ -672,6 +685,8 @@ namespace SGAmod
 				Logger.Debug("DEBUG both: Clone Client 8");
 				int Entrophite = reader.ReadInt32();
 				Logger.Debug("DEBUG both: Clone Client 9");
+				int DefenseFrame = reader.ReadInt16();
+				Logger.Debug("DEBUG both: Clone Client 9");
 
 
 				SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
@@ -683,6 +698,7 @@ namespace SGAmod
 				sgaplayer.ExpertiseCollected = ExpertiseCollected;
 				sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
 				sgaplayer.entropycollected = Entrophite;
+				sgaplayer.DefenseFrame = DefenseFrame;
 				for (int i = 54; i < 58; i++)
 				{
 					sgaplayer.ammoinboxes[i - 54] = reader.ReadInt32();
@@ -731,6 +747,14 @@ namespace SGAmod
 			LockedinSetter,
 			Filler,
 			ClientSendInfo
+		}
+
+		public override void PostUpdateEverything()
+		{
+			Item c0decrown = new Item();
+			c0decrown.SetDefaults(ItemType("CodeBreakerHead"));
+			Main.armorHeadLoaded[c0decrown.headSlot] = true;
+			Main.armorHeadTexture[c0decrown.headSlot] = ModContent.GetTexture("Terraria/Armor_Head_"+Main.rand.Next(1,216));
 		}
 
 

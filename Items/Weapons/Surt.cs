@@ -694,7 +694,7 @@ namespace SGAmod.Items.Weapons
 			player.heldProj = projectile.whoAmI;
 			player.itemAnimation = 60;
 			player.itemTime = 60;
-			player.AddBuff(BuffID.OnFire, (int)(((float)projectile.timeLeft - 60f) * 0.75f));
+			player.AddBuff(BuffID.OnFire, (int)(((float)projectile.timeLeft - 60f) * 2f));
 			int dir = projectile.direction;
 			player.itemRotation = (MathHelper.ToRadians(90)+MathHelper.ToRadians(projectile.velocity.Y*5f)) * dir;
 			player.ChangeDir(dir);

@@ -71,10 +71,6 @@ namespace SGAmod.NPCs.Hellion
             }
         }
 
-                public override float SpawnChance(NPCSpawnInfo spawnInfo)
-        {
-            return (spawnInfo.spawnTileY>WorldGen.rockLayerHigh && spawnInfo.spawnTileType==TileID.JungleGrass || spawnInfo.spawnTileType == TileID.Mud) ? 0.25f : 0f;
-        }
 
 
     }*/
@@ -218,9 +214,9 @@ namespace SGAmod.NPCs.Hellion
 
                     if (noact < 0)
                     {
+                        int whento = phase < 1 ? 160 : 250;
 
-
-                        if (npc.ai[0] % 160 > 140)
+                        if (npc.ai[0] % whento > whento-20)
                         {
                             acceerate = 4f;
                         }
@@ -254,7 +250,7 @@ namespace SGAmod.NPCs.Hellion
                                     Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 40, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 2, true, 0, false, 400);
                             if (npc.ai[0] % 125 == 0)
                                 if (phase == 1)
-                                    Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 25, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 3, true, 0, false, 400);
+                                    Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 25, 8, 20 + (400 - (npc.ai[0] % 400)) / 20, 3, true, 0, false, 400);
                         }
                         else
                         {
@@ -355,6 +351,9 @@ namespace SGAmod.NPCs.Hellion
                             Main.projectile[ize2].hide = true;
                             Main.projectile[ize2].netUpdate = true;
 
+                            if ((npc.Center-player.Center).Length()<100)
+                            Spawnlaserportal();
+
                         }
 
                     }
@@ -366,6 +365,7 @@ namespace SGAmod.NPCs.Hellion
                             nomove = 60;
 
                             friction = 0.98f;
+
                             if ((npc.ai[0] + aioffset * 64) % 120 == 0)
                             {
                                 Vector2 thingz = player.Center - npc.Center;
@@ -460,47 +460,51 @@ namespace SGAmod.NPCs.Hellion
             if (((npc.ai[0]+(aioffset*210))) % 600 == 400 && npc.ai[0] % 800 < 400)
             {
 
-                Vector2 where = npc.Center;
-                Vector2 wheretogo2 = new Vector2(128f+((((-npc.ai[0] + aioffset) * 3.373475f)*73.174f)%96f), (npc.ai[0]+aioffset)*0.73445f);
-                Vector2 where2 = player.Center - npc.Center;
-                where2.Normalize();
-                Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
-                {
-                    float val = current;
-                        val = current.AngleLerp((playerpos - projpos).ToRotation(), 0.025f);
-
-                    return val;
-                };
-                Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
-                {
-                    Vector2 wheretogo = new Vector2(wheretogo2.X, wheretogo2.Y);
-                    float angle = MathHelper.ToRadians(((wheretogo.Y + -time * 1.37f)));
-                    Vector2 instore = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * wheretogo.X;
-
-                    Vector2 gothere333 = npc.Center + instore;
-                    Vector2 slideover = gothere333 - projpos;
-                    current = slideover / 2.5f;
-
-                    current /= 1.125f;
-
-                    Vector2 speedz = current;
-                    float spzzed = speedz.Length();
-                    speedz.Normalize();
-                    if (spzzed > 45f)
-                        current = (speedz * spzzed);
-
-                    return current;
-                };
-                Func<float, bool> projectilepattern = (time) => (time % 70==0);
-
-                int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 30, 250, wheretogo2.Y, ProjectileID.NebulaLaser, projectilepattern, 15f, 200);
-                (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
-                (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
-                Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
-                Main.projectile[ize2].netUpdate = true;
-
-
+                Spawnlaserportal();
             }
+
+        }
+
+        public void Spawnlaserportal()
+        {
+            Vector2 where = npc.Center;
+            Vector2 wheretogo2 = new Vector2(128f + ((((-npc.ai[0] + aioffset) * 3.373475f) * 73.174f) % 96f), (npc.ai[0] + aioffset) * 0.73445f);
+            Vector2 where2 = Main.player[npc.target].Center - npc.Center;
+            where2.Normalize();
+            Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
+            {
+                float val = current;
+                val = current.AngleLerp((playerpos - projpos).ToRotation(), 0.025f);
+
+                return val;
+            };
+            Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
+            {
+                Vector2 wheretogo = new Vector2(wheretogo2.X, wheretogo2.Y);
+                float angle = MathHelper.ToRadians(((wheretogo.Y + -time * 1.37f)));
+                Vector2 instore = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * wheretogo.X;
+
+                Vector2 gothere333 = npc.Center + instore;
+                Vector2 slideover = gothere333 - projpos;
+                current = slideover / 2.5f;
+
+                current /= 1.125f;
+
+                Vector2 speedz = current;
+                float spzzed = speedz.Length();
+                speedz.Normalize();
+                if (spzzed > 45f)
+                    current = (speedz * spzzed);
+
+                return current;
+            };
+            Func<float, bool> projectilepattern = (time) => (time % 70 == 0);
+
+            int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 30, 250, wheretogo2.Y, ProjectileID.NebulaLaser, projectilepattern, 15f, 200);
+            (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
+            (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
+            Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
+            Main.projectile[ize2].netUpdate = true;
 
         }
 

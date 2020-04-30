@@ -6,12 +6,128 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
+using Terraria.Utilities;
 using Idglibrary;
 using Idglibrary.Bases;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
 
+    public class SanguineBident : StoneJavelin
+    {
+
+        public override float Stabspeed => 3.6f;
+        public override float Throwspeed => 10f;
+        public override int Penetrate => 3;
+        public override float Speartype => 8;
+        public override int[] Usetimes => new int[] { 25, 10 };
+        public override string[] Normaltext => new string[] {"Launch 3 projectiles on throw at foes", "Impaled targets may leach life, more likely to leach from bleeding targets","Melee strikes will make enemies bleed","Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Sanguine Bident");
+        }
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            item.damage = 42;
+            item.width = 32;
+            item.height = 32;
+            item.knockBack = 5;
+            item.value = Item.buyPrice(gold: 5);
+            item.rare = 7;
+            item.consumable = false;
+            item.maxStack = 1;
+        }
+        public override void OnThrow(int type,Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type2, ref int damage, ref float knockBack, JavelinProj madeproj)
+        {
+            if (type == 1)
+            {
+                Vector2 normalizedspeed = new Vector2(speedX, speedY);
+                normalizedspeed.Normalize();
+                normalizedspeed *= (Throwspeed * player.thrownVelocity);
+                normalizedspeed.Y -= Math.Abs(normalizedspeed.Y * 0.1f);
+                if (player.altFunctionUse == 2)
+                {
+                    for (int i = -15; i < 16; i += 30)
+                    {
+                        Vector2 perturbedSpeed = ((new Vector2(normalizedspeed.X, normalizedspeed.Y)).RotatedBy(MathHelper.ToRadians(i))).RotatedByRandom(MathHelper.ToRadians(10)) * 0.85f;
+                        float scale = 1f - (Main.rand.NextFloat() * .01f);
+                        perturbedSpeed = perturbedSpeed * scale;
+                        type2 = mod.ProjectileType("JavelinProj");
+
+                        int thisoneddddd = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type2, damage, knockBack, Main.myPlayer);
+                        Main.projectile[thisoneddddd].ai[1] = Speartype;
+                        Main.projectile[thisoneddddd].melee = false;
+                        Main.projectile[thisoneddddd].thrown = true;
+
+                        (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxstick = madeproj.maxstick;
+                        Main.projectile[thisoneddddd].penetrate = madeproj.projectile.penetrate;
+                        Main.projectile[thisoneddddd].netUpdate = true;
+                        IdgProjectile.Sync(thisoneddddd);
+
+                    }
+                }
+
+            }
+            
+        }
+        public override int ChoosePrefix(UnifiedRandom rand)
+        {
+                switch (rand.Next(16))
+                {
+                    case 1:
+                        return PrefixID.Demonic;
+                    case 2:
+                        return PrefixID.Frenzying;
+                    case 3:
+                        return PrefixID.Dangerous;
+                    case 4:
+                        return PrefixID.Savage;
+                    case 5:
+                        return PrefixID.Furious;
+                    case 6:
+                        return PrefixID.Terrible;
+                    case 7:
+                        return PrefixID.Awful;
+                    case 8:
+                        return PrefixID.Dull;
+                    case 9:
+                        return PrefixID.Unhappy;
+                    case 10:
+                        return PrefixID.Unreal;
+                    case 11:
+                        return PrefixID.Shameful;
+                    case 12:
+                        return PrefixID.Heavy;
+                    case 13:
+                        return PrefixID.Zealous;
+                    case 14:
+                        return mod.PrefixType("Tossable");
+                    case 15:
+                        return mod.PrefixType("Impacting");
+                    default:
+                        return mod.PrefixType("Olympian");
+                }
+        }
+
+        public override bool ConsumeItem(Player player)
+        {
+            return false;
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType("CrimsonJavelin"), 150);
+            recipe.AddIngredient(ItemID.Vertebrae, 10);
+            recipe.AddIngredient(ItemID.Ectoplasm, 8);
+            recipe.AddIngredient(ItemID.Trident, 1);
+            recipe.AddTile(TileID.MythrilAnvil);
+            recipe.SetResult(this, 1);
+            recipe.AddRecipe();
+        }
+
+    }
     public class ShadowJavelin : StoneJavelin
     {
 

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod
 {
@@ -25,6 +26,7 @@ namespace SGAmod
 		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
 		public int shortlightning = 0;
+		public bool stackedattack=false;
 
 		/*private List<int> debuffs=new List<int>();
 		private List<int> debufftime=new List<int>();
@@ -61,11 +63,23 @@ namespace SGAmod
 		}
 		public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
 		{
+
 			if (onehit)
 				projectile.Kill();
 		}
 		public override void PostAI(Projectile projectile)
 		{
+
+			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+			if (projectile.owner < 255 && Main.player[projectile.owner].active && projectile.friendly && !projectile.hostile)
+			{
+				if (!modeproj.stackedattack)
+				{
+					Main.player[projectile.owner].GetModPlayer<SGAPlayer>().StackAttack(ref projectile.damage, projectile);
+				}
+			}
+			modeproj.stackedattack = true;
+
 			if (shortlightning > 0)
 			{
 
@@ -79,15 +93,19 @@ namespace SGAmod
 			if (projectile.modProjectile != null)
 			{
 				Player projowner = Main.player[projectile.owner];
-				if (projectile.modProjectile.mod==SGAmod.Instance && projowner.active && projowner.heldProj==projectile.whoAmI)
-				projectile.Opacity = MathHelper.Clamp(projowner.stealth, 0.1f, 1f);
+				if (projectile.modProjectile.mod == SGAmod.Instance && projowner.active && projowner.heldProj == projectile.whoAmI)
+				{
+					projectile.Opacity = MathHelper.Clamp(projowner.stealth, 0.1f, 1f)*Math.Min(projectile.modProjectile is ClipWeaponReloading sub ? (float)projectile.timeLeft/20f : 1f,1f);
+				}
 			}
 		}
 		public override bool PreAI(Projectile projectile)
 		{
 		SGAprojectile modeproj=projectile.GetGlobalProjectile<SGAprojectile>();
 
-	if (projectile.modProjectile!=null){
+
+
+			if (projectile.modProjectile!=null){
 
 		/*if ((projectile.modProjectile).GetType().Name=="JackpotRocket"){
 		projectile.velocity.Y+=0.1f;

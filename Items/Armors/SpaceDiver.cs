@@ -14,7 +14,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Helm");
-			Tooltip.SetDefault("You emit blue light while in water\nEffects of Arctic Diving Gear\n" + Idglib.ColorText(Color.Red, "5% less damage"));
+			Tooltip.SetDefault("5% increased Booster Capacity and +2 Booster Recharge Rate\nYou emit blue light while in water\nEffects of Arctic Diving Gear\n" + Idglib.ColorText(Color.Red, "5% less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -32,6 +32,8 @@ namespace SGAmod.Items.Armors
 		}
 		player.arcticDivingGear = true;
 		player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
+			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}
 		public override void UpdateVanity(Player player, EquipType type)
 		{
@@ -56,7 +58,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Chestplate");
-			Tooltip.SetDefault("Grants unmatched movement in water\n10% faster item use times\n"+Idglib.ColorText(Color.Red, "10% less damage"));
+			Tooltip.SetDefault("5% increased Booster Capacity and +3 Booster Recharge Rate\nGrants unmatched movement in water\n10% faster item use times\n" + Idglib.ColorText(Color.Red, "10% less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -76,6 +78,8 @@ namespace SGAmod.Items.Armors
 			player.ignoreWater = true;
             sgaplayer.UseTimeMul+=0.10f;
 			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
+			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 3;
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)
@@ -100,7 +104,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Leggings");
-			Tooltip.SetDefault("20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "10% less damage"));
+			Tooltip.SetDefault("5% increased Booster Capacity and +2 Booster Recharge Rate\n20% faster movement speed\nthis increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "10% less damage"));
 		}
 		public override void SetDefaults()
 		{
@@ -121,6 +125,8 @@ namespace SGAmod.Items.Armors
 			player.maxRunSpeed *= 1.20f;
 		}
 			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
+			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}
 		public override void AddRecipes()
 		{

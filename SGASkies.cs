@@ -19,10 +19,20 @@ namespace SGAmod
 		private bool _isActive;
 		private float[] xoffset = new float[200];
 		private Color acolor = Color.White;
+		private static bool spinornah=false;
 
 		private static void drawit(Matrix zoomitz, float rotation = 0f, float scale = 1f)
 		{
+			if (Hellion.GetHellion() != null)
+			{
+				if (Hellion.GetHellion().GetType() == typeof(HellionFinal))
+					HellionSky.spinornah = true;
+				else
+					HellionSky.spinornah = false;
 
+
+			}
+				
 			//if (Hellion.instance != null)
 			//{
 			//Vector2 where = Hellion.instance.npc.Center;
@@ -63,8 +73,16 @@ namespace SGAmod
 				color = Color.Lerp(Color.White, Color.Black, Math.Min(0.9f, (SGAmod.HellionSkyalpha - 0.30f) * 3.50f));
 				tempcolor *= 1.5f;
 			}
-			Main.spriteBatch.Draw(beam,new Vector2(Main.screenWidth/2f,Main.screenHeight/2f), null, color* Math.Min(1f, tempcolor), rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight )/new Vector2(1920,1080)*10f, SpriteEffects.None, 0f);
+			if (HellionSky.spinornah)
+			{
+				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*0.5f, Main.GlobalTime/4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*0.5f, -Main.GlobalTime / 4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f, SpriteEffects.None, 0f);
 
+			}
+			else
+			{
+				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor), rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 10f, SpriteEffects.None, 0f);
+			}
 			//}
 
 		}
@@ -80,7 +98,7 @@ namespace SGAmod
 			Hellion nullg = Hellion.GetHellion();
 		if (nullg != null)
 		{
-				if (nullg.introtimer > 199)
+				if (nullg.introtimer > 199 && nullg.subphase>1)
 				{
 					amax = 0.05f;
 				}
@@ -100,8 +118,9 @@ namespace SGAmod
 				amax = 1f;
 			}
 
+			int hellcount = NPC.CountNPCS((SGAmod.Instance).NPCType("Hellion")) + NPC.CountNPCS((SGAmod.Instance).NPCType("HellionFinal"));
 			acolor = Main.hslToRgb((Main.GlobalTime / 10f) % 1, 0.81f, 0.5f);
-			SGAmod.HellionSkyalpha = MathHelper.Clamp(NPC.CountNPCS((SGAmod.Instance).NPCType("Hellion")) > 0 ? (SGAmod.HellionSkyalpha + 0.015f / 5f) : SGAmod.HellionSkyalpha - (0.015f/5f), 0f, amax);
+			SGAmod.HellionSkyalpha = MathHelper.Clamp(hellcount > 0 ? (SGAmod.HellionSkyalpha + 0.015f / 5f) : SGAmod.HellionSkyalpha - (0.015f/5f), 0f, amax);
 		}
 
 		public override Color OnTileColor(Color inColor)

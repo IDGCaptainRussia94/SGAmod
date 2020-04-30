@@ -27,7 +27,6 @@ namespace SGAmod.Items.Weapons
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "10% increased damage on Primary"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary will always summon lightning as if it were raining"));
-
 			}
 			Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
             //string potion="[i:" + ItemID.RedPotion + "]";

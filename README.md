@@ -3,7 +3,103 @@ IDGCaptainRussia94's content mod
 
 Changelog:
 
-2.700-(4/20)-Patch 6:
+2.800-(4/30/20)-Patch 7:
+
+-Added
+
+-Revolving West (placeholder sprite), Captain America's Shield, Jarate Shurikens, Sanguine Bident, MVM Upgrade-Gripping Gloves-Handling Gloves and Hellion's Cascade (using place holder sprites), IDGCaptainRussia94's Dev armor (about time!), Hellion's Crown (Vanity Mask/Crafting Material, thing?), Thrower's Pouch
+
+-Non-Stationary Defenses, enjoy carrying around Snowball launchers, Cannons, and Bunny Cannons!
+
+-Pirate sells Explosive Bunnies if you have a party girl
+
+-Limited boosting mechanic, you can now longer boost indefinitely; some items have been changed to account towards increasing this limit
+
+-Merchant sells Leather in a Crimson world
+
+-A Starter bag item to help quick start your adventure!
+
+
+--Changed:
+
+-The way the copper wraith is summoned, you can now make a furnace and craft bars freely but... make too many, and you might have an angry wraith on your case
+
+-Jab-lin hitboxes are now based on the sprite size
+
+-Added another crafting recipe for Grenadier's Glove, and made it cheaper to craft
+
+-Adjusted the prices of alot of crafting materials
+
+-Jarate has been made cheaper to craft and no longer requires bowls
+
+-Nerfed Portable Hive/Soul Of Secrets Bee Damage, you could kill bosses with just the Bee gun alone faster than anything else! (Is now soft capped at 10X damage bonus of the normal bee damage)
+
+-Beam Cannon has been moved to post Luminite Wraith, beam Cannon Alt Fire Spread and mana costs reduced, primary consumes small ammounts of plasma. Attempting to not out-class the Lunar Cascade
+
+-Buffed Lunar Cascade
+
+-Buffed SpaceDiver Armor (I think)-they now receive bonuses to booster capacity and recharge rate
+
+-Buffed Cosmic Grasp: Mana cost greatly reduced and crit chance slightly upped
+
+-Buffed Acid and Thermal Grenades-they have a wider blast area
+
+-Hellion Changes:
+
+-Removed all defense off the DPS drones, HP buffed slightly, Healing drones HP buffed a good chunk
+
+-Removed all defense off Hellion
+
+-Nerfed Hellion Core's 2nd phase, charges less often, damage of eye lasers reduced
+
+-Buffed Surt/Brimflame Harbinger, the ammount of time you get OnFire! for has been greatly increased
+
+-Buffed Hellion Core's 3rd phase, if the player is close enough to an arm when it shoots a hellion beam, it now also summons a portal to attack the player
+
+-Hellion stops moving when doing the topaz attack during phase 4, Hellion stays put longer after doing her laser spread
+
+-Nerfed Golem Buff, he fires the trio of cultist fireballs far less often and blaze wheels hurt less
+
+-Removed damage code from DPS Drones
+
+-Dank Crates will be a bit more generous with their loot
+
+-Nerfed Aimbot Bullet damage lowered. Portal Bullets slightly Nerfed
+
+-Nerfed Serpent's Redemption
+
+-Buffed Both SBC Cannnons, since they can't crit their main damage, they now instead gain additional damage based on your ranged crit chance
+
+-Buffed Rubied Blade, swing speed and crit chance up
+
+-F.S.R.G has been nerfed, again, damage lowered to 70, and Spore cloud damage lowered to 2X the projectile damage (from 3X)
+
+-Nerfed Big Dakka
+
+-Nerfed Mangrove Armor and limited Mangrove projectiles
+
+-Nerfed Jarockets, they inflict Sodden for less time
+
+
+--Fixed:
+
+-Old One's Army causing errors when you kill them
+
+-UIScaling issues, I wasn't even aware UI scaling was something people used (but when you use 4K, it makes far more sense!)
+
+-Beenades no longer be thrown at a faster rate via buffs or the gloves, it was possible to exceed the max projectile limit with this
+
+-Acid Grenade, Thermal Grenade, and Celestial Cocktail receiving velocity bonuses they should not have due to an oversight in how player.throwingVelocity works
+
+-Shortened more tooltips to be readable
+
+-Powerjack does 'finally' infact, heal on kill, sorry it took so long to fully add this feature in
+
+-Maybe now I fixed the Hellion message pop up, please? (nope.avi, sigh)
+
+
+
+2.700-(4/20/2020)-Patch 6:
 
 --Added
 

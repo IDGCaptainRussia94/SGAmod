@@ -1,3 +1,4 @@
+
 using System.Linq;
 using System;
 using Terraria;
@@ -425,11 +426,6 @@ namespace SGAmod.NPCs.TownNPCs
 			button2 = "More Info";
 		}
 
-		/*public override float SpawnChance(NPCSpawnInfo spawnInfo)
-		{
-			return ((!Main.dayTime && NPC.CountNPCS(npc.type)<1 && spawnInfo.playerInTown) ? 1f : 0f);
-		}*/
-
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
 		{
 			if (firstButton)
@@ -472,17 +468,20 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 
-		public int[,] itemsinshop = new int[8, 2];
+		public int[,] itemsinshop = new int[11, 2];
 		public string GetNextItem()
 		{
 			itemsinshop = new [,]{
 				{ SGAmod.Instance.ItemType("EmptyCharm"),50 },
 			{ SGAmod.Instance.ItemType("CaliburnCompess"),300 },
-			{ SGAmod.Instance.ItemType("RedManaStar"),500 },
+			{ SGAmod.Instance.ItemType("GrippingGloves"),400 },
+			{ SGAmod.Instance.ItemType("RedManaStar"),500 },			
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
 			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
+			{ SGAmod.Instance.ItemType("MVMUpgrade"),6000 },
 			{ ItemID.AviatorSunglasses,10000 },
+			{ ItemID.RedPotion,1000000 },
 			{ ItemID.RedPotion,1000000 },
 			{ ItemID.RedPotion,1000000 },
 		};
@@ -547,14 +546,21 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 30;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}			
+			}
+			if (modplayer.ExpertiseCollectedTotal >= 400)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("GrippingGloves"));
+				shop.item[nextSlot].shopCustomPrice = 30;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
 			if (modplayer.ExpertiseCollectedTotal >= 500)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("RedManaStar"));
 				shop.item[nextSlot].shopCustomPrice = 50;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}			
+			}		
 			if (modplayer.ExpertiseCollectedTotal > 1000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.Arkhalis);
@@ -576,6 +582,13 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}			
+			if (modplayer.ExpertiseCollectedTotal > 6000)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("MVMUpgrade"));
+				shop.item[nextSlot].shopCustomPrice = 150;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}				
 			if (modplayer.ExpertiseCollectedTotal > 5000 && SGAWorld.downedCratrosity)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("SOATT"));
@@ -668,7 +681,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				else
 				{
-					tooltips.Add(new TooltipLine(mod, "Nmxx", "Your not on an expert mode world Nub! Nightmare Mode NOT enabled"));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "You're not on an expert mode world Nub! Nightmare Mode NOT enabled"));
 
 				}
 			}

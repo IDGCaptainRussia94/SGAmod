@@ -166,11 +166,7 @@ namespace SGAmod.NPCs
 			player.AddBuff(mod.BuffType("ThermalBlaze"), 200, true);
 		}
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo)
-		{
-			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY-3];
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneDesert && Main.hardMode ? 0.25f : 0f;
-		}
+
 
         }
 }

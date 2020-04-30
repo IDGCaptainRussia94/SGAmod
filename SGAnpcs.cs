@@ -22,7 +22,7 @@ namespace SGAmod
 		}
 
 		public float truthbetold=0;
-		public float damagemul = 1;
+		public float damagemul = 1f;
 		public bool DankSlow = false;
 		public bool MassiveBleeding = false;
 		public bool Napalm = false;
@@ -76,6 +76,7 @@ truthbetold=reader.ReadFloat32();
 			thermalblaze = false; acidburn = false;
 			Gourged =false;
 			DosedInGas=false;
+			damagemul = 1f;
 			MoonLightCurse = false;
 			InfinityWarStormbreaker=false;
 			Napalm = false;
@@ -294,10 +295,11 @@ truthbetold=reader.ReadFloat32();
 					Main.dust[dust].noGravity = true;
 					Main.dust[dust].color=Main.hslToRgb(0f, 0.5f, 0.35f);
 				}
-			if (MoonLightCurse)
+			bool hasbuff = npc.HasBuff(mod.BuffType("DigiCurse"));
+			if (MoonLightCurse || hasbuff)
 			{
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-				int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + randomcircle * (1.2f * (float)npc.width), 0, 0, DustID.AncientLight, 0, 0, 30, Color.Turquoise, 1.5f);
+				int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + randomcircle * (1.2f * (float)npc.width), 0, 0, hasbuff && (Main.rand.Next(0,1)==0 || !MoonLightCurse) ? DustID.PinkCrystalShard : DustID.AncientLight, 0, 0, 30, Color.Turquoise, 1.5f);
 				Main.dust[dust].noGravity = true;
 				Main.dust[dust].velocity = (new Vector2(npc.velocity.X * 0.4f, (npc.velocity.Y) * 0.4f))-randomcircle*8;
 				Main.dust[dust].velocity=Main.dust[dust].velocity.RotatedBy(MathHelper.ToRadians(90));
@@ -481,7 +483,13 @@ return true;
             {
                 case NPCID.Merchant:
 
-                    if (SGAWorld.downedCratrosity){
+					if (WorldGen.crimson)
+					{
+						shop.item[nextSlot].SetDefaults(ItemID.Leather);
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 5, 0);
+						nextSlot++;
+					}
+					if (SGAWorld.downedCratrosity){
                         shop.item[nextSlot].SetDefaults(mod.ItemType("TerrariacoCrateKey"));
                         shop.item[nextSlot].shopCustomPrice = Item.buyPrice(20,0,0,0);
                         nextSlot++;
@@ -491,7 +499,7 @@ return true;
                         nextSlot++;
                     }
                 	break;
-                    case NPCID.ArmsDealer:
+				case NPCID.ArmsDealer:
 
                     if (player.CountItem(mod.ItemType("SnappyShark"))>0){
                         shop.item[nextSlot].SetDefaults(mod.ItemType("SharkTooth"));
@@ -504,7 +512,16 @@ return true;
 						nextSlot++;
 					}
 					break;
-            }
+				case NPCID.Pirate:
+
+					if (NPC.CountNPCS(NPCID.PartyGirl)>0)
+					{
+						shop.item[nextSlot].SetDefaults(ItemID.ExplosiveBunny);
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 5, 0);
+						nextSlot++;
+					}
+					break;
+			}
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			if (sgaplayer.MidasIdol>0)
@@ -574,6 +591,7 @@ return true;
 
 		public override void NPCLoot(NPC npc)
 		{
+			
 			for (int playerid = 0; playerid < Main.maxPlayers; playerid += 1)
 			{
 				Player ply = Main.player[playerid];
@@ -605,7 +623,6 @@ return true;
 				}
 
 			}
-
 			if (npc.boss)
 			{
 				Achivements.SGAAchivements.UnlockAchivement("Offender", Main.LocalPlayer);
@@ -643,54 +660,57 @@ return true;
 				}
 			}
 
-			//if (!NPC.BusyWithAnyInvasionOfSorts())
-			//{
-			if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
-				}
-				if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) <= 5)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
-				}
 
-				if (npc.type == NPCID.Golem && Main.rand.Next(100) <= 20 && !Main.expertMode)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));
-				}
-				if (npc.type == NPCID.DD2Betsy && !Main.expertMode)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
-				}
+//if (!NPC.BusyWithAnyInvasionOfSorts())
+//{
+if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
+	}
+	if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) <= 5)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
+	}
 
-				if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
-				}
+	if (npc.type == NPCID.Golem && Main.rand.Next(100) <= 20 && !Main.expertMode)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));
+	}
+	if (npc.type == NPCID.DD2Betsy && !Main.expertMode)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
+	}
 
-				if (npc.type == NPCID.RedDevil && Main.rand.Next(2) <= 1)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
-				}
-				if (npc.type == NPCID.Lavabat && Main.rand.Next(4) <= 1 && Main.hardMode)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
-				}
-				if (npc.Center.Y > Main.maxTilesY - 100 && Main.rand.Next(100) < 1 && Main.hardMode)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"));
-				}
+	if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
+	}
 
-				if (npc.type==NPCID.WallCreeper || npc.type == NPCID.BloodCrawler || npc.type == NPCID.JungleCreeper ||
-				npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall || npc.type == NPCID.BlackRecluse || npc.type == NPCID.BlackRecluseWall)
-				if (Main.rand.Next(0,2)==0)
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.RottenEgg);
+	if (npc.type == NPCID.RedDevil && Main.rand.Next(2) <= 1)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
+	}
+	if (npc.type == NPCID.Lavabat && Main.rand.Next(4) <= 1 && Main.hardMode)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
+	}
+	if (npc.Center.Y > Main.maxTilesY - 100 && Main.rand.Next(100) < 1 && Main.hardMode)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"));
+	}
 
-				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1 && NPC.downedMoonlord)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
-				}
+	if (npc.type==NPCID.WallCreeper || npc.type == NPCID.BloodCrawler || npc.type == NPCID.JungleCreeper ||
+	npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall || npc.type == NPCID.BlackRecluse || npc.type == NPCID.BlackRecluseWall)
+	if (Main.rand.Next(0,2)==0)
+	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.RottenEgg);
 
+	if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1 && NPC.downedMoonlord)
+	{
+		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
+	}
+
+			if (npc.aiStyle!=107 && npc.aiStyle!= 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
+			{
 				if (Main.player[npc.target] != null)
 				{
 					if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
@@ -701,14 +721,18 @@ return true;
 						}
 					}
 				}
+			}
+	
+
 
 			//}
 
-	}
 
-//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(dropitems[chances]));
+		}
 
-        public override void OnHitByItem(NPC npc,Player player, Item item, int damage, float knockback, bool crit)
+		//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(dropitems[chances]));
+
+		public override void OnHitByItem(NPC npc,Player player, Item item, int damage, float knockback, bool crit)
 		{
 			OnHit(npc,player, damage,knockback,crit,item,null,false);
 		}
@@ -809,6 +833,7 @@ return true;
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+			damage = (int)(damage * damagemul);
 			DoApoco(npc,null, player, item, ref damage, ref knockback, ref crit);
 			if (acidburn)
 				damage += (int)(Math.Min(npc.defense, 5)/2);
@@ -853,6 +878,7 @@ return true;
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			Player player = Main.player[projectile.owner];
+			damage = (int)(damage * damagemul);
 			if (player != null)
 			{
 				if (projectile.trap)
@@ -915,7 +941,7 @@ return true;
 
 				if (moddedplayer.beefield > 0 && (projectile.type==ProjectileID.Bee || projectile.type == ProjectileID.GiantBee))
 				{
-					damage += (int)(moddedplayer.beedamagemul*1.5f);
+					damage += (int)(Math.Min(moddedplayer.beedamagemul,10f+(moddedplayer.beedamagemul/50f))*1.5f);
 				}
 
 				if (modeproj.myplayer != null)
@@ -944,10 +970,33 @@ return true;
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 
-
+			if (item != null && npc.life - damage < 1 && npc.lifeMax > 50)
+			{
+				if (item.type == mod.ItemType("Powerjack"))
+				{
+					player.HealEffect(25, false);
+					player.statLife += 25;
+					if (player.statLife > player.statLifeMax2)
+					{
+						player.statLife = player.statLifeMax2;
+					}
+					NetMessage.SendData(66, -1, -1, null, player.whoAmI, (float)25f, 0f, 0f, 0, 0, 0);
+				}
+			}
 
 			if (isproj)
 			{
+				if (projectile.minion && moddedplayer.IDGset)
+				{
+					if (npc.immune[projectile.owner] > 0)
+					{
+						npc.immune[projectile.owner] = ((int)(npc.immune[projectile.owner] * 0.75f));
+
+					}
+
+					moddedplayer.digiStacks = Math.Min(moddedplayer.digiStacksMax, moddedplayer.digiStacks+(int)Math.Max((float)projectile.damage,(float)damage));
+				}
+
 				if (projectile.type == ProjectileID.CultistBossLightningOrbArc)
 				{
 					immunitetolightning = projectile.localNPCHitCooldown;
@@ -967,7 +1016,7 @@ return true;
 					}
 				}
 
-				if (moddedplayer.Mangroveset)
+				if (moddedplayer.Mangroveset && player.ownedProjectileCounts[mod.ProjectileType("MangroveOrb")]<4)
 				{
 					if (crit && projectile.thrown)
 					{
@@ -1058,10 +1107,21 @@ hasabuff=true;
 if (DosedInGas && hasabuff){
 Combusted=60*10;
 int buff=npc.FindBuffIndex(mod.BuffType("DosedInGas"));
-if (buff>-1){
-npc.DelBuff(buff);
-IdgNPC.AddBuffBypass(npc.whoAmI,BuffID.OnFire,60*10);
-}
+
+				if ((isproj && Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost) || (item != null && player.GetModPlayer<SGAPlayer>().MVMBoost))
+				{
+					int prog = Projectile.NewProjectile(npc.Center.X, npc.Center.Y, Vector2.Zero.X, Vector2.Zero.Y, ProjectileID.GrenadeIII, 350, 5f, player.whoAmI);
+					Main.projectile[prog].thrown = false; Main.projectile[prog].ranged = false; Main.projectile[prog].timeLeft = 2; Main.projectile[prog].netUpdate = true;
+					IdgProjectile.Sync(prog);
+
+				}
+
+
+			if (buff > -1)
+			{
+				npc.DelBuff(buff);
+				IdgNPC.AddBuffBypass(npc.whoAmI, BuffID.OnFire, 60 * 10);
+			}
 
 }
 

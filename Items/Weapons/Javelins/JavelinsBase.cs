@@ -173,6 +173,11 @@ namespace SGAmod.Items.Weapons.Javelins
             return true;
         }
 
+        public virtual void OnThrow(int type, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type2, ref int damage, ref float knockBack, JavelinProj jav)
+        {
+//nullz
+        }
+
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
@@ -236,7 +241,17 @@ namespace SGAmod.Items.Weapons.Javelins
             if (!melee)
             Main.projectile[thisoned].penetrate = Penetrate;
             IdgProjectile.Sync(thisoned);
-            return false;
+
+            if (player.altFunctionUse == 2)
+            {
+            OnThrow(1, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack, (Main.projectile[thisoned].modProjectile as JavelinProj));
+            }
+            else
+            {
+            OnThrow(1, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack, (Main.projectile[thisoned].modProjectile as JavelinProj));
+            }
+
+                return false;
 
         }
     }
@@ -256,10 +271,13 @@ namespace SGAmod.Items.Weapons.Javelins
         "SGAmod/Items/Weapons/Javelins/DynastyJavelin",
         "SGAmod/Items/Weapons/Javelins/PearlWoodJavelin",
         "SGAmod/Items/Weapons/Javelins/ShadowJavelin",
+        "SGAmod/Items/Weapons/Javelins/SanguineBident",
         };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Javelin");
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -288,12 +306,12 @@ namespace SGAmod.Items.Weapons.Javelins
                 if (Main.rand.Next(0,4)==1)
                 target.AddBuff(BuffID.Frostburn, 60 * (projectile.type==ModContent.ProjectileType<JavelinProj>() ? 2 : 3));
             }
-            if (projectile.ai[1] == 7)
+            if (projectile.ai[1] == 7)//Shadow
             {
                 if (Main.rand.Next(0, 4) == 1)
                     target.AddBuff(BuffID.ShadowFlame, 60 * (projectile.type == ModContent.ProjectileType<JavelinProj>() ? 3 : 5));
             }
-            if (projectile.ai[1] == 5)
+            if (projectile.ai[1] == 5)//Dynasty
             {
                 if (projectile.penetrate > 1)
                 {
@@ -305,7 +323,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 }
             }
 
-            if (projectile.ai[1] == 6)
+            if (projectile.ai[1] == 6)//Hallow
             {
                 if (Main.rand.Next(0, projectile.modProjectile.GetType() == typeof(JavelinProjMelee) ? 3 : 0) == 0)
                 {
@@ -320,7 +338,24 @@ namespace SGAmod.Items.Weapons.Javelins
 
                 }
             }
-            projectile.netUpdate = true;
+            if (projectile.ai[1] == 8)
+            {//Sanguine Bident
+                
+                if (projectile.modProjectile.GetType() == typeof(JavelinProj))
+                {
+                    if (target.active && target.life > 0 && Main.rand.Next(0,16)<(target.HasBuff(SGAmod.Instance.BuffType("MassiveBleeding")) || target.HasBuff(BuffID.Bleeding) ? 8 : 1))
+                    {
+                        projectile.vampireHeal((int)(projectile.damage / 2f), projectile.Center);
+                    }
+                }
+                else
+                {
+                    target.AddBuff(SGAmod.Instance.BuffType("MassiveBleeding"), 60 * 5);
+                }
+                projectile.netUpdate = true;
+
+
+            }
 
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -380,10 +415,24 @@ namespace SGAmod.Items.Weapons.Javelins
             get { return ("SGAmod/Items/Weapons/Javelins/StoneJavelin"); }
         }
 
+        bool hitboxchange = false;
+
         public override void AI()
         {
             float facingleft = projectile.velocity.X > 0 ? 1f : -1f;
             projectile.rotation = ((float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f) +(float)((Math.PI)*-0.25f);
+
+            Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]);
+            if (!hitboxchange)
+            {
+                hitboxchange = true;
+                int xx = (texture.Width - (int)(projectile.width))/2;
+                int yy = (texture.Height - (int)(projectile.height))/2;
+                projectile.position.X -= (xx / 2);
+                projectile.position.Y -= (yy / 2);
+                projectile.width = texture.Width/2;
+                projectile.height = texture.Height/2;
+            }
 
             if (stickin > -1)
             {
@@ -430,12 +479,47 @@ namespace SGAmod.Items.Weapons.Javelins
 
         }
 
+        public override bool PreKill(int timeLeft)
+        {
+            if (projectile.ai[1] == 8)
+            {
+                for (int num315 = -40; num315 < 43; num315 = num315 + 4)
+                {
+                    int dustType = DustID.LunarOre;//Main.rand.Next(139, 143);
+                    int dustIndex = Dust.NewDust(projectile.Center + new Vector2(-16, -16) + ((projectile.rotation-MathHelper.ToRadians(45)).ToRotationVector2() * num315), 32, 32, dustType);//,0,5,0,new Color=Main.hslToRgb((float)(npc.ai[0]/300)%1, 1f, 0.9f),1f);
+                    Dust dust = Main.dust[dustIndex];
+                    dust.velocity.X = projectile.velocity.X * 0.8f;
+                    dust.velocity.Y = projectile.velocity.Y * 0.8f;
+                    dust.scale *= 1f + Main.rand.Next(-30, 31) * 0.01f;
+                    dust.fadeIn = 0.25f;
+                    dust.noGravity = true;
+                    Color mycolor = Color.OrangeRed;//new Color(25,22,18);
+                    dust.color = mycolor;
+                    dust.alpha = 20;
+                }
+            }
+
+            return true;
+        }
+
         public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
         {
             bool facingleft = projectile.velocity.X > 0;
             Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
             Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]);
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+
+            if (projectile.ai[1] == 8 && stickin<0)
+            {
+                for (int k = 0; k < projectile.oldPos.Length; k++)
+                {
+                    Vector2 drawPos = new Vector2(projectile.oldPos[k].X+ projectile.width/2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
+                    Color color = projectile.GetAlpha(drawColor) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                    spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+                }
+            }
+
+
             Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2)*(facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
@@ -482,9 +566,27 @@ namespace SGAmod.Items.Weapons.Javelins
             thrustspeed = 3.0f;
         }
 
+        private bool hitboxchange = false;
+
+        public override bool PreAI()
+        {
+            Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]] + "Spear");
+            if (!hitboxchange)
+            {
+                hitboxchange = true;
+                int xx = texture.Width - (int)((projectile.width) / 1.5f);
+                int yy = texture.Height - (int)((projectile.height) / 1.5f);
+                projectile.position.X -= (int)((xx / 1.5f));
+                projectile.position.Y -= (int)((yy / 1.5f));
+                projectile.width = (int)(texture.Width / 1.5f);
+                projectile.height = (int)(texture.Height / 1.5f);
+            }
+            return true;
+        }
         public override void AI()
         {
             base.AI();
+
             if (projectile.owner == Main.myPlayer)
             {
                 mousecurser = (Main.MouseScreen.X - projectile.Center.X)>0;

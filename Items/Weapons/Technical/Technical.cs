@@ -584,11 +584,11 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 85;
+			item.damage = 80;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
-			item.crit = 10;
+			item.crit = 5;
 			item.useTime = 10;
 			item.useAnimation = 10;
 			item.useStyle = 5;
@@ -1145,10 +1145,7 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.ownedProjectileCounts[mod.ProjectileType("BeamCannonHolding")] > 0)
 				return false;
 			SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
-			if (player.altFunctionUse == 2)
 				return (modply.RefilPlasma());
-			else
-				return true;
 		}
 
 		public override Vector2? HoldoutOffset()
@@ -1160,10 +1157,11 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "StarMetalBar", 15);
-			recipe.AddIngredient(null, "PlasmaCell", 4);
-			recipe.AddIngredient(null, "ManaBattery", 6);
+			recipe.AddIngredient(null, "PlasmaCell", 3);
+			recipe.AddIngredient(null, "ManaBattery", 5);
 			recipe.AddIngredient(null, "AdvancedPlating", 8);
 			recipe.AddIngredient(ItemID.ChargedBlasterCannon, 1);
+			recipe.AddIngredient(ItemID.LunarBar, 10);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1181,17 +1179,21 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.altFunctionUse == 2)
 			{
 				modply.plasmaLeftInClip -= 50;
+				player.statMana -= (int)(40f * player.manaCost);
 				player.itemTime *= 5;
 				player.itemAnimation *= 5;
+				Main.PlaySound(SoundID.Item, player.Center, 122);
+			}
+			else
+			{
+				modply.plasmaLeftInClip -= 5;
+			}
 				if (modply.plasmaLeftInClip < 1)
 				{
 					player.itemTime = 90;
 				}
-				player.statMana -= (int)(50f * player.manaCost);
-				Main.PlaySound(SoundID.Item, player.Center,122);
-			}
 
-			for (float i = -80; i < 81; i += 40)
+			for (float i = -40; i < 41; i += 20)
 			{
 				if (player.altFunctionUse == 2 || i == 0f)
 				{

@@ -906,7 +906,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 60% increased Trap armor penetration\n15% increased Technological damage, and Grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jindosh Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 60% increased Trap armor penetration\n+5 Booster Recharge Rate and 15% increased Booster Capacity\n15% increased Technological damage and grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jindosh Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -934,6 +934,8 @@ public class BlinkTechGear : IdolOfMidas
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.15f;
 			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.10f;
 			player.GetModPlayer<SGAPlayer>().techdamage += 0.05f;
+			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.15f);
+			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 5;
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<JindoshBuckler>().UpdateAccessory(player, hideVisual);
 		}
@@ -1098,8 +1100,8 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lunar Slime Heart");
-			Tooltip.SetDefault("Heart of the surpreme lunar princess" +
-				"\nSummons an array of lunar gels that damage enemies and nearly nullify projectile damage\nWhen a projectile is dampened or hits an enemy 5 times, the gel explodes into a damaging debuffing nova and grants the player a random buff for 8 seconds\nWhen the gel explodes from canceling out projectiles remains inactive for 10 seconds, otherwise only 6 seconds\nBase damage is based on your defense times the sum of your damage multipliers: (melee+thrown+summon+magic+ranged)*defense\nEach buff the player has grants +1 defense\ndebuffs grant 4 defense");
+			Tooltip.SetDefault("Heart of the supreme lunar princess" +
+				"\nSummons an array of lunar gels that damage enemies and nearly nullify projectile damage\nWhen a projectile is dampened or hits an enemy 5 times, the gel explodes into a damaging debuffing nova\nThis grants the player a random buff for 8 seconds\nWhen the gel explodes from canceling out projectiles remains inactive for 10 seconds, otherwise only 6 seconds\nBase damage is based on your defense times the sum of your damage multipliers: (melee+thrown+summon+magic+ranged)*defense\nEach buff the player has grants +1 defense\ndebuffs grant 4 defense");
 		}
 		public override void SetDefaults()
 		{
@@ -1963,6 +1965,469 @@ public class BlinkTechGear : IdolOfMidas
 			recipe.AddRecipe();
 		}
 	}
+	public class MVMUpgrade : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("MVM Upgrade");
+			Tooltip.SetDefault("Upgrades the effects of the Gas Passer and Jarate\nGas Passer Gains Explode on Ignite\nEnemies Take 350 Classless damage when ignited\nJarate gains the ability to slow enemies when Soddened\n'100+ tour elitist be like: GET UPGRADES OR KICK! REEEEE!'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Gore_289"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.MVMBoost = true;
+		}
+
+	}	
+	public class ThrowerPouch : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thrower's Pouch");
+			Tooltip.SetDefault("5% increased throwing damage, 3% increased throwing crit chance\n10% increase Throwing Velocity\n+5% increased chance to not consume throwing items");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 1;
+			item.value = Item.sellPrice(0, 0, 25, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+				player.thrownDamage += 0.05f;
+				player.thrownCrit += 3;
+				sgaply.Thrownsavingchance += 0.05f;
+			player.thrownVelocity += 0.10f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("IronBar", 1);
+			recipe.AddIngredient(ItemID.Leather, 3);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	/*
+		public class PlasmaPack : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasma Pack");
+			Tooltip.SetDefault("10% increased Booster and Plasma capacity\n%5 increased Technological Damage");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class GunBarrelParts : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gun Barrel Parts");
+			Tooltip.SetDefault("Revolvers reload faster\n10% increased Bullet Damage");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 7;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+		public class SecondCylinder : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Second Cylinder");
+			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+			public class GunsmithsBeltofTools : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gunsmith's Belt of Tools");
+			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload faster\n10% increased Bullet Damage");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class PeacekeepersDuster : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Peacekeeper's Duster");
+			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nBullets do 50% less damage to you\nGain a 25% damage buff while in your town\n'Keepin order will never be easier with this'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.damagetaken/=1.20f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+	
+	public class SparingSpurs : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Sparing Spurs");
+			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\n'You ready to dance pardner?'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 8;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.damagetaken/=1.20f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+		public class HighNoon : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("High Noon");
+			Tooltip.SetDefault("Bullet damage is increased during the day\nThis reaches its peak of 10% increased damage at noon");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 3;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.damagetaken/=1.20f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class DuelingDeity : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dueling Deity's Shades");
+			Tooltip.SetDefault("Scoring an Apocalyptical summons 2 copies of your bullet to strike your duelling opponent\nThese projectiles do 50% more damage but cannot crit\nDoes not function if you don't have a duelling opponent\nEffects of High Noon");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 9;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.damagetaken/=1.20f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	//Set Bonus stuff
+	//Damaging an enemy marks them for a dual with you\nYour damage against your enemy is increased by 25%\nHowever your damage against other enemies is reduced by 50%\nThe duel ends when you damage a different enemy or your enemy dies\nThere is a cooldown between duels, and only ranged damage can start and stop duels"
+
+
+
+		public class GunslingerLegend : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gunslinger of Song and Legend");
+			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\n30% increased Bullet Damage, 15% increased ranged crit chance\nDamage against your duelling opponent is increased by 15%\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 11;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.damagetaken/=1.20f;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class NinjaSash : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ninja's Stash");
+			Tooltip.SetDefault("Scoring crits with your throwing weapons summon shurikens and throwing knives to strike hit enemies\nThese summoned attacks cannot crit or trigger Thrower damage\nFurthermore, they are consumed from the player's inventory");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 2;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+		public class ShinSash : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shin Stash");
+			Tooltip.SetDefault("Scoring an Apocalyptical sends out a fan of projectiles from your sash around you\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 5;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player,hideVisual);
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+			public class KouSash : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Kou Stash");
+			Tooltip.SetDefault("Scoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nEffects of and stacks with Shin Sash\nThrowing damage and crit chance are increased by 20%");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 9;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player,hideVisual);
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	*/
 
 
 }

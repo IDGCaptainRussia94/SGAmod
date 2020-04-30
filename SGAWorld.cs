@@ -57,6 +57,7 @@ namespace SGAmod
         public static int golemchecker = 0;
         public static int stolecrafting = 0;
         public static int modtimer = 0;
+        public static int craftwarning = 0;
         public static bool GennedVirulent=false;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
         public static ModWorld Instance;
@@ -80,6 +81,7 @@ namespace SGAmod
                 downedHarbinger = false;
                 downedWraiths = 0;
                 downedMurk = 0;
+                craftwarning = 0;
                 downedMurklegacy = false;
                 downedCaliburnGuardians = 0;
                 downedCaliburnGuardiansPoints = 0;
@@ -166,6 +168,18 @@ namespace SGAmod
                 questvars[10] = 101;
 
 
+        }
+
+        public static void CraftWarning()
+        {
+            if ((SGAWorld.downedWraiths < 1))
+            {
+                SGAWorld.craftwarning += 1;
+                if (SGAWorld.craftwarning % 31 == 0)
+                {
+                    NPC.SpawnOnPlayer(Main.LocalPlayer.whoAmI, SGAmod.Instance.NPCType("CopperWraith"));
+                }
+            }
         }
 
         public override void PostUpdate()
@@ -332,6 +346,7 @@ namespace SGAmod
             tag["downedHellion"] = downedHellion;
            tag["downedWraiths"] = downedWraiths;
             tag["tf2quest"] = tf2quest;
+            tag["craftwarning"] = craftwarning;
             tag["bossprgressor"] = bossprgressor;
             tag["GennedVirulent"] = GennedVirulent; 
             tag["downedSpiderQueen"] = downedSpiderQueen; 
@@ -387,6 +402,7 @@ namespace SGAmod
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
+            if (tag.ContainsKey("craftwarning")) { craftwarning = tag.GetInt("craftwarning"); }
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {

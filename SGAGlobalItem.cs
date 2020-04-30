@@ -37,7 +37,7 @@ namespace SGAmod
                     text += "\nAn Apocalyptical is when your crit-crits, resulting in 3X damage";
                     text += "\nItems and effects may add special effects on top of this";
                     text += "\nApocalyptical Strength however only really boosts these effects rather than the damage of the crit";
-                    text += "\nStrength of 100% would only boost your damage increase up to 400% from 300%, but effects would be doubled";
+                    text += "\nStrength of 200% would only boost your damage increase up to 400% from 300%, but effects would be doubled";
 
 
                 }
@@ -138,6 +138,13 @@ namespace SGAmod
                 {
                     return "MisterCreeper";
                 } }
+            if (!head.vanity && !body.vanity && !legs.vanity)
+            {
+                if (head.type == mod.ItemType("IDGHead") && body.type == mod.ItemType("IDGBreastplate") && legs.type == mod.ItemType("IDGLegs"))
+                {
+                    return "IDG";
+                }
+            }
             return "";
         }
 
@@ -175,9 +182,17 @@ namespace SGAmod
             if (set == "MisterCreeper")
             {
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
-                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\nThis gives you Action cooldown for 60 seconds, which prevents reactivation\nCreeper's explosive throw and Stormbreaker are empowered";
+                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\nThis gives you Action cooldown for 60 seconds, which prevents reactivation\nCreeper's explosive throw and Stormbreaker are empowered\n------";
                 sgaplayer.MisterCreeperset = true;
                 sgaplayer.devempowerment[1] = 2;
+            }
+            if (set == "IDG")
+            {
+                player.setBonus = "Minions cause less immunity frames, the enemy targeted by a minion weapon is Digi-Cursed\nDigi-Curse causes enemies to take 10% increased damage from all sources\n" +
+                    "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n------";
+                sgaplayer.IDGset = true;
+                sgaplayer.digiStacksMax += 100000;
+                sgaplayer.devempowerment[0] = 2;
             }
         }
 
@@ -197,8 +212,11 @@ namespace SGAmod
             if (sgaplayer.Dankset>0)
             {
                 damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.thrownDamage) - 5f) * 0.10f));
+            }
 
-
+            if (sgaplayer.IDGset && sgaplayer.digiStacks>0 && item.ranged)
+            {
+                damage = damage+(int)((float)damage*((float)sgaplayer.digiStacks/ (float)sgaplayer.digiStacksMax)*1.00f);
             }
 
         }
@@ -328,7 +346,11 @@ namespace SGAmod
             if (item.pick + item.hammer + item.axe > 0) {
                 usetimetemp *= sgaplayer.UseTimeMulPickaxe;
             }
-            if (item.thrown) {
+            if (item.summon)
+            {
+                usetimetemp*=(1f+sgaplayer.summonweaponspeed);
+            }
+            if (item.thrown && item.type!=ItemID.Beenade) {
                 usetimetemp *= sgaplayer.ThrowingSpeed;
             }
             /*ModItem mitem = item.modItem;
@@ -356,6 +378,8 @@ namespace SGAmod
 
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+            SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
             {
 
@@ -416,93 +440,6 @@ namespace SGAmod
 
 
 
-
-        public class ClipWeaponReloading : ModProjectile
-    {
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("You should not see this");
-        }
-
-        public override string Texture
-        {
-            get { return("SGAmod/Items/Weapons/TheJacob");}
-        }
-
-        public override void SetDefaults()
-        {
-            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
-            projectile.hostile=false;
-            projectile.friendly=true;
-            projectile.tileCollide = false;
-            projectile.thrown = true;
-            projectile.timeLeft=100;
-            projectile.penetrate=10;
-            aiType = 0;
-            drawOriginOffsetX = 8;
-            drawOriginOffsetY = 8;
-            drawHeldProjInFrontOfHeldItemAndArms=false;
-        }
-
-    public override bool? CanHitNPC(NPC target){
-    return false;
-    }
-
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
-        return (Main.player[projectile.owner].itemAnimation<1);
-        }
-
-        public override bool PreAI()
-        {
-        Player owner = Main.player[projectile.owner];
-        if (owner==null)
-        projectile.Kill();
-        return true;
-        }
-
-        public override void AI()
-        {
-        Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 8f;
-            Player owner = Main.player[projectile.owner];
-            if (owner==null)
-            projectile.Kill();
-            if (owner.dead)
-            projectile.Kill();
-
-            if (owner.itemAnimation>0){
-            projectile.timeLeft+=1;
-            }else{
-            Vector2 direction=(Main.MouseWorld-owner.Center);
-            projectile.spriteDirection=(owner.direction>0).ToDirectionInt();
-            owner.heldProj=projectile.whoAmI;
-            projectile.ai[0]+=1;
-            projectile.velocity=new Vector2(0f,0f);
-            //projectile.rotation = projectile.rotation.AngleLerp((float)(Math.PI/-(4.0*(double)projectile.spriteDirection)),0.15f);
-            owner.bodyFrame.Y = owner.bodyFrame.Height * 3;
-
-            if (projectile.timeLeft==18){
-            SGAPlayer sgaplayer = owner.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.ammoLeftInClip=sgaplayer.ammoLeftInClipMax;
-            Main.PlaySound(SoundID.Item65,owner.Center);
-            }
-
-            /*if (owner.velocity.X<0)
-            owner.direction=-1;
-            projectile.spriteDirection=owner.direction;*/
-            }
-
-            //projectile.velocity=new Vector2(projectile.velocity.X,0f);
-            projectile.Center=owner.Center+new Vector2(owner.direction<0 ? -projectile.width*2 : 0,-4f);
-
-        }
-
-
-    }
 
 
     public class TrapPrefixAccessory : TrapPrefix

@@ -12,7 +12,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Chestplate");
-			Tooltip.SetDefault("33% to not consume thrown items\n15% increased throwing damage");
+			Tooltip.SetDefault("33% to not consume thrown items\n8% increased throwing damage");
 		}
 
 		public override void SetDefaults()
@@ -27,7 +27,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		public override void UpdateEquip(Player player)
 		{
 			player.thrownCost33 = true;
-			player.thrownDamage += 0.15f;
+			player.thrownDamage += 0.08f;
 		}
 
 
@@ -38,8 +38,8 @@ namespace SGAmod.HavocGear.Items.Armor
 
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "Crit throwing attacks grant dryad's blessing and spawn mangrove orbs from you that seek out enemies\nGreatly Increased regeneration while in the jungle";
-			player.GetModPlayer<SGAPlayer>().Mangroveset =true;
+			player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nGreatly Increased regeneration while in the jungle";
+			player.GetModPlayer<SGAPlayer>().Mangroveset = true;
 			if (player.ZoneJungle)
 			player.lifeRegen += 6;
 		}
@@ -99,7 +99,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Greaves");
-			Tooltip.SetDefault("25% faster throwing item use speed\nIncreased movement speed\n10% increased throwing damage");
+			Tooltip.SetDefault("25% faster throwing item use speed\nIncreased movement speed\n7% increased throwing damage");
 		}
 
 		public override void UpdateEquip(Player player)
@@ -108,7 +108,7 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.maxRunSpeed += 0.5f;
 			player.accRunSpeed += 0.5f;
 			player.runAcceleration += 0.25f;
-			player.thrownDamage += 0.10f;
+			player.thrownDamage += 0.07f;
 		}
 
 		public override void SetDefaults()

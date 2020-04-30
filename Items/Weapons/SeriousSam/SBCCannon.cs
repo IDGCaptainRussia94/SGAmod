@@ -17,7 +17,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("SBC Cannon");
-            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs explode against enemies immune to knockback, and do not crit (the explosion however can crit)\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
+            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs explode against enemies immune to knockback, and do not crit \nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'lets get Serious!'");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -25,6 +25,11 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<SBCCannonHolding>()] > 0)
 				return false;
 			return true;
+		}
+
+		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+		{
+			add += (float)player.rangedCrit / 100f;
 		}
 
 		public override void SetDefaults()
@@ -532,7 +537,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SBC Cannon MK2");
-			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials\nCharges and recovers after firing faster, and lanuches cannonballs faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nUses Lead Cannonballs as ammo\nCannonballs explode against enemies immune to knockback, and do not crit (the explosion however can crit)\n'LETS GET SERIOUS!!'");
+			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials\nCharges and recovers after firing faster, and lanuches cannonballs faster than it's precurser\nCharge up piercing cannon balls that do a huge ammount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs explode against enemies immune to knockback, and do not crit\nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
 		}
 
 		public override bool CanUseItem(Player player)

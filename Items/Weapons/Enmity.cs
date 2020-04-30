@@ -153,8 +153,9 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("SOATT"), 1);
 			recipe.AddIngredient(mod.ItemType("TrueCaliburn"), 1);
 			recipe.AddIngredient(ItemID.AviatorSunglasses, 1);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 500);
 			recipe.AddIngredient(mod.ItemType("HellionSummon"), 1);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 400);
+			recipe.AddIngredient(mod.ItemType("CodeBreakerHead"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

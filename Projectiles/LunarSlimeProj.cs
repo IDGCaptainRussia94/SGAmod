@@ -251,7 +251,7 @@ namespace SGAmod.Projectiles
                 float num464 = (float)Main.rand.Next(-30, 31);
                 Vector2 stuff2 = new Vector2(num463, num464);
                 stuff2.Normalize();
-                stuff2*=(5f+Main.rand.NextFloat(0f,6f));
+                stuff2*=(5f+Main.rand.NextFloat(0f,6f))*((float)projectile.width/ 160f);
                 int dustx = (Main.rand.NextBool()) ? mod.DustType("AcidDust") : 184;
                 if (Main.rand.NextBool())
                     dustx = (Main.rand.NextBool()) ? mod.DustType("HotDust") : 43;

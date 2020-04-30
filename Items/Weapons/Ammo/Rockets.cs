@@ -132,7 +132,9 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.AddBuff(mod.BuffType("Sodden"), 60 * 15);
+			target.AddBuff(mod.BuffType("Sodden"), 60 * 10);
+			if (Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost)
+				target.AddBuff(mod.BuffType("SoddenSlow"), 60 * 10);
 			target.immune[projectile.owner] = 5;
 		}
 

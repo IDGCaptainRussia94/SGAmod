@@ -101,7 +101,7 @@ namespace SGAmod.NPCs
 		minlife+=1;
 		}
 
-		if (phase==1 && npc.ai[0]%100==0){
+		if (phase==1 && npc.ai[0]%300==0){
 		List<Projectile> itz=Idglib.Shattershots(myowner.Center,P.position,new Vector2(P.width,P.height),ProjectileID.CultistBossFireBall,40,8,30,2,true,0,false,220);
 		//itz[0].aiStyle=5;
 		}

@@ -155,7 +155,7 @@ namespace SGAmod.NPCs
 		{
 			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY-3];
 			bool canspawn=tile.liquid>63 ? true : false;
-			return !spawnInfo.playerInTown && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneBeach && canspawn && NPC.downedBoss1 ? 0.05f : 0f;
+			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneBeach && canspawn && NPC.downedBoss1 ? 0.05f : 0f;
 		}
 
 		public override void NPCLoot()

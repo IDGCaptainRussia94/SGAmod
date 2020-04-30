@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,7 +23,7 @@ namespace SGAmod.HavocGear.Items
 			item.width = 18;
 			item.height = 14;
 			item.maxStack = 99;
-			item.value = 250;
+			item.value = 500;
 			item.rare = 5;
 			item.alpha = 0;
 		}
@@ -440,7 +441,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0,0,75,0);
+			item.value = Item.sellPrice(0,0,50,0);
 			item.rare = 8;
 		}
 		public override void AddRecipes()
@@ -489,7 +490,8 @@ namespace SGAmod.Items
 			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = 9;
 		}
-	}	public class IlluminantEssence : ModItem
+	}	
+	public class IlluminantEssence : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -506,7 +508,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = 11;
 		}
 	}
@@ -528,6 +530,45 @@ public class LunarRoyalGel : ModItem
 			item.rare = 9;
 		}
 	}
+	public class AncientFabricItem : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ancient Fabric");
+			Tooltip.SetDefault("Strands of Reality, predating back to the Big Bang");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.DarkRed.ToVector3() * 0.15f * Main.essScale);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 14;
+			item.height = 14;
+			item.value = Item.sellPrice(0, 0, 25, 0);
+			item.rare = 10;
+		}
+	}
+
+	public class WatchersOfNull : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("01001110 01010101 01001100 01001100");
+			Tooltip.SetDefault("'Essence of N0ll Watchers, watching...'");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(7, 13));
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 32;
+			item.height = 32;
+			item.value = 100000;
+			item.rare = 10;
+		}
+	}
 
 	public class CosmicFragment: ModItem
 	{
@@ -543,7 +584,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 1;
 			item.width = 16;
 			item.height = 16;
-			item.value = 10;
+			item.value = 0;
 			item.rare = 9;
 			item.expert=true;
 		}
@@ -617,7 +658,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 20;
 			item.height = 20;
-			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.value = Item.sellPrice(0, 0, 25, 0);
 			item.rare = 9;
 			item.consumable = false;
 		}
@@ -632,6 +673,114 @@ public class LunarRoyalGel : ModItem
 		}
 
 	}
+	public class DrakeniteBar : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Drakenite Bar");
+			Tooltip.SetDefault("A Bar forged from the same powers that created Draken...");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 20;
+			item.height = 20;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.rare = 9;
+			item.consumable = false;
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.DarkGreen, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTime * 8f));
+				}
+			}
+		}
+		public static Texture2D[] staticeffects = new Texture2D[32];
+		public static void CreateTextures()
+		{
+			if (!Main.dedServ)
+			{
+				Texture2D atex = ModContent.GetTexture("SGAmod/Items/DrakeniteBarHalf");
+				int width = atex.Width; int height = atex.Height;
+				for (int index = 0; index < staticeffects.Length; index++)
+				{
+					Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+
+					var datacolors2 = new Color[atex.Width * atex.Height];
+					atex.GetData(datacolors2);
+					tex.SetData(datacolors2);
+
+					DrakeniteBar.staticeffects[index] = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+					Color[] dataColors = new Color[atex.Width * atex.Height];
+
+
+					for (int y = 0; y < height; y++)
+					{
+						for (int x = 0; x < width; x += 1)
+						{
+							if (Main.rand.Next(0, 16) == 1)
+							{
+								int therex = (int)MathHelper.Clamp((x), 0, width);
+								int therey = (int)MathHelper.Clamp((y), 0, height);
+								if (datacolors2[(int)therex + therey * width].A > 0)
+								{
+
+									dataColors[(int)therex + therey * width] = Main.hslToRgb(Main.rand.NextFloat(0f, 1f) % 1f, 0.6f, 0.8f) * (0.5f);
+								}
+							}
+							if (Main.rand.Next(0, 8) > Math.Abs(x-(index-8)))
+							{
+								int therex = (int)MathHelper.Clamp((x), 0, width);
+								int therey = (int)MathHelper.Clamp((y), 0, height);
+								if (datacolors2[(int)therex + therey * width].A > 0)
+								{
+									dataColors[(int)therex + therey * width] = Main.hslToRgb(((float)(index-8)/ (float)width) % 1f, 0.9f, 0.75f)*(0.80f*(1f-(Math.Abs((float)x - ((float)index -8f))/8f)));
+								}
+							}
+
+
+						}
+
+					}
+
+					DrakeniteBar.staticeffects[index].SetData(dataColors);
+				}
+			}
+
+		}
+
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor,
+	Color itemColor, Vector2 origin, float scale)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = DrakeniteBar.staticeffects[(int)(Main.GlobalTime*20f)%DrakeniteBar.staticeffects.Length];
+				Vector2 slotSize = new Vector2(52f, 52f);
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale*2f, SpriteEffects.None, 0f);
+			}
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LunarBar, 1);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
+			recipe.AddIngredient(mod.ItemType("WatchersOfNull"), 1);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 5);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class CopperWraithNotch: ModItem
 	{
 		public override void SetStaticDefaults()
@@ -717,7 +866,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 10;
+			item.value = 50;
 			item.rare = 3;
 		}
 		public override void AddRecipes()
@@ -833,7 +982,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 100000;
+			item.value = 75000;
 			item.rare = 10;
 		}
 	}
@@ -875,7 +1024,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 20;
 			item.height = 20;
-			item.value = Item.sellPrice(0, 0, 80, 0);
+			item.value = Item.sellPrice(0, 0, 40, 0);
 			item.rare = 8;
 			item.consumable = true;
 			item.createTile = mod.TileType("PrismalBarTile");

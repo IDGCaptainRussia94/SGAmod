@@ -120,20 +120,15 @@ namespace SGAmod
 
                     if (Main.netMode > 0)
                     {
-                        mod.Logger.Debug("Copper Wraith: Net Spawn");
+                        mod.Logger.Debug("Copper Wraith: Server Craft Warning");
                         ModPacket packet = mod.GetPacket();
-                        packet.Write(75);
-                        packet.Write(mod.NPCType("CopperWraith"));
-                        packet.Write(-9999);
-                        packet.Write(-9999);
-                        packet.Write(Main.LocalPlayer.whoAmI);
+                        packet.Write(995);
                         packet.Send();
                     }
                     else
                     {
-                        mod.Logger.Debug("Copper Wraith: SP Spawn");
-                        NPC.SpawnOnPlayer(Main.LocalPlayer.whoAmI, mod.NPCType("CopperWraith"));
-
+                        SGAWorld.CraftWarning();
+                        mod.Logger.Debug("Copper Wraith: SP Craft Warning");
                     }
 
                 }

@@ -45,6 +45,7 @@ namespace SGAmod.NPCs
 			npc.DeathSound = SoundID.NPCDeath1;
 			npc.knockBackResist = 0f;
 			npc.aiStyle = 1;
+			npc.netAlways = true;
 			npc.boss=true;
 			aiType = NPCID.BlueSlime;
 			animationType = NPCID.BlueSlime;
@@ -461,7 +462,8 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 
 			Main.npc[father].defense=50;
 			Main.npc[father].aiStyle=30;
-                Main.NewText("<Supreme Pinky> OHHH, HE'S HURTING ME, HELP ME FATHER!",255, 100, 255);
+							Main.npc[father].netUpdate = true;
+							Main.NewText("<Supreme Pinky> OHHH, HE'S HURTING ME, HELP ME FATHER!",255, 100, 255);
 			}
 
 
@@ -482,7 +484,9 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy2].aiStyle=87;
 			Main.npc[newguy1].ai[0]=npc.whoAmI;
 			Main.npc[newguy2].ai[0]=npc.whoAmI;
-			npc.aiStyle=15;
+							Main.npc[newguy2].netUpdate = true;
+							Main.npc[newguy1].netUpdate = true;
+							npc.aiStyle=15;
                 Main.NewText("<Supreme Pinky> REAL MEN WEAR PINK! ",255, 100, 255);
 			}
 			}
@@ -504,7 +508,9 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy4].aiStyle=41;
 			Main.npc[newguy3].ai[0]=npc.whoAmI;
 			Main.npc[newguy4].ai[0]=npc.whoAmI;
-			npc.aiStyle=96;
+							Main.npc[newguy3].netUpdate = true;
+							Main.npc[newguy4].netUpdate = true;
+							npc.aiStyle=96;
 			phase=1;
                 Main.NewText("<Supreme Pinky> YOU DARE RESIST THE PINK!?! ",255, 100, 255);
 			}
@@ -522,9 +528,10 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy666].defense=0;
 			Main.npc[newguy666].aiStyle=97;
 			Main.npc[newguy666].ai[0]=npc.whoAmI;
+							Main.npc[newguy666].netUpdate = true;
 
 
-                int newguy667=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"));
+							int newguy667=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"));
 			Main.npc[newguy667].life=npc.lifeMax/8;
 			Main.npc[newguy667].lifeMax=npc.lifeMax/8;
 			Main.npc[newguy667].life=npc.lifeMax/8;
@@ -533,9 +540,10 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy667].defense=0;
 			Main.npc[newguy667].aiStyle=97;
 			Main.npc[newguy667].ai[0]=npc.whoAmI;
+							Main.npc[newguy667].netUpdate = true;
 
 
-                int newguy668=NPC.NewNPC((int)npc.Center.X + 80, (int)npc.Center.Y - 40, mod.NPCType("SPinkyClone"));
+							int newguy668=NPC.NewNPC((int)npc.Center.X + 80, (int)npc.Center.Y - 40, mod.NPCType("SPinkyClone"));
 			Main.npc[newguy668].life=npc.lifeMax/8;
 			Main.npc[newguy668].lifeMax=npc.lifeMax/8;
 			Main.npc[newguy668].life=npc.lifeMax/8;
@@ -544,9 +552,10 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy668].defense=0;
 			Main.npc[newguy668].aiStyle=97;
 			Main.npc[newguy668].ai[0]=npc.whoAmI;
+							Main.npc[newguy668].netUpdate = true;
 
 
-                int newguy669=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y - 40, mod.NPCType("SPinkyClone"));
+							int newguy669=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y - 40, mod.NPCType("SPinkyClone"));
 			Main.npc[newguy669].life=npc.lifeMax/8;
 			Main.npc[newguy669].lifeMax=npc.lifeMax/8;
 			Main.npc[newguy669].life=npc.lifeMax/8;
@@ -555,7 +564,8 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy669].defense=0;
 			Main.npc[newguy669].aiStyle=97;
 			Main.npc[newguy669].ai[0]=npc.whoAmI;
-			phase=2;
+							Main.npc[newguy669].netUpdate = true;
+							phase =2;
 			npc.aiStyle=15;
                 Main.NewText("<Supreme Pinky> YOU WILL BECOME PART OF THE PINK!!",255, 100, 255);
 			}
@@ -573,15 +583,17 @@ npc.velocity=new Vector2((float)(-6f+Main.rand.Next(12)),(float)(-6f+Main.rand.N
 			Main.npc[newguy670].defense=0;
 			Main.npc[newguy670].aiStyle=48;
 			Main.npc[newguy670].ai[0]=npc.whoAmI;
+							Main.npc[newguy670].netUpdate = true;
 
-                int newguy671=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"),npc.whoAmI,0,npc.whoAmI);
+							int newguy671=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"),npc.whoAmI,0,npc.whoAmI);
 			Main.npc[newguy671].life=npc.lifeMax/5;
 			Main.npc[newguy671].lifeMax=npc.lifeMax/5;
 			Main.npc[newguy671].boss=false;
 			Main.npc[newguy671].defense=0;
 			Main.npc[newguy671].aiStyle=48;
 			Main.npc[newguy671].ai[0]=npc.whoAmI;
-phase=3;
+							Main.npc[newguy671].netUpdate = true;
+							phase =3;
 
                 Main.NewText("<Supreme Pinky> THE PINK WILL NOT BE DENIED!",255, 100, 255);
 			}
@@ -599,16 +611,18 @@ phase=3;
 			Main.npc[newguy670].defense=10;
 			Main.npc[newguy670].aiStyle=4;
 			Main.npc[newguy670].ai[0]=npc.whoAmI;
+							Main.npc[newguy670].netUpdate = true;
 
-                int newguy671=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"));
+							int newguy671=NPC.NewNPC((int)npc.Center.X - 80, (int)npc.Center.Y + 40, mod.NPCType("SPinkyClone"));
 			Main.npc[newguy671].life=npc.lifeMax/4;
 			Main.npc[newguy671].lifeMax=npc.lifeMax;
 			Main.npc[newguy671].boss=false;
 			Main.npc[newguy671].defense=10;
 			Main.npc[newguy671].aiStyle=4;
 			Main.npc[newguy671].ai[0]=npc.whoAmI;
+							Main.npc[newguy671].netUpdate = true;
 
-phase=4;
+							phase =4;
                 Main.NewText("<Supreme Pinky> WE WILL NOT STOP!!",255, 100, 255);
 			}
 			}
@@ -654,7 +668,8 @@ for (int i = 0; i <= 2; i++)
 			Main.npc[newguy5].knockBackResist = 0.9f;
 			}
 			Main.npc[newguy5].damage=50;
-}
+								Main.npc[newguy5].netUpdate = true;
+							}
 }
 
 
@@ -671,8 +686,9 @@ if (aicounter%32==0){
 			Main.npc[newguy55].noGravity = true;
 			Main.npc[newguy55].aiStyle=49;
 			Main.npc[newguy55].damage=55;
+							Main.npc[newguy55].netUpdate = true;
 
-                int newguy16=NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
+							int newguy16=NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
 			Main.npc[newguy16].life=npc.lifeMax/30;
 			Main.npc[newguy16].lifeMax=npc.lifeMax/30;
 			Main.npc[newguy16].boss=false;
@@ -681,8 +697,9 @@ if (aicounter%32==0){
 			Main.npc[newguy16].noGravity = true;
 			Main.npc[newguy16].aiStyle=10;
 			Main.npc[newguy16].damage=63;
+							Main.npc[newguy16].netUpdate = true;
 
-                int newguy116=NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
+							int newguy116=NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
 			Main.npc[newguy116].life=npc.lifeMax/30;
 			Main.npc[newguy116].lifeMax=npc.lifeMax/30;
 			Main.npc[newguy116].boss=false;
@@ -691,8 +708,9 @@ if (aicounter%32==0){
 			Main.npc[newguy116].noGravity = true;
 			Main.npc[newguy116].aiStyle=10;
 			Main.npc[newguy116].damage=63;
+							Main.npc[newguy16].netUpdate = true;
 
-}
+						}
 }
 
 if (aicounter>200550 && aicounter<202550){
@@ -708,12 +726,12 @@ if (aicounter%160==0){
 			Main.npc[newguy5].noGravity = true;
 			Main.npc[newguy5].aiStyle=43;
 			Main.npc[newguy5].damage=87;
-}}
+							Main.npc[newguy5].netUpdate = true;
+						}
+					}
 if (aicounter>200550){
 if (aicounter%60==0){
                 int newguy316=NPC.NewNPC((int)npc.Center.X + 80, (int)P.Center.Y - 350, 81,npc.whoAmI,0,npc.whoAmI);
-			Main.npc[newguy316].life=npc.lifeMax/60;
-			Main.npc[newguy316].lifeMax=npc.lifeMax/60;
 			Main.npc[newguy316].life=npc.lifeMax/60;
 			Main.npc[newguy316].lifeMax=npc.lifeMax/60;
 			Main.npc[newguy316].boss=false;
@@ -723,8 +741,9 @@ if (aicounter%60==0){
 			Main.npc[newguy316].aiStyle=9;
 			Main.npc[newguy316].ai[3]=npc.whoAmI;
 			Main.npc[newguy316].damage=63;
+							Main.npc[newguy316].netUpdate = true;
 
-}
+						}
 }
 
 
@@ -747,7 +766,8 @@ if (aicounter%60==0){
 			Main.npc[newguy1].boss=false;
 			Main.npc[newguy1].aiStyle=63;
 			Main.npc[newguy1].ai[0]=npc.ai[0];
-                Main.NewText("<Supreme Pinky> JOIN THE PINK SIDE OF THE FORCE!",255, 100, 255);
+							Main.npc[newguy1].netUpdate = true;
+							Main.NewText("<Supreme Pinky> JOIN THE PINK SIDE OF THE FORCE!",255, 100, 255);
 					}
 
 				}
@@ -761,14 +781,16 @@ if (aicounter%60==0){
 			Main.npc[newguy1].boss=false;
 			Main.npc[newguy1].aiStyle=41;
 			Main.npc[newguy1].ai[0]=npc.ai[0];
+							Main.npc[newguy1].netUpdate = true;
 
-			int newguy2=NPC.NewNPC((int)npc.Center.X - 0, (int)npc.Center.Y + 200, mod.NPCType("SPinkyClone"));					
+							int newguy2=NPC.NewNPC((int)npc.Center.X - 0, (int)npc.Center.Y + 200, mod.NPCType("SPinkyClone"));					
 			Main.npc[newguy2].life=(int)(npc.lifeMax*0.75);
 			Main.npc[newguy2].lifeMax=(int)(npc.lifeMax*0.75);
 			Main.npc[newguy2].boss=false;
 			Main.npc[newguy2].aiStyle=87;
 			Main.npc[newguy2].ai[0]=npc.ai[0];
-                Main.NewText("<Supreme Pinky> PPPIIINNNKKKK!!!",255, 100, 255);
+							Main.npc[newguy1].netUpdate = true;
+							Main.NewText("<Supreme Pinky> PPPIIINNNKKKK!!!",255, 100, 255);
 					}
 
 				}
@@ -782,14 +804,16 @@ if (aicounter%60==0){
 			Main.npc[newguy1].boss=false;
 			Main.npc[newguy1].aiStyle=11;
 			Main.npc[newguy1].ai[0]=npc.ai[0];
+							Main.npc[newguy1].netUpdate = true;
 
-			int newguy2=NPC.NewNPC((int)npc.Center.X - 0, (int)npc.Center.Y + 200, mod.NPCType("SPinkyClone"));					
+							int newguy2=NPC.NewNPC((int)npc.Center.X - 0, (int)npc.Center.Y + 200, mod.NPCType("SPinkyClone"));					
 			Main.npc[newguy2].life=(int)(npc.lifeMax*0.50);
 			Main.npc[newguy2].lifeMax=(int)(npc.lifeMax*0.50);
 			Main.npc[newguy2].boss=false;
 			Main.npc[newguy2].aiStyle=11;
 			Main.npc[newguy2].ai[0]=npc.ai[0];
-                Main.NewText("<Supreme Pinky> PINK PINK PINK PINK!",255, 100, 255);
+							Main.npc[newguy1].netUpdate = true;
+							Main.NewText("<Supreme Pinky> PINK PINK PINK PINK!",255, 100, 255);
 					}
 
 				}
@@ -804,7 +828,8 @@ if (aicounter%60==0){
 			Main.npc[newguy1].boss=false;
 			Main.npc[newguy1].aiStyle=38;
 			Main.npc[newguy1].ai[0]=npc.ai[0];
-                Main.NewText("<Supreme Pinky> THE PINK WILL CONSUME YOU!",255, 100, 255);
+			Main.npc[newguy1].netUpdate = true;
+							Main.NewText("<Supreme Pinky> THE PINK WILL CONSUME YOU!",255, 100, 255);
 					}
 
 				}
@@ -865,6 +890,13 @@ if (aicounter%60==0){
 		{
 			DisplayName.SetDefault("Not Supreme Pinky");
 			Main.npcFrameCount[npc.type] = 5;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			npc.netAlways = false;
+			npc.boss = false;
 		}
 
 		public override void NPCLoot()

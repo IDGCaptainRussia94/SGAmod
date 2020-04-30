@@ -27,8 +27,8 @@ namespace SGAmod.Items.Weapons
 			item.damage = 150;
 			item.noMelee = true;
 			item.magic = true;
-			item.mana = 18;
-			item.crit = 20;
+			item.mana = 10;
+			item.crit = 25;
 			item.width = 22;
 			item.height = 22;
 			item.useTime = 15;

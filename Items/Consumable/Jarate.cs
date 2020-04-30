@@ -18,7 +18,7 @@ namespace SGAmod.Items.Consumable
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Jarate");
-			Tooltip.SetDefault("Throws a jar of 'nature's rain', which inflicts ichor on everyone in a large area for an extended time, but incures Action cooldown for 30 seconds, preventing reuse\nIf it directly hits an enemy, they get Sodden instead, increasing any further damage they take by 33%\n'Heads up!'");
+			Tooltip.SetDefault("Throws a jar of 'nature's rain', which inflicts ichor on everyone in a large area for an extended time\nIncures Action cooldown for 30 seconds, preventing reuse\nIf it directly hits an enemy, they will get Sodden instead even if immune\nThis increases any further damage they take by 33%\n'Heads up!'");
 
 		}
 
@@ -66,11 +66,10 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("FieryShard"), 3);
-			recipe.AddIngredient(ItemID.Bowl,3);
-			recipe.AddIngredient(mod.ItemType("MurkyGel"), 10);
+			recipe.AddIngredient(mod.ItemType("FieryShard"), 2);
+			recipe.AddIngredient(mod.ItemType("MurkyGel"), 8);
 			recipe.AddIngredient(ItemID.Bottle, 3);
-			recipe.AddIngredient(ItemID.Ichor, 5);
+			recipe.AddIngredient(ItemID.Ichor, 4);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this,3);
 			recipe.AddRecipe();
@@ -124,6 +123,8 @@ namespace SGAmod.Items.Consumable
 					(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height)))
 				{
 					IdgNPC.AddBuffBypass(target.whoAmI, mod.BuffType("Sodden"), 60*15);
+					if (Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost)
+						IdgNPC.AddBuffBypass(target.whoAmI,mod.BuffType("SoddenSlow"), 60 * 15);
 					projectile.Kill();
 				}
 			}

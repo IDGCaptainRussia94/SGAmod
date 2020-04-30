@@ -24,8 +24,6 @@ namespace SGAmod.Generation
             for (int num = 0; num < SGAWorld.CaliburnAlterCoordsX.Length; num++)
             {
                 GenCaliburnShrine(num);
-                //NormalWorldGeneration.PlaceCaiburnShrine(new Vector2(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next((int)WorldGen.worldSurfaceLow+400, Main.maxTilesY - 300)),num);
-                //GenCaliburnShrine();
             }
 
         }
@@ -77,31 +75,6 @@ namespace SGAmod.Generation
 
         }
 
-        /*public static void PlaceMulti(Vector2 placementspot2,int type,int size, int wall=-1)
-        {
-            for (int x2 = -size+1; x2 < size; x2++)
-            {
-                for (int y2 = -size + 1; y2 < size; y2++)
-                {
-                    Vector2 placementspot = placementspot2 + new Vector2(x2, y2);
-                    Tile tstart = Framing.GetTileSafely((int)placementspot.X, (int)placementspot.Y);
-                    if (wall > -1 && y2> -size + 1 && y2 < size - 1 && x2 < size - 1 &&  x2 > -size + 1)
-                        tstart.wall = (ushort)wall;
-                    if (type > -1)
-                    {
-                        tstart.type = (ushort)type;
-                        tstart.active(true);
-                        tstart.liquid = 0;
-                    }
-                    else
-                    {
-                        tstart.active(false);
-                    }
-                }
-            }
-
-        }*/
-
         public static void PlaceCaiburnHallway(Vector2 placementspot, int width, int height, int direction, ref List<Vector2> deways, int generation, int tiletype, int walltype)
         {
             Tile tstart = Framing.GetTileSafely(placementspot);
@@ -127,7 +100,6 @@ namespace SGAmod.Generation
                             deways.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer - 1));
                             deways.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer - 2));
                             deways.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer - 3));
-
                         }
 
 
@@ -167,19 +139,8 @@ namespace SGAmod.Generation
                     {
                         edge += new Vector2(width2, 0);
                     }
+
                     Tile tile = Framing.GetTileSafely((int)(placementspot + edge * 2f).X, (int)(placementspot + edge * 2f).Y);
-
-                    //if (generation > 30 && WorldGen.genRand.Next(0,100)<5)
-                    //{
-                    //    tiletype = TileID.SilverBrick;
-                    //    walltype = WallID.SilverBrick;
-                    //}
-
-                    /*if (generation > 40 && WorldGen.genRand.Next(0, 100) < 5)
-                    {
-                        tiletype = TileID.CopperBrick;
-                        walltype = WallID.CopperBrick;
-                    }*/
 
                     if (tile.type != TileID.GoldBrick && tile.type != TileID.SilverBrick && tile.type != TileID.CopperBrick && tile.type!= SGAmod.Instance.TileType("MoistStone")
                         && tile.type != TileID.LihzahrdBrick && tile.type != TileID.BlueDungeonBrick && tile.type != TileID.GreenDungeonBrick && tile.type != TileID.PinkDungeonBrick)
@@ -341,11 +302,12 @@ namespace SGAmod.Generation
                 Main.tile[(int)placementspot.X + xx, (int)placementspot.Y + buffersizey - 1].active(true);
             }
 
-            Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true);
+            WorldGen.PlaceTile((int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2, SGAmod.Instance.TileType("MoistStone"),style: 10);
             Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true);
             Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true);
             Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2].active(true);
-            Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2].active(true);
+            WorldGen.PlaceTile((int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2, SGAmod.Instance.TileType("MoistStone"), style: 41);
 
             WorldGen.PlaceObject((int)placementspot.X, (int)placementspot.Y + buffersizey - 3, type==0 ? SGAmod.Instance.TileType("CaliburnAltar")
                 : (type==1 ? SGAmod.Instance.TileType("CaliburnAltarB") : SGAmod.Instance.TileType("CaliburnAltarC")), false, 0);

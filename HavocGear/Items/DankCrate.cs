@@ -50,29 +50,27 @@ namespace SGAmod.HavocGear.Items
 
             int rand = Main.rand.Next(12);
 		if (!Main.hardMode)
-            player.QuickSpawnItem(ItemID.SilverCoin, Main.rand.Next(15, 30));
+            player.QuickSpawnItem(ItemID.SilverCoin, Main.rand.Next(15, 80));
 		else
             player.QuickSpawnItem(ItemID.GoldCoin, Main.rand.Next(1, 5));
             if (pick == 0)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.CobaltBar : ItemID.CopperBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.CobaltBar : ItemID.IronBar, Main.rand.Next(4, 9));
             else if (pick == 1)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.PalladiumBar : ItemID.TinBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.PalladiumBar : ItemID.LeadBar, Main.rand.Next(4, 9));
             else if (pick == 2)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.MythrilBar : ItemID.IronBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.MythrilBar : ItemID.SilverBar, Main.rand.Next(4, 9));
             else if (pick == 3)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.OrichalcumBar : ItemID.LeadBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.OrichalcumBar : ItemID.TungstenBar, Main.rand.Next(4, 9));
             else if (pick == 4)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.AdamantiteBar : ItemID.SilverBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.AdamantiteBar : ItemID.PlatinumBar, Main.rand.Next(4, 9));
             else if (pick == 5)
-                player.QuickSpawnItem(Main.hardMode ? ItemID.TitaniumBar : ItemID.TungstenBar, Main.rand.Next(4, 9));
+                player.QuickSpawnItem(Main.hardMode ? ItemID.TitaniumBar : ItemID.GoldBar, Main.rand.Next(4, 9));
             else if (pick == 7)
-                player.QuickSpawnItem(mod.ItemType("DankWood"), Main.rand.Next(8, 25)); 
-            else if (pick == 8)
                 player.QuickSpawnItem(mod.ItemType("DankWood"), Main.rand.Next(8, 25)); 
             else if (pick == 9)
                 player.QuickSpawnItem(mod.ItemType("DankCore"), Main.rand.Next(1, 2)); 
             else if (pick == 10)
-                player.QuickSpawnItem(mod.ItemType("DecayedMoss"), Main.rand.Next(1, 3));    
+                player.QuickSpawnItem(mod.ItemType("DecayedMoss"), Main.rand.Next(2, 5));    
             else if (pick == 11)
                 player.QuickSpawnItem(mod.ItemType("Biomass"), Main.rand.Next(4, 16));    
             else if (pick == 12)

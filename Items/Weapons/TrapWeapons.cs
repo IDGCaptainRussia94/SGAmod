@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,7 +23,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name)
 		{
-			return GetType() != typeof(TrapWeapon);
+			return GetType() != typeof(TrapWeapon) && GetType() != typeof(DefenseTrapWeapon);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -37,7 +38,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class DartTrapGun : TrapWeapon
+		public class DartTrapGun : TrapWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -944,7 +945,6 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-
 }
 
 //Trap Acc's
@@ -956,7 +956,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jindosh Buckler");
-			Tooltip.SetDefault("'Might as well call this Improvised Warfare'\nTrap Damage ignores 50% of enemy defense\nTrap damage may inflict Massive Bleeding\n10% of extra trap damage is dealt directly to your enemy's life\nThis ignores defense and damage reduction\n" +
+			Tooltip.SetDefault("'Inventive, yet strikingly crude and cruel'\nTrap Damage ignores 50% of enemy defense\nTrap damage may inflict Massive Bleeding\n10% of extra trap damage is dealt directly to your enemy's life\nThis ignores defense and damage reduction\n" +
 				"Trap Damage increased by 10%\nYou reflect 2 times the damage you take back to melee attackers");
 		}
 
@@ -1086,6 +1086,89 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Spike, 40);
 			recipe.AddIngredient(ItemID.ThornsPotion, 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+	public class GrippingGloves : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gripping Gloves");
+			Tooltip.SetDefault("'For holding onto the big things in your life'\nReduces the movement speed slowdown of Non-Stationary Defenses\nYou can turn around while holding a Non-Stationary Defense\n10% increased Trap Damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.10f;
+			player.GetModPlayer<SGAPlayer>().grippinggloves = true;
+			player.GetModPlayer<SGAPlayer>().SlowDownResist += 2f;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.AleThrowingGlove); }
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 32;
+			item.height = 32;
+			item.value = 15000;
+			item.rare = 2;
+			item.accessory = true;
+		}
+	}
+	public class HandlingGloves : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Handling Gloves");
+			Tooltip.SetDefault("'For handling extreme situations!'\nImmunity to knockback and fire blocks!\n+8 defense while holding a Non-Stationary Defense\nGreatly Reduces the movement speed slowdown of Non-Stationary Defenses\nYou can turn around while holding a Non-Stationary Defense\n15% increased Trap Damage and 10% increased Trap Armor Penetration");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.15f;
+			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.10f;
+			player.GetModPlayer<SGAPlayer>().grippinggloves = true;
+			player.GetModPlayer<SGAPlayer>().SlowDownResist += 8f;
+			player.noKnockback = true;
+			player.fireWalk = true;
+			if (SGAmod.NonStationDefenses.ContainsKey(player.HeldItem.type))
+				player.statDefense += 8;
+
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.AleThrowingGlove); }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Orange;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 32;
+			item.height = 32;
+			item.value = 75000;
+			item.rare = 6;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("GrippingGloves"), 1);
+			recipe.AddIngredient(ItemID.ObsidianShield, 1);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 10);
+			recipe.AddIngredient(ItemID.HellstoneBar, 5);
+			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

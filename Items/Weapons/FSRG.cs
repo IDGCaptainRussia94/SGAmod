@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 85;
+			item.damage = 60;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -128,7 +128,7 @@ namespace SGAmod.Items.Weapons
 			if (projectile.ai[0] % 40 == 0)
 			{
 				Vector2 avel = projectile.velocity.RotatedBy(MathHelper.ToRadians(projectile.ai[0] % 80==0 ? 90 : -90))/5f;
-				int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, avel.X, avel.Y, ProjectileID.SporeGas3, projectile.damage*3, projectile.knockBack, projectile.owner);
+				int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, avel.X, avel.Y, ProjectileID.SporeGas3, projectile.damage*2, projectile.knockBack, projectile.owner);
 				Main.projectile[proj].usesLocalNPCImmunity = true;
 				Main.projectile[proj].localNPCHitCooldown = -1;
 				Main.projectile[proj].scale = 0.5f;
