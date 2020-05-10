@@ -1,4 +1,0 @@
-﻿[*.cs]
-
-# CS1717: Assignment made to same variable
-dotnet_diagnostic.CS1717.severity = silent
