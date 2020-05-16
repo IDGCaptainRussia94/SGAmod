@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
-version = 2.900
-displayName = [i:2730][i:2718][i:2712]mod - [i:3040] [c/C54D0D:Hellion's Wraith] [i:3725]
+version = 3.000
+displayName = [i:2730][i:2718][i:2712]mod - [i:3853] [c/4fd446:End of the Beginning] [i:3580][i:3040]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true
 hideCode = false

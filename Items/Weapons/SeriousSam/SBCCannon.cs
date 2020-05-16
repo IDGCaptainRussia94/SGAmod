@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void SetDefaults()
         {
-            item.damage = 300;
+            item.damage = 200;
             item.ranged = true;
             item.width = 48;
             item.height = 28;
@@ -70,8 +70,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			recipe.AddIngredient(ItemID.Cannon, 1);
 			recipe.AddIngredient(ItemID.StarCannon, 1);
 			recipe.AddIngredient(null, "WraithFragment4", 8);
-			recipe.AddIngredient(null, "AdvancedPlating", 10);
-			recipe.AddIngredient(null, "WraithFragment3", 10);
+			recipe.AddIngredient(null, "AdvancedPlating", 8);
 			recipe.AddIngredient(null, "VirulentBar", 4);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
 			recipe.AddIngredient(ItemID.HallowedBar, 6);
@@ -550,7 +549,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void SetDefaults()
 		{
-			item.damage = 3000;
+			item.damage = 2500;
 			item.ranged = true;
 			item.width = 48;
 			item.height = 28;
@@ -585,13 +584,11 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "SBCCannon", 1);
 			recipe.AddIngredient(ItemID.ActuationAccessory, 1);
-			recipe.AddIngredient(ItemID.PressureTrack, 15);
+			recipe.AddIngredient(ItemID.PressureTrack, 5);
 			recipe.AddIngredient(ItemID.Chain, 25);
 			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 2);
 			recipe.AddIngredient(null, "StarMetalBar", 10);
-			recipe.AddIngredient(null, "PrismalBar", 5);
-			recipe.AddIngredient(ItemID.LunarBar, 15);
-			recipe.AddIngredient(null, "LunarRoyalGel", 20);
+			recipe.AddIngredient(null, "DrakeniteBar", 15);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

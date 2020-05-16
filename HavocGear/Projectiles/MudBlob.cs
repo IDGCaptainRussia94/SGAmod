@@ -45,6 +45,17 @@ namespace SGAmod.HavocGear.Projectiles
 				Main.dust[num655].noGravity = true;
 				Main.dust[num655].velocity *= 0.5f;
 			}
+
+			for (int num172 = 0; num172 < Main.maxNPCs; num172 += 1)
+			{
+				NPC target = Main.npc[num172];
+				float damagefalloff = 1f - ((target.Center - projectile.Center).Length() / 120f);
+				if ((target.Center - projectile.Center).Length() < 120f && !target.friendly && !target.dontTakeDamage)
+				{
+					target.AddBuff(BuffID.Oiled, 60 + (int)(60f * damagefalloff * 6f));
+				}
+			}
+
 			return true;
 		}
 

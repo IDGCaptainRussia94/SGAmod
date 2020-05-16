@@ -13,7 +13,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Big Bang");
-			Tooltip.SetDefault("Improved on by the elements, requires a small ammount of mana to swing\nFunctions as both a sword and a staff\nHitting with the blade opens rifts that launch Enchanted Swords\nAfter the swing animation hold left mouse to open a rift to fire cirno bolts! This is 80% of the weapon's base damage multiplied by your magic damage multiplier");
+			Tooltip.SetDefault("Improved on by the elements, requires a small ammount of mana to swing\nFunctions as both a sword and a staff\nHitting with the blade opens rifts that launch Enchanted Swords\nAfter the swing animation hold left mouse to open a rift to fire cirno bolts!\nThis is 50% of the weapon's base damage multiplied by your magic damage multiplier");
 			Item.staff[item.type] = true;
 		}
 
@@ -23,9 +23,9 @@ namespace SGAmod.Items.Weapons
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
-			item.useTime = 30;
+			item.useTime = 25;
 			item.crit = 10;
-			item.useAnimation = 31;
+			item.useAnimation = 26;
 			item.useStyle = 5;
 			item.knockBack = 15;
 			item.value = 500000;
@@ -56,6 +56,8 @@ namespace SGAmod.Items.Weapons
 		{
 			item.noMelee = false;
 			item.useStyle = 1;
+			if (player.ownedProjectileCounts[mod.ProjectileType("ProjectilePortalBigBang")] > 0)
+				return false;
 			return true;
 			//return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 		}
@@ -173,10 +175,10 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public override int projectilerate => 40;
-		public override int manacost => 12;
-		public override int portalprojectile => mod.ProjectileType("CirnoBolt");
+		public override int manacost => 20;
+		public override int portalprojectile => mod.ProjectileType("CirnoBoltPlayer");
 		public override int takeeffectdelay =>  Main.player[projectile.owner].HeldItem.useTime;
-		public override float damagescale => 0.8f * Main.player[projectile.owner].magicDamage;
+		public override float damagescale => 0.50f * Main.player[projectile.owner].magicDamage;
 		public override int penetrate => 1;
 
 		public override void SetDefaults()

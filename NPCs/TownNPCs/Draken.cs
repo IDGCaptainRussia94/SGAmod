@@ -448,6 +448,8 @@ namespace SGAmod.NPCs.TownNPCs
 						if (him2 != null)
 						{
 							adder = " The very next target is a(n) " + him2.FullName+". "+ GetNextItem();
+							if (modplayer.ExpertisePointsFromBosses[0]==NPCID.CultistArcherWhite)
+								adder = "You got them all!! " + GetNextItem();
 						}
 						else
 						{
@@ -533,6 +535,16 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			shop.item[nextSlot].SetDefaults(mod.ItemType("BossHints"));
+			shop.item[nextSlot].shopCustomPrice = 1;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(mod.ItemType("IDGStartBag"));
+				shop.item[nextSlot].shopCustomPrice = 10;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;	
+			
 			if (modplayer.ExpertiseCollectedTotal >= 50)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("EmptyCharm"));

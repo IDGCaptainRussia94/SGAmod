@@ -24,7 +24,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 1, 0, 0);
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.accessory = true;
 		}
 
@@ -52,9 +52,9 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(ItemID.Gel, 10);
 			recipe.AddIngredient(ItemID.CopperPickaxe, 1);
-			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
 			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
@@ -70,7 +70,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enhancing Charm Tier 1");
-			Tooltip.SetDefault("buffs are 25% longer and debuffs are 25% shorter\nCan only wear 1 Charm at a time");
+			Tooltip.SetDefault("buffs are 25% longer and debuffs are 25% shorter\nDoes not affect Potion Sickness\nCan only wear 1 Charm at a time");
 		}
 
 		public override void SetDefaults()
@@ -78,7 +78,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 1, 0, 0); ;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.accessory = true;
 		}
 
@@ -90,9 +90,9 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(ItemID.Gel, 10);
 			recipe.AddIngredient(ItemID.LesserHealingPotion, 5);
-			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
 			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
@@ -120,7 +120,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 1, 0, 0); ;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.accessory = true;
 		}
 
@@ -132,9 +132,9 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(ItemID.Gel, 10);
 			recipe.AddIngredient(ItemID.CopperBroadsword, 1);
-			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
 			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 8);
@@ -161,7 +161,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 2, 50, 0);
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.accessory = true;
 		}
 
@@ -201,7 +201,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 10, 0, 0);
-			item.rare = 9;
+			item.rare = ItemRarityID.Cyan;
 			item.accessory = true;
 		}
 
@@ -229,7 +229,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enhancing Charm Tier 2");
-			Tooltip.SetDefault("buffs are 50% longer and debuffs are 33% shorter\nCan only wear 1 Charm at a time");
+			Tooltip.SetDefault("buffs are 50% longer and debuffs are 33% shorter\nDoes not affect Potion Sickness\nCan only wear 1 Charm at a time");
 		}
 
 		public override void SetDefaults()
@@ -237,7 +237,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 2, 50, 0);
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.accessory = true;
 		}
 
@@ -266,7 +266,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enhancing Charm Tier 3");
-			Tooltip.SetDefault("buffs are 100% longer and debuffs are 50% shorter\nCan only wear 1 Charm at a time");
+			Tooltip.SetDefault("buffs are 100% longer and debuffs are 50% shorter\nDoes not affect Potion Sickness\nCan only wear 1 Charm at a time");
 		}
 
 		public override void SetDefaults()
@@ -274,7 +274,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 10, 0, 0);
-			item.rare = 9;
+			item.rare = ItemRarityID.Cyan;
 			item.accessory = true;
 		}
 
@@ -309,8 +309,8 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 2, 50, 0); ;
-			item.rare = 5;
+			item.value = Item.sellPrice(0, 2, 50, 0);
+			item.rare = ItemRarityID.Pink;
 			item.accessory = true;
 		}
 
@@ -346,8 +346,8 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.sellPrice(0, 10, 0, 0); ;
-			item.rare = 9;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = ItemRarityID.Cyan;
 			item.accessory = true;
 		}
 
@@ -385,6 +385,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.faceSlot = 6;
+			item.rare+=1;
 			item.value = Item.sellPrice(0, 2, 50, 0); ;
 			item.accessory = true;
 		}
@@ -420,7 +421,7 @@ namespace SGAmod.Items.Accessories
 			item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
-			item.rare = 6;
+			item.rare = ItemRarityID.LightPurple;
 			item.faceSlot = 6;
 			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.accessory = true;
@@ -459,7 +460,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.lifeRegen = 3;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.value = Item.sellPrice(0, 15, 0, 0); ;
 			item.accessory = true;
 			item.stringColor = 27;
@@ -497,14 +498,14 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Photosynthesizer");
-			Tooltip.SetDefault("Increased life regen while on the surface at day and near mud\n10% of the sum of all damage types is added to your current weapon's attack\nBeing near mud greatly increases your stats");
+			Tooltip.SetDefault("Increased life regen while on the surface at day\n10% of the sum of all damage types is added to your current weapon's attack\nBeing near mud greatly increases your stats and life regen");
 		}
 
 		public override void SetDefaults()
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.value = Item.sellPrice(0, 20, 0, 0);
 			item.accessory = true;
 			item.expert = true;
@@ -546,8 +547,8 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.lifeRegen = 3;
-			item.rare = 7;
-			item.value = Item.sellPrice(0, 15, 0, 0); ;
+			item.rare = ItemRarityID.Lime;
+			item.value = Item.sellPrice(0, 15, 0, 0);
 			item.accessory = true;
 		}
 
@@ -603,7 +604,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.BeeWax, 10);
 			recipe.AddIngredient(ItemID.HoneyBucket, 2);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
-			recipe.AddTile(TileID.HoneyDispenser);
+			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
@@ -763,7 +764,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 4;
+			item.rare = ItemRarityID.LightRed;
 			item.value = Item.sellPrice(0, 1, 50, 0); ;
 			item.accessory = true;
 		}
@@ -787,7 +788,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.GeyserTrap, 1);
-			recipe.AddIngredient(ItemID.Obsidian, 20);
+			recipe.AddIngredient(ItemID.Obsidian, 10);
 			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
 			recipe.AddIngredient(ItemID.LavaBucket, 1);
 			recipe.AddTile(TileID.WorkBenches);
@@ -808,7 +809,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 52;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.value = Item.sellPrice(1, 0, 0, 0); ;
 			item.accessory = true;
 			item.expert = true;
@@ -867,7 +868,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetDefaults()
 		{
 			item.value = 3000000;
-			item.rare = 11;
+			item.rare = ItemRarityID.Purple;
 			item.width = 24;
 			item.height = 24;
 			item.accessory = true;
@@ -891,7 +892,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
 			recipe.AddIngredient(mod.ItemType("CalamityRune"), 2);
 			recipe.AddIngredient(ItemID.GoldDust, 200);
-			recipe.AddIngredient(ItemID.PlatinumCoin, 20);
+			recipe.AddIngredient(ItemID.PlatinumCoin, 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -906,13 +907,13 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n25% increased Trap damage, 60% increased Trap armor penetration\n+5 Booster Recharge Rate and 15% increased Booster Capacity\n15% increased Technological damage and grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jindosh Buckler\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nAllows you to blink teleport up to 6 seconds of Chaos State (hide accessory to disable blinking)\nHold UP and press left or right to blink, this gives you 2 seconds of chaos state\n10% increased Trap damage, 15% increased Trap armor penetration\n+5 Booster Recharge Rate and 15% increased Booster Capacity\nGrants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
 		{
 			item.value = 1500000;
-			item.rare = 10;
+			item.rare = ItemRarityID.Red;
 			item.width = 24;
 			item.defense = 12;
 			item.height = 24;
@@ -933,7 +934,6 @@ public class BlinkTechGear : IdolOfMidas
 			player.GetModPlayer<SGAPlayer>().maxblink += hideVisual ? 0 : 60 * 6;
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.15f;
 			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.10f;
-			player.GetModPlayer<SGAPlayer>().techdamage += 0.05f;
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.15f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 5;
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
@@ -969,7 +969,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.value = Item.sellPrice(0, 0, 2, 0); ;
 			item.accessory = true;
 		}
@@ -1005,7 +1005,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.value = Item.sellPrice(0, 0, 2, 0); ;
 			item.accessory = true;
 		}
@@ -1043,7 +1043,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 6;
+			item.rare = ItemRarityID.LightPurple;
 			item.value = Item.sellPrice(0, 0, 4, 0); ;
 			item.accessory = true;
 		}
@@ -1159,7 +1159,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 32;
 			item.height = 32;
 			item.value = 1500000;
-			item.rare = 10;
+			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}
 	}
@@ -1207,7 +1207,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 32;
 			item.height = 32;
 			item.value = 1500000;
-			item.rare = 10;
+			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}
 	}
@@ -1243,7 +1243,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.accessory = true;
 			item.height = 14;
 			item.value = 500000;
-			item.rare = 6;
+			item.rare = ItemRarityID.LightPurple;
 			item.expert = false;
 		}
 	}
@@ -1252,8 +1252,8 @@ public class BlinkTechGear : IdolOfMidas
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Amber Glow Skull");
-			Tooltip.SetDefault("'It seems very much uncorroded by the Spider Queen'\nImmunity against Acid Burn");
+			DisplayName.SetDefault("Corroded Skull");
+			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1274,7 +1274,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.accessory = true;
 			item.height = 14;
 			item.value = 5000;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.expert = false;
 		}
 	}
@@ -1304,7 +1304,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 16;
 			item.height = 16;
 			item.value = Item.sellPrice(gold: 1);
-			item.rare = 10;
+			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
@@ -1314,8 +1314,7 @@ public class BlinkTechGear : IdolOfMidas
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 25);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 5);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 3);
-			recipe.AddIngredient(ItemID.Obsidian, 6);
-			recipe.AddIngredient(ItemID.HellstoneBar, 3);
+			recipe.AddIngredient(ItemID.HellstoneBar, 2);
 			recipe.AddIngredient(ItemID.CrystalBall, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);
@@ -1344,15 +1343,15 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 16;
 			item.height = 16;
 			item.value = Item.sellPrice(gold: 1);
-			item.rare = 6;
+			item.rare = ItemRarityID.LightPurple;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Glass, 20);
-			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 12);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 10);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -1384,17 +1383,16 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 16;
 			item.height = 16;
 			item.value = Item.sellPrice(silver: 50);
-			item.rare = 4;
+			item.rare = ItemRarityID.LightRed;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Glass, 25);
+			recipe.AddIngredient(ItemID.Glass, 10);
 			recipe.AddIngredient(ItemID.FallenStar, 5);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 3);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 4);
-			recipe.AddIngredient(ItemID.HellstoneBar, 5);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -1433,7 +1431,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.accessory = true;
 			item.height = 32;
 			item.value = Item.sellPrice(gold: 5);
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.expert = false;
 		}
 		public override void AddRecipes()
@@ -1497,7 +1495,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.accessory = true;
 			item.height = 14;
 			item.value = Item.sellPrice(gold: 25);
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.expert = false;
 		}
 		public override void AddRecipes()
@@ -1535,7 +1533,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 32;
 			item.height = 32;
 			item.value = Item.sellPrice(gold: 3);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
@@ -1569,7 +1567,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 32;
 			item.height = 32;
 			item.value = Item.sellPrice(gold: 2);
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
@@ -1578,7 +1576,16 @@ public class BlinkTechGear : IdolOfMidas
 			recipe.AddIngredient(ItemID.HeartLantern, 1);
 			recipe.AddIngredient(ItemID.HeartreachPotion, 5);
 			recipe.AddIngredient(ItemID.HallowedBar, 10);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 3);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.HeartLantern, 1);
+			recipe.AddIngredient(ItemID.LifeFruit, 5);
+			recipe.AddIngredient(ItemID.HallowedBar, 10);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 3);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1608,12 +1615,13 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 32;
 			item.height = 32;
 			item.value = Item.sellPrice(gold: 75);
-			item.rare = 10;
+			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(ItemID.CelestialMagnet, 1);
 			recipe.AddIngredient(mod.ItemType("BoosterMagnet"), 1);
 			recipe.AddIngredient(mod.ItemType("HeartreachMagnet"), 1);
@@ -1683,7 +1691,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 5, 0, 0);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.accessory = true;
 		}
 
@@ -1715,7 +1723,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 5, 0, 0);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.accessory = true;
 		}
 
@@ -1747,7 +1755,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 5, 0, 0);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.accessory = true;
 		}
 		public override void Tooltipsfunc(List<TooltipLine> tooltips)
@@ -1780,7 +1788,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 24;
 			item.height = 24;
 			item.value = Item.sellPrice(0, 5, 0, 0);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.accessory = true;
 		}
 
@@ -1947,7 +1955,7 @@ public class BlinkTechGear : IdolOfMidas
 			item.width = 24;
 			item.height = 32;
 			item.value = 2000000;
-			item.rare = 11;
+			item.rare = ItemRarityID.Purple;
 			item.accessory = true;
 		}
 
@@ -1977,7 +1985,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.accessory = true;
 		}
@@ -2006,7 +2014,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			item.width = 24;
 			item.height = 24;
-			item.rare = 1;
+			item.rare = ItemRarityID.Blue;
 			item.value = Item.sellPrice(0, 0, 25, 0);
 			item.accessory = true;
 		}
@@ -2023,6 +2031,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddRecipeGroup("IronBar", 1);
+			recipe.AddIngredient(ItemID.Chain, 2);
 			recipe.AddIngredient(ItemID.Leather, 3);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -2031,7 +2040,123 @@ public class BlinkTechGear : IdolOfMidas
 
 	}
 
+	public class TidalCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tidal Charm");
+			Tooltip.SetDefault("Doubles your max breath meter\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.sellPrice(0, 0, 75, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.breathMax *= 2;
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			int defensegiven = 6;
+				defensegiven += SGAWorld.downedWraiths;
+			if (SGAWorld.downedSpiderQueen)
+				defensegiven += 2;
+			if (SGAWorld.downedMurk>1)
+				defensegiven += SGAWorld.GennedVirulent ? 3 :2;
+			if (SGAWorld.downedSharkvern)
+				defensegiven += 2;
+			if (SGAWorld.downedCratrosity)
+				defensegiven += 2;
+			if (SGAWorld.downedTPD)
+				defensegiven += 2;
+			if (SGAWorld.downedHarbinger)
+				defensegiven += 2;
+			if (SGAWorld.downedCratrosityPML)
+				defensegiven += 2;
+			if (SGAWorld.downedSPinky)
+				defensegiven += 2;
+
+			player.statDefense+= (int)(1f-((float)player.breath/ (float)player.breathMax))*defensegiven;
+
+		}
+
+	}
+
+
+	public class TwinesOfFate : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Twines Of Fate");
+			Tooltip.SetDefault("Spin a Guide and Clothier Voodoo Doll pair around you on a string\nThey reflect projectiles and take hits that direct damage to your NPCs\nReflected projectiles do practically no damage and the dolls suffer a cooldown\nThe dolls cease to function if their respective NPCs die");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.GuideVoodooDoll); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.twinesoffate = true;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll);
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll),  item.Center+ new Vector2(-6, 0)-Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.ClothierVoodooDoll), item.Center + new Vector2(6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
+			}
+			return false;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll);
+				Vector2 slotSize = new Vector2(52f, 52f);
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_"+ItemID.GuideVoodooDoll), drawPos+new Vector2(-6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.ClothierVoodooDoll), drawPos + new Vector2(6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+			}
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.HighTestFishingLine, 1);
+			recipe.AddIngredient(ItemID.GuideVoodooDoll, 1);
+			recipe.AddIngredient(ItemID.ClothierVoodooDoll, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	/*
+
+
 		public class PlasmaPack : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2069,7 +2194,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gun Barrel Parts");
-			Tooltip.SetDefault("Revolvers reload faster\n10% increased Bullet Damage");
+			Tooltip.SetDefault("Revolvers reload faster\n6% increased Bullet Damage");
 		}
 
 		public override void SetDefaults()
@@ -2132,7 +2257,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunsmith's Belt of Tools");
-			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload faster\n10% increased Bullet Damage");
+			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload faster\n8% increased Bullet Damage");
 		}
 
 		public override void SetDefaults()
@@ -2164,7 +2289,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Peacekeeper's Duster");
-			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nBullets do 50% less damage to you\nGain a 25% damage buff while in your town\n'Keepin order will never be easier with this'");
+			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nHostle bullets do 50% less damage to you\nGain a 25% damage buff while in your town (no bosses alive)\n'Keepin order will never be easier with this'");
 		}
 
 		public override void SetDefaults()
@@ -2197,7 +2322,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparing Spurs");
-			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\n'You ready to dance pardner?'");
+			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\nFall Damage and fireblock immunity\n'You ready to dance pardner?'");
 		}
 
 		public override void SetDefaults()
@@ -2230,7 +2355,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Noon");
-			Tooltip.SetDefault("Bullet damage is increased during the day\nThis reaches its peak of 10% increased damage at noon");
+			Tooltip.SetDefault("Damage is increased during the day\nBase damage increase reaches its peak of 5% increased damage at noon\nAdditional 5% bullet damage at noon");
 		}
 
 		public override void SetDefaults()
@@ -2263,7 +2388,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dueling Deity's Shades");
-			Tooltip.SetDefault("Scoring an Apocalyptical summons 2 copies of your bullet to strike your duelling opponent\nThese projectiles do 50% more damage but cannot crit\nDoes not function if you don't have a duelling opponent\nEffects of High Noon");
+			Tooltip.SetDefault("Scoring an Apocalyptical summons 2 copies of your bullet to strike your opponent\nThese projectiles do 50% more damage but cannot crit\nThey do not count as ranged damage either\nEffects of High Noon");
 		}
 
 		public override void SetDefaults()
@@ -2301,7 +2426,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunslinger of Song and Legend");
-			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\n30% increased Bullet Damage, 15% increased ranged crit chance\nDamage against your duelling opponent is increased by 15%\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
+			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\n20% increased Bullet Damage, 15% increased ranged crit chance\nDamage against your last hit enemy is increased by 15%\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
 		}
 
 		public override void SetDefaults()

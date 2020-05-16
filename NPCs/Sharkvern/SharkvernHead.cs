@@ -19,6 +19,8 @@ namespace SGAmod.NPCs.Sharkvern
         public bool touchwater=false;
         public Vector2 Summoncenter=new Vector2(0,0);
         public List<int> averagey;
+        public int timer = 0;
+        public bool ramwater = true;
 
 
         public override void SetStaticDefaults()
@@ -62,7 +64,7 @@ namespace SGAmod.NPCs.Sharkvern
             }
             else
             {
-                int lLoot = (Main.rand.Next(0,3));
+                int lLoot = (Main.rand.Next(0,4));
                 if (lLoot == 0)
                 {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SkytoothStormSpell"));
@@ -76,7 +78,10 @@ namespace SGAmod.NPCs.Sharkvern
                     Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SnappyShark"));
                     Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkTooth"), 99);
                 }
-
+                if (lLoot == 3)
+                {
+                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkBait"), Main.rand.Next(50, 100));
+                }
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkTooth"), Main.rand.Next(50,100));
 
                 List<int> types=new List<int>();
@@ -103,7 +108,19 @@ namespace SGAmod.NPCs.Sharkvern
             Achivements.SGAAchivements.UnlockAchivement("Sharkvern", Main.LocalPlayer);
             SGAWorld.downedSharkvern = true;
         }
-        
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(ramwater);
+            writer.Write(timer);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            ramwater = reader.ReadBoolean();
+            timer = reader.ReadInt32();
+        }
+
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
             npc.lifeMax = (int)(npc.lifeMax * 0.650f * bossLifeScale);
@@ -172,16 +189,48 @@ namespace SGAmod.NPCs.Sharkvern
             bool collision = false;
             for (int i = minTilePosX-5; i < maxTilePosX+5; ++i)
             {
-                for (int j = minTilePosY-5; j < maxTilePosY+10; ++j)
+                for (int j = minTilePosY - 5; j < maxTilePosY + 10; ++j)
                 {
                     if (Main.tile[i, j] != null)
                     {
-                        if ((int)Main.tile[i, j].liquid > 64){
-                        touchwater=true;
+                        if ((int)Main.tile[i, j].liquid > 64)
+                        {
+                            touchwater = true;
                         }
-                     }
+                    }
                 }
              }
+
+            if (ramwater == false)
+            {
+                for (int i = minTilePosX - 5; i < maxTilePosX + 5; ++i)
+                {
+                    for (int j = minTilePosY - 5; j < maxTilePosY; ++j)
+                    {
+                        if (Main.tile[i, j] != null)
+                        {
+                            if ((int)Main.tile[i, j].liquid > 240)
+                            {
+                                if (ramwater == false)
+                                {
+                                    if (npc.velocity.Y > 6)
+                                    {
+                                        ramwater = true;
+                                        for (float xx = 6f; xx < 30f; xx += 0.5f)
+                                        {
+                                            int proj2 = Projectile.NewProjectile(npc.Center, new Vector2(Main.rand.NextFloat(-8f, 8f), -Main.rand.NextFloat(0, xx)), mod.ProjectileType("RandomOceanCrap"), 30, 4);
+                                            Main.projectile[proj2].friendly = false;
+                                            Main.projectile[proj2].hostile = true;
+                                            Main.projectile[proj2].netUpdate = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
 
             for (int i = minTilePosX; i < maxTilePosX; ++i)
             {
@@ -234,8 +283,27 @@ namespace SGAmod.NPCs.Sharkvern
             float targetXPos = Main.player[npc.target].position.X + (Main.player[npc.target].width / 2);
             float targetYPos = Main.player[npc.target].position.Y + (Main.player[npc.target].height / 2);
 
+            timer += 1;
+
+
+            if (timer % 1000 > 700)
+            {
+                collision = true;
+                targetYPos -= 800;
+                if (timer % 1000 == 849)
+                {
+                    ramwater = false;
+                    npc.netUpdate = true;
+                }
+                if (timer % 1000 > 850)
+                {
+                    targetYPos += 4800;
+                }
+            }
+
             if (npc.ai[3]>0){
-            targetXPos=(float)(Main.maxTilesX*0.6f);
+                timer = 0;
+            targetXPos = (float)(Main.maxTilesX*0.6f);
             if (npc.Center.X>(Main.maxTilesX/2)*16)
             targetXPos=(float)(Main.maxTilesX*16)-(Main.maxTilesX*0.6f);
             targetYPos = averagey[0];
@@ -290,15 +358,18 @@ namespace SGAmod.NPCs.Sharkvern
             
             else
             {
-                if (npc.soundDelay == 0)
+                if (timer % 1000 <= 700)
                 {
-                    float num1 = length / 40f;
-                    if (num1 < 10.0)
-                        num1 = 10f;
-                    if (num1 > 20.0)
-                        num1 = 20f;
-                    npc.soundDelay = (int)num1;
-                    Main.PlaySound(15, (int)npc.position.X, (int)npc.position.Y, 1);
+                    if (npc.soundDelay == 0)
+                    {
+                        float num1 = length / 40f;
+                        if (num1 < 10.0)
+                            num1 = 10f;
+                        if (num1 > 20.0)
+                            num1 = 20f;
+                        npc.soundDelay = (int)num1;
+                        Main.PlaySound(15, (int)npc.position.X, (int)npc.position.Y, 1);
+                    }
                 }
                 float absDirX = Math.Abs(dirX);
                 float absDirY = Math.Abs(dirY);
@@ -552,6 +623,7 @@ namespace SGAmod.NPCs.Sharkvern
         npc.damage=50;
         npc.noGravity = true; 
         npc.knockBackResist = 0.9f;
+        npc.lifeMax = 1500;
         }
 
         public override void FindFrame(int frameHeight)
@@ -597,4 +669,83 @@ namespace SGAmod.NPCs.Sharkvern
              }
         }
     }
+
+    public class RandomOceanCrap : ModProjectile
+    {
+
+        int fakeid = ProjectileID.FrostShard;
+        int fishtype = 0;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Random Ocean Crap");
+        }
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            projectile.CloneDefaults(fakeid);
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.hostile = true;
+            projectile.friendly = false;
+            projectile.penetrate = 1;
+            projectile.thrown = true;
+            projectile.extraUpdates = 0;
+            projectile.tileCollide = true;
+            projectile.aiStyle = -1;
+            int[] types = { ItemID.Fish, ItemID.Trout, ItemID.TundraTrout, ItemID.ReaverShark, ItemID.Goldfish, ItemID.Ebonkoi,ItemID.CrimsonTigerfish, ItemID.FishStatue, ItemID.OldShoe, ItemID.MirageFish, ItemID.PrincessFish,ItemID.FrostDaggerfish };
+            fishtype = types[Main.rand.Next(types.Length)];
+        }
+
+        public override string Texture
+        {
+            get { return "Terraria/Projectile_" + fakeid; }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = ModContent.GetTexture("Terraria/Item_" + fishtype);
+            Vector2 drawOrigin = new Vector2(tex.Width, tex.Height)/2;
+            Vector2 drawPos = ((projectile.Center - Main.screenPosition));
+            spriteBatch.Draw(tex, drawPos,null, lightColor, MathHelper.ToRadians(0) + projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+            return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+                Main.dust[dust].scale = 2.50f;
+                Main.dust[dust].noGravity = false;
+                Main.dust[dust].velocity *= 2f;
+            }
+            return true;
+        }
+
+        public override void AI()
+        {
+            projectile.velocity.Y += 0.20f;
+            if (Main.rand.Next(0, 2) == 1)
+            {
+                int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+                Main.dust[dust].scale = 0.8f;
+                Main.dust[dust].noGravity = false;
+                Main.dust[dust].velocity = projectile.velocity * 0.4f;
+            }
+            projectile.rotation += ((float)projectile.velocity.Length()*Math.Sign(projectile.velocity.X))*0.01f;
+        }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            target.AddBuff(BuffID.Wet, 60 * 5);
+        }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            target.AddBuff(BuffID.Wet, 60 * 5);
+        }
+
+    }
+
+
 }

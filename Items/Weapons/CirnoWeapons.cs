@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Snowfall");
 			Tooltip.SetDefault("Summon a cloud to rain hardened snowballs on your foes\nLimits 2 clouds at a time");
 		}
-		
+
 		public override void SetDefaults()
 		{
 			item.summon = true;
@@ -31,15 +31,15 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 30;
 			item.useStyle = 1;
 			item.knockBack = 10;
-			item.value = 10000;
+			item.value = 100000;
 			item.noMelee = true;
 			item.rare = 5;
 			item.shoot = 10;
 			item.shootSpeed = 10f;
-	        item.UseSound = SoundID.Item60;
-	     	item.autoReuse = true;
+			item.UseSound = SoundID.Item60;
+			item.autoReuse = true;
 			item.useTurn = false;
-		    
+
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -57,38 +57,38 @@ namespace SGAmod.Items.Weapons
 				break;
 			}}}}*/
 
-		SGAPlayer.LimitProjectiles(player,1,new ushort[] {(ushort)mod.ProjectileType("SnowfallCloud"),(ushort)mod.ProjectileType("SnowCloud")});
+			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud") });
 
-		int theproj=Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("SnowfallCloud"), damage, knockBack, player.whoAmI);
-		float num12 = (float)Main.mouseX + Main.screenPosition.X;
-        float num13 = (float)Main.mouseY + Main.screenPosition.Y;
-		HalfVector2 half=new HalfVector2(num12,num13);
-		Main.projectile[theproj].ai[0]=ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
-		Main.projectile[theproj].netUpdate=true;
-		return false;
+			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("SnowfallCloud"), damage, knockBack, player.whoAmI);
+			float num12 = (float)Main.mouseX + Main.screenPosition.X;
+			float num13 = (float)Main.mouseY + Main.screenPosition.Y;
+			HalfVector2 half = new HalfVector2(num12, num13);
+			Main.projectile[theproj].ai[0] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+			Main.projectile[theproj].netUpdate = true;
+			return false;
 		}
 
 
-	public override void MeleeEffects(Player player, Rectangle hitbox)
-	{
-
-		for (int num475 = 0; num475 < 3; num475++)
+		public override void MeleeEffects(Player player, Rectangle hitbox)
 		{
-		int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("HotDust"));
-		Main.dust[dust].scale=0.5f+(((float)num475)/3.5f);
-		Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
-		Main.dust[dust].velocity=randomcircle/2f;
-		Main.dust[dust].noGravity=true;
-		//Main.dust[dust].velocity.Normalize();
-		//Main.dust[dust].velocity+=new Vector2(player.velocity.X/4,0f);
-		//Main.dust[dust].velocity*=(((float)Main.rand.Next(0,100))/30f);
+
+			for (int num475 = 0; num475 < 3; num475++)
+			{
+				int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("HotDust"));
+				Main.dust[dust].scale = 0.5f + (((float)num475) / 3.5f);
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				Main.dust[dust].velocity = randomcircle / 2f;
+				Main.dust[dust].noGravity = true;
+				//Main.dust[dust].velocity.Normalize();
+				//Main.dust[dust].velocity+=new Vector2(player.velocity.X/4,0f);
+				//Main.dust[dust].velocity*=(((float)Main.rand.Next(0,100))/30f);
+			}
+			Lighting.AddLight(player.position, 0.9f, 0.9f, 0f);
 		}
-		Lighting.AddLight(player.position, 0.9f, 0.9f, 0f);
+
+
 	}
 
-
-}
-	
 
 	public class SnowfallCloud : ModProjectile
 	{
@@ -102,51 +102,55 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			//projectile.magic = true;
 			//projectile.penetrate = 1;
-			projectile.timeLeft = 60*30;
-			projectile.tileCollide=false;
+			projectile.timeLeft = 60 * 30;
+			projectile.tileCollide = false;
 		}
 
-				public override string Texture
+		public override string Texture
 		{
 			get { return "Terraria/Item_" + 5; }
 		}
 
-	public override bool? CanHitNPC(NPC target){
-		return false;
-	}
-	public override bool CanHitPlayer(Player target){
-		return false;
-	}
-	public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor){
-		return false;
-	}
-	public override void AI()
-	{
-
-		Vector2 gohere=new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.ai[0]) }.ToVector2();
-		Vector2 anglevect=(gohere-projectile.position);
-		float length=anglevect.Length();
-		anglevect.Normalize();
-		projectile.velocity=(10f*anglevect);
-		bool reached=(length<projectile.velocity.Length()+1f);
-		for (int q = 0; q < (reached ? 40 : 4); q++)
+		public override bool? CanHitNPC(NPC target)
 		{
-		Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
-		float reachfloat=reached ? 0f : 1f;
-		int dust = Dust.NewDust(projectile.position-new Vector2(8,0), 16, 16, DustID.Smoke, ((projectile.velocity.X * 0.75f)*reachfloat)+(randomcircle*(reached ? 12f : 0f)).X, ((projectile.velocity.Y * 0.75f)*reachfloat)+(randomcircle*(reached ? 4f : 0f)).Y, 100, Main.hslToRgb(0.6f,0.8f, 0.8f), 3f);
-		Main.dust[dust].noGravity = true;
+			return false;
 		}
-		if (reached){
-		int theproj=Projectile.NewProjectile(projectile.position.X+16f, projectile.position.Y, 0f, 0f, mod.ProjectileType("SnowCloud"), projectile.damage, projectile.knockBack, projectile.owner);
-		Main.projectile[theproj].friendly=true;
-		Main.projectile[theproj].hostile=false;
-		Main.projectile[theproj].timeLeft=projectile.timeLeft;
-		Main.projectile[theproj].netUpdate=true;
-		projectile.Kill();
+		public override bool CanHitPlayer(Player target)
+		{
+			return false;
 		}
-	}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+		public override void AI()
+		{
 
-}
+			Vector2 gohere = new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.ai[0]) }.ToVector2();
+			Vector2 anglevect = (gohere - projectile.position);
+			float length = anglevect.Length();
+			anglevect.Normalize();
+			projectile.velocity = (10f * anglevect);
+			bool reached = (length < projectile.velocity.Length() + 1f);
+			for (int q = 0; q < (reached ? 40 : 4); q++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				float reachfloat = reached ? 0f : 1f;
+				int dust = Dust.NewDust(projectile.position - new Vector2(8, 0), 16, 16, DustID.Smoke, ((projectile.velocity.X * 0.75f) * reachfloat) + (randomcircle * (reached ? 12f : 0f)).X, ((projectile.velocity.Y * 0.75f) * reachfloat) + (randomcircle * (reached ? 4f : 0f)).Y, 100, Main.hslToRgb(0.6f, 0.8f, 0.8f), 3f);
+				Main.dust[dust].noGravity = true;
+			}
+			if (reached)
+			{
+				int theproj = Projectile.NewProjectile(projectile.position.X + 16f, projectile.position.Y, 0f, 0f, mod.ProjectileType("SnowCloud"), projectile.damage, projectile.knockBack, projectile.owner);
+				Main.projectile[theproj].friendly = true;
+				Main.projectile[theproj].hostile = false;
+				Main.projectile[theproj].timeLeft = projectile.timeLeft;
+				Main.projectile[theproj].netUpdate = true;
+				projectile.Kill();
+			}
+		}
+
+	}
 
 	public class CursedHail : ModItem
 	{
@@ -196,7 +200,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("Snowfall"), 1);
-			recipe.AddIngredient(ItemID.CursedFlames, 25);
+			recipe.AddIngredient(ItemID.CursedFlame, 15);
 			recipe.AddIngredient(ItemID.BlizzardStaff, 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
@@ -205,7 +209,7 @@ namespace SGAmod.Items.Weapons
 		}
 
 
-		}
+	}
 
 	public class CursedHailProj : SnowfallCloud
 	{
@@ -313,14 +317,14 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			if (projectile.localAI[0] == 0)
-			projectile.localAI[0] = Main.rand.Next(0, 3);
-		Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + fakeid);
+				projectile.localAI[0] = Main.rand.Next(0, 3);
+			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + fakeid);
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 5) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
-			int timing = (int)(projectile.localAI[0]-1);
+			int timing = (int)(projectile.localAI[0] - 1);
 			timing %= 5;
 			timing *= ((tex.Height) / 5);
-			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 5), lightColor, MathHelper.ToRadians(180)+projectile.velocity.X * -0.08f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 5), lightColor, MathHelper.ToRadians(180) + projectile.velocity.X * -0.08f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
@@ -341,7 +345,7 @@ namespace SGAmod.Items.Weapons
 			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 75);
 			Main.dust[dust].scale = 1f;
 			Main.dust[dust].noGravity = true;
-			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.NextFloat(0.1f,0.25f));
+			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.NextFloat(0.1f, 0.25f));
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 		}
 
@@ -362,7 +366,7 @@ namespace SGAmod.Items.Weapons
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 36;
+			item.damage = 42;
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
@@ -370,7 +374,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 1;
 			item.knockBack = 2;
-			item.crit = 5;
+			item.crit = 7;
 			item.value = Item.sellPrice(0, 15, 0, 0);
 			item.rare = 5;
 			item.UseSound = SoundID.Item1;
@@ -519,12 +523,12 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ice Scepter");
-			Tooltip.SetDefault("Launches homing ice bolts\nAlt Fire summons a wall of ice blocks");
+			Tooltip.SetDefault("Spews homing ice bolts with duo swirling ice shards\nShards fly off when the bolt hits something and do 50% of base damage\nAlt Fire summons a wall of ice blocks");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 35;
+			item.damage = 36;
 			item.magic = true;
 			item.width = 34;
 			item.mana = 8;
@@ -538,7 +542,7 @@ namespace SGAmod.Items.Weapons
 			item.shootSpeed = 8f;
 			item.noMelee = true;
 			item.shoot = 14;
-			item.shootSpeed = 7f;
+			item.shootSpeed = 11f;
 			item.UseSound = SoundID.Item8;
 			item.autoReuse = true;
 			Item.staff[item.type] = true;
@@ -570,7 +574,7 @@ namespace SGAmod.Items.Weapons
 						int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.IceBlock, (int)(damage / 5), knockBack, player.whoAmI, ((position + dister * 160f).X) / 16f, (position + dister * 160f).Y / 16f);
 						Main.projectile[proj].friendly = true;
 						Main.projectile[proj].hostile = false;
-						Main.projectile[proj].timeLeft = 180;
+						Main.projectile[proj].timeLeft = 240;
 						Main.projectile[proj].knockBack = item.knockBack;
 						player.itemTime = 90;
 
@@ -602,7 +606,175 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+	class IcicleFall : ModItem
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Icicle Fall");
+			Tooltip.SetDefault("Throws an ice chunk that splits apart into 6 shards when falling downwards\nThese shards do full base damage");
+		}
+
+		public override void SetDefaults()
+		{
+			item.useStyle = 1;
+			item.thrown = true;
+			item.damage = 20;
+			item.crit = 8;
+			item.knockBack = 0f;
+			item.useTime = 25;
+			item.useAnimation = 25;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+			item.autoReuse = true;
+			item.maxStack = 1;
+			item.shootSpeed = 12f;
+			item.shoot = mod.ProjectileType("CirnoIceShardPlayerCore");
+			item.value = Item.buyPrice(0, 0, 5, 0);
+			item.rare = 6;
+		}
+
+	}
+
+	public class CirnoIceShardPlayerCore : ModProjectile
+	{
+
+		int fakeid = ProjectileID.FrostShard;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Baka Ice Core");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(fakeid);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.penetrate = 1;
+			projectile.thrown = true;
+			projectile.extraUpdates = 0;
+			projectile.aiStyle = -1;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.FrostCore; }
+		}
+
+		public override void AI()
+		{
+
+			projectile.rotation += projectile.velocity.X * 0.02f;
+			projectile.velocity.Y += 0.2f;
+			if (projectile.velocity.Y > 0)
+			{
+				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 30, 1f, -0.5f);
+				for (float xx = 0f; xx < 6f; xx += 1f)
+				{
+					int proj2 = Projectile.NewProjectile(projectile.Center, projectile.velocity + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0, 3f)), mod.ProjectileType("CirnoIceShardPlayer"), (int)((float)projectile.damage * 1f), 0f, projectile.owner);
+					Main.projectile[proj2].friendly = false;
+					Main.projectile[proj2].hostile = true;
+					Main.projectile[proj2].netUpdate = true;
+				}
+				projectile.Kill();
+			}
+			for (float i = 0f; i < 4f; i += 1f)
+			{
+				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.Ice);
+				Main.dust[dust].scale = 1.5f;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.NextFloat(0.1f, 0.25f) * i);
+			}
+		}
+
+	}
+
+	public class CirnoIceShardPlayer : CirnoIceShard
+	{
+
+		int fakeid = ProjectileID.FrostShard;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Baka Ice Shard");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.CloneDefaults(fakeid);
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.penetrate = 1;
+			projectile.thrown = true;
+			projectile.extraUpdates = 0;
+			projectile.aiStyle = -1;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + fakeid; }
+		}
+
+		public override void AI()
+		{
+			base.AI();
+			projectile.hostile = false;
+			projectile.friendly = true;
+			if (projectile.ai[1]<=0)
+			projectile.velocity.Y += 0.1f;
+		}
+
+	}
+
+	public class CirnoIceShardPlayerOrbit : CirnoIceShardPlayer
+	{
+
+		int fakeid = ProjectileID.FrostShard;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Baka Ice Shard");
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.penetrate = 1;
+			projectile.thrown = false;
+			projectile.magic = true;
+			projectile.extraUpdates = 0;
+			projectile.aiStyle = -1;
+		}
+
+		public override void AI()
+		{
+			projectile.ai[0] += 0.1f;
+			projectile.localAI[1] += 0.2f;
+			Projectile parent = Main.projectile[(int)projectile.ai[1]];
+			if (parent.active && parent.type == mod.ProjectileType("CirnoBoltPlayer") && projectile.ai[0]>-5000)
+			{
+				projectile.velocity = (projectile.ai[0] + MathHelper.ToRadians(90)).ToRotationVector2() * 7;
+				projectile.Center = parent.Center + (projectile.ai[0]).ToRotationVector2()*Math.Min(projectile.localAI[1],12f); 
+			}
+			else
+			{
+				projectile.ai[0] = -10000;
+			}
+
+			base.AI();
+		}
+
+	}
+
 }
+
 
 namespace SGAmod.NPCs
 {
@@ -615,6 +787,30 @@ namespace SGAmod.NPCs
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Grace");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.hostile = false;
+			projectile.friendly = true;
+		}
+
+		public override void AI()
+		{
+			base.AI();
+			if (projectile.ai[0] == 2)
+			{
+				float rand = Main.rand.Next(0, 360);
+				for (int i = 0; i < 360; i += 180)
+				{
+					int proj2 = Projectile.NewProjectile(projectile.Center, projectile.velocity + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0, 3f)), mod.ProjectileType("CirnoIceShardPlayerOrbit"), (int)((float)projectile.damage * 0.5f), 0f, projectile.owner);
+					Main.projectile[proj2].ai[0] = MathHelper.ToRadians(i+ rand);
+					Main.projectile[proj2].ai[1] = projectile.whoAmI;
+					Main.projectile[proj2].netUpdate = true;
+				}
+			}
+
 		}
 
 		public override string Texture

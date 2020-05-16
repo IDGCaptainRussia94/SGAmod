@@ -26,43 +26,47 @@ namespace SGAmod.HavocGear.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			bool nearMud = false; //                   8f
-			int y_top_edge = (int)(player.position.Y - 16f) / 16;
-			int y_bottom_edge = (int)(player.position.Y + (float)player.height + 16f) / 16;
-			int x_left_edge = (int)(player.position.X - 16f) / 16;
-			int x_right_edge = (int)(player.position.X + (float)player.width + 16f) / 16;
+			if (!player.GetModPlayer<SGAPlayer>().mudbuff)
+			{
+				player.GetModPlayer<SGAPlayer>().mudbuff = true;
+				bool nearMud = false; //                   8f
+				int y_top_edge = (int)(player.position.Y - 16f) / 16;
+				int y_bottom_edge = (int)(player.position.Y + (float)player.height + 16f) / 16;
+				int x_left_edge = (int)(player.position.X - 16f) / 16;
+				int x_right_edge = (int)(player.position.X + (float)player.width + 16f) / 16;
 
-			for (int x = x_left_edge; x <= x_right_edge; x++)
-			{
-				for (int y = y_top_edge; y <= y_bottom_edge; y++)
+				for (int x = x_left_edge; x <= x_right_edge; x++)
 				{
-					if (Main.tile[x, y].type == TileID.Mud || Main.tile[x, y].type == TileID.JungleGrass || Main.tile[x, y].type == TileID.MushroomGrass)
+					for (int y = y_top_edge; y <= y_bottom_edge; y++)
 					{
-						nearMud = true;
-						break;
+						if (Main.tile[x, y].type == TileID.Mud || Main.tile[x, y].type == TileID.JungleGrass || Main.tile[x, y].type == TileID.MushroomGrass)
+						{
+							nearMud = true;
+							break;
+						}
 					}
+					if (nearMud) break;
 				}
-				if (nearMud) break;
+
+				if (nearMud)
+				{
+					player.lifeRegen += 10;
+					player.meleeDamage *= 1.2f;
+					player.thrownDamage *= 1.3f;
+					player.rangedDamage *= 1.2f;
+					player.magicDamage *= 1.3f;
+					player.meleeSpeed *= 1.2f;
+					player.minionDamage *= 1.1f;
+					player.thrownCrit += 2;
+					player.magicCrit += 4;
+					player.meleeCrit += 2;
+					player.rangedCrit += 2;
+				}
+				else
+				{
+					//item.lifeRegen = 0;
+				}
 			}
-			
-			if (nearMud)
-			{
-				player.lifeRegen += 10;
-				player.meleeDamage *= 1.2f;
-				player.thrownDamage *= 1.3f;
-				player.rangedDamage *= 1.2f;
-				player.magicDamage *= 1.3f;
-				player.meleeSpeed *= 1.2f; 
-				player.minionDamage *= 1.1f;
-                player.thrownCrit += 2;
-                player.magicCrit += 4;
-                player.meleeCrit += 2;
-                player.rangedCrit += 2;
-            }
-            else
-            {
-                //item.lifeRegen = 0;
-            }
 		}
 	}
 }

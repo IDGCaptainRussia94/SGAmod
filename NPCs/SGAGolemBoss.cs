@@ -101,11 +101,63 @@ namespace SGAmod.NPCs
 		minlife+=1;
 		}
 
-		if (phase==1 && npc.ai[0]%300==0){
-		List<Projectile> itz=Idglib.Shattershots(myowner.Center,P.position,new Vector2(P.width,P.height),ProjectileID.CultistBossFireBall,40,8,30,2,true,0,false,220);
+					Vector2 angledif = P.Center - myowner.Center; angledif.Normalize();
+					float angle = npc.velocity.ToRotation().AngleLerp(angledif.ToRotation(),(0.50f-((float)myowner.life/ (float)myowner.lifeMax)*0.25f)*0.25f);
+					if (npc.ai[0] % 900 > 600 && npc.ai[0] % 900 < 800)
+					{
+						for (int a = 0; a < 2000; a+=Main.rand.Next(36,64))
+						{
+							Vector2 there = npc.velocity * a;
+							int num622 = Dust.NewDust(new Vector2(myowner.Center.X, myowner.Center.Y) + there, 0, 0, 6, 0f,0f, 100, default(Color), 1f);
+
+						}
+					}
+
+					if (npc.ai[0] % 900 > 800)
+					{
+						if (npc.ai[0] % 20 == 0)
+							Idglib.Shattershots(myowner.Center, myowner.Center + npc.velocity, Vector2.Zero, ProjectileID.CultistBossFireBall, 40, 12, 90, 1, true, 0, false, 220);
+						if (npc.ai[0] % 3 == 0)
+						{
+							for (int i = 0; i < 1000; i += 400)
+							{
+								List<Projectile> itz = Idglib.Shattershots(myowner.Center + (npc.velocity * i), myowner.Center + (npc.velocity*i) + npc.velocity, Vector2.Zero, ProjectileID.FlamesTrap, 40, 12, 90, 1, true, 0, false, 220);
+								itz[0].friendly = false;
+								itz[0].hostile = true;
+							}
+
+						}
+					}
+					else
+					{
+						npc.velocity = angle.ToRotationVector2();
+					}
+
+					if (phase==1 && npc.ai[0]%300==0){
+		List<Projectile> itz=Idglib.Shattershots(myowner.Center,P.position,new Vector2(P.width,P.height),ProjectileID.CultistBossFireBall,40,8,140,2,true,0,false,220);
 		//itz[0].aiStyle=5;
 		}
-		if (phase>0 && npc.ai[0]%350==0){
+
+					if (phase > 0 && npc.ai[0] % 900 >700)
+					{
+						bool cond = npc.ai[0] % 900 == 899;
+						for (int a = 0; a < 20+ (cond ? 60 : 0); a++)
+						{
+							Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+							Vector2 vecr = randomcircle * 240;
+							vecr *= (1f - (900f / (npc.ai[0] % 900)));
+
+							randomcircle *= (cond ? Main.rand.NextFloat(3f,10f) : 1f);
+							int num622 = Dust.NewDust(new Vector2(myowner.Center.X, myowner.Center.Y) + vecr, 0, 0, 6, randomcircle.X, randomcircle.Y, 100, default(Color), 0.5f+ (((npc.ai[0]-400f) % 900)/300f));
+							Main.dust[num622].velocity = randomcircle;
+							Main.dust[num622].noGravity = true;
+						}
+						if (cond)
+						Main.PlaySound(SoundID.Item, (int)myowner.Center.X, (int)myowner.Center.Y, 74, 1f, 0f);
+					}
+
+
+					if (phase>0 && npc.ai[0]%900==0){
 		for (int i = 0; i < 3; i++)
 		{
 		List<Projectile> itz=Idglib.Shattershots(myowner.Center,myowner.Center,new Vector2(0,0),mod.ProjectileType("Ringproj"),60,14,0,1,true,Main.rand.Next(-360,360),false,420);

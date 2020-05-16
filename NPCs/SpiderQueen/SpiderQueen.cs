@@ -36,19 +36,23 @@ namespace SGAmod.NPCs.SpiderQueen
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			npc.value = 50000f;
+			npc.value = 25000f;
+			bossBag = mod.ItemType("SpiderBag");
 		}
 
 		public override void NPCLoot()
 		{
 			SGAWorld.downedSpiderQueen = true;
 			Achivements.SGAAchivements.UnlockAchivement("Spider Queen", Main.LocalPlayer);
-			for (int i = 0; i <= Main.rand.Next(25,45)*(Main.expertMode ? 2 : 1); i++){
+			if (Main.expertMode)
+			{
+				npc.DropBossBags();
+				return;
+			}
+			for (int i = 0; i <= Main.rand.Next(25, 45); i++) {
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VialofAcid"));
-				}
-				if (Main.expertMode)
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CorrodedShield"));
-				if (Main.rand.Next(0,3)==0)
+			}
+			if (Main.rand.Next(0, 3) == 0)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AmberGlowSkull"));
 
 		}
@@ -98,14 +102,14 @@ namespace SGAmod.NPCs.SpiderQueen
 			}
 			set
 			{
-				npc.ai[1]=(int)value;
+				npc.ai[1] = (int)value;
 
 			}
 		}
 
 		public void DoPhase(int phasetype)
 		{
-		if (phasetype >  0)
+			if (phasetype > 0)
 			{
 				if (phase == 1)
 				{
@@ -125,7 +129,7 @@ namespace SGAmod.NPCs.SpiderQueen
 
 
 				//Phase 2-Charging
-				if (npc.ai[0]>1999 && npc.ai[0] < 3000)
+				if (npc.ai[0] > 1999 && npc.ai[0] < 3000)
 				{
 
 					if (npc.ai[0] > 2998)
@@ -145,22 +149,23 @@ namespace SGAmod.NPCs.SpiderQueen
 					}
 					if (npc.ai[0] % 210 > 100 && npc.ai[0] % 210 < 200)
 					{
-						if (npc.ai[0] %210 == 105)
-						Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, 0.25f);
-						npc.velocity += npc.rotation.ToRotationVector2()*2f;
+						charge = true;
+						if (npc.ai[0] % 210 == 105)
+							Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, 0.25f);
+						npc.velocity += npc.rotation.ToRotationVector2() * 2f;
 
-						if ((npc.ai[0] % (Main.expertMode ? 15 : 20)) == 0 && phase>1)
+						if ((npc.ai[0] % (Main.expertMode ? 15 : 20)) == 0 && phase > 1)
 						{
-							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation+MathHelper.ToRadians(90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
-							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation+MathHelper.ToRadians(-90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation + MathHelper.ToRadians(90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation + MathHelper.ToRadians(-90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 						}
 
-						if (npc.velocity.Length() > 96f) 
-							{
+						if (npc.velocity.Length() > 96f)
+						{
 							npc.velocity.Normalize();
 							npc.velocity *= 96f;
-							}
+						}
 
 
 
@@ -173,10 +178,10 @@ namespace SGAmod.NPCs.SpiderQueen
 
 			//Spinning Trap Webs
 			if (npc.ai[0] > 2999 && npc.ai[0] < 4000) {
-				if (npc.ai[0]== 3005)
-				Main.PlaySound(3, (int)npc.Center.X, (int)npc.Center.Y, 56, 0.25f, -0.25f);
+				if (npc.ai[0] == 3005)
+					Main.PlaySound(3, (int)npc.Center.X, (int)npc.Center.Y, 56, 0.25f, -0.25f);
 
-				if (npc.ai[0] > 3100 && npc.ai[0]<3300)
+				if (npc.ai[0] > 3100 && npc.ai[0] < 3300)
 				{
 
 					float angle1; float angle2;
@@ -184,26 +189,26 @@ namespace SGAmod.NPCs.SpiderQueen
 					float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
 					rotSpeed *= 1f + ((float)(angle2 - angle1) * 0.2f);
 
-						npc.rotation += rotSpeed;
-						if (npc.ai[0] % 10 == 0)
-						{
-							int type = mod.ProjectileType("TrapWeb");
-							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35, 1, true, 0, true, 1600);
-							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
-						}
-
-						if (npc.ai[0] % 150 == 31)
-						{
-							npc.localAI[1] = P.Center.X;
-							npc.localAI[2] = P.Center.Y;
-						}
-
-
+					npc.rotation += rotSpeed;
+					if (npc.ai[0] % 10 == 0)
+					{
+						int type = mod.ProjectileType("TrapWeb");
+						Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35, 1, true, 0, true, 1600);
+						Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 					}
+
+					if (npc.ai[0] % 150 == 31)
+					{
+						npc.localAI[1] = P.Center.X;
+						npc.localAI[2] = P.Center.Y;
+					}
+
+
+				}
 
 				if (npc.ai[0] > 3350)
 				{
-					npc.ai[0] = Main.rand.Next(2400,2700);
+					npc.ai[0] = Main.rand.Next(2400, 2700);
 					npc.netUpdate = true;
 				}
 
@@ -214,15 +219,15 @@ namespace SGAmod.NPCs.SpiderQueen
 			//Wounded
 			if (npc.ai[0] > 9999)
 			{
-			npc.velocity /= 1.25f;
-			if (npc.ai[0]==10001)
-			Main.PlaySound(3, (int)npc.Center.X, (int)npc.Center.Y, 51, 1f, 0.25f);
-			npc.rotation += Main.rand.NextFloat(1f, -1f) * 0.08f;
+				npc.velocity /= 1.25f;
+				if (npc.ai[0] == 10001)
+					Main.PlaySound(3, (int)npc.Center.X, (int)npc.Center.Y, 51, 1f, 0.25f);
+				npc.rotation += Main.rand.NextFloat(1f, -1f) * 0.08f;
 
 
 				if (npc.ai[0] > 10100)
 				{
-				if (phase == 1)
+					if (phase == 1)
 					{
 						npc.ai[0] = 2000;
 					}
@@ -242,10 +247,15 @@ namespace SGAmod.NPCs.SpiderQueen
 		}
 
 		public Player P;
+		int legdists = 100;
+		bool charge = false;
 
 		public override void AI()
 		{
-			npc.direction=npc.velocity.X>0 ? -1 : 1;
+			LegsMethod();
+			charge = false;
+			legdists = 128;
+			npc.direction = npc.velocity.X > 0 ? -1 : 1;
 			P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
@@ -262,7 +272,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			else
 			{
 				if (SGAWorld.NightmareHardcore > 0)
-				phase = 2;
+					phase = 2;
 				npc.dontTakeDamage = false;
 				bool sighttoplayer = (Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 6, 6, new Vector2(P.Center.X, P.Center.Y), 6, 6));
 				bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
@@ -271,14 +281,14 @@ namespace SGAmod.NPCs.SpiderQueen
 					npc.dontTakeDamage = true;
 				}
 				npc.ai[3] -= 1;
-				if (npc.ai[3]<1)
-				npc.ai[0] += 1;
+				if (npc.ai[3] < 1)
+					npc.ai[0] += 1;
 
 				Vector2 playerangledif = P.Center - npc.Center;
 				float playerdist = playerangledif.Length();
 				float maxspeed = 3f;
 				if (Main.expertMode && !sighttoplayer)
-				maxspeed += 3f;
+					maxspeed += 3f;
 
 				float maxrotate = 0.05f;
 				playerangledif.Normalize();
@@ -301,7 +311,7 @@ namespace SGAmod.NPCs.SpiderQueen
 						if (npc.ai[0] == 10)
 						{
 							if (phase > 0)
-							npc.ai[0] = Main.rand.Next(50, 400);
+								npc.ai[0] = Main.rand.Next(50, 400);
 							npc.netUpdate = true;
 						}
 
@@ -323,6 +333,7 @@ namespace SGAmod.NPCs.SpiderQueen
 					}
 					else
 					{
+						//Acid Spin Attack
 						if (npc.ai[0] % 1200 == 601) {
 							npc.ai[0] += 1;
 							npc.ai[3] = 60;
@@ -330,14 +341,16 @@ namespace SGAmod.NPCs.SpiderQueen
 						}
 						if (npc.ai[0] % 1200 > 602) {
 							float angle1; float angle2;
-						GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
-						float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
-						rotSpeed *= 1f + ((float)(angle2 - angle1) * 0.2f);
+							GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
+							float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
+							rotSpeed *= 1f + ((float)(angle2 - angle1) * 0.2f);
+
+							legdists = 72;
 
 							if (npc.ai[0] % 150 < 60)
 							{
 								npc.rotation += rotSpeed;
-								if (npc.ai[0] % (Main.expertMode ? 5 : 10) == 0 && npc.ai[3]<1)
+								if (npc.ai[0] % (Main.expertMode ? 5 : 10) == 0 && npc.ai[3] < 1)
 								{
 									int type = mod.ProjectileType("SpiderVenom");
 									Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35 + (phase * 15), 1 + phase, true, 0, true, 1600);
@@ -384,43 +397,179 @@ namespace SGAmod.NPCs.SpiderQueen
 
 				}
 
-
-
-
-
-
-
-
-				//SgaLib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),118,npc.lifeMax>2000 ? 25 : 40,(float)Main.rand.Next(60,80)/6,35,2,true,0,true,100);
 			}
 
 
 		}
 
-    		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		List<SpiderLeg> legs;
+
+		public void LegsMethod()
+		{
+			if (legs == null)
+			{
+				legs = new List<SpiderLeg>();
+				Vector2[] legbody = { new Vector2(-10, -12), new Vector2(0, -12), new Vector2(10, -12), new Vector2(20, -8) };
+				Vector2[] legbodyExtended = { new Vector2(-12, -64), new Vector2(32, -84), new Vector2(72, -84), new Vector2(100, -80) };
+
+				for (int xx = -1; xx < 2; xx += 2)
+				{
+					for (int i = 0; i < legbodyExtended.Length; i += 1)
+					{
+						legs.Add(new SpiderLeg(new Vector2(legbodyExtended[i].X, legbodyExtended[i].Y*xx), new Vector2(legbody[i].X, legbody[i].Y * xx),xx));
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < legs.Count; i += 1)
+				{
+					legs[i].legUpdate(npc.Center, npc.rotation, legdists,npc.velocity, charge);
+				}
+			}
+
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
 			Texture2D texBody = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderQueen");
-			Texture2D texLegs = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderQueenLegs");
-			SpriteEffects effects = SpriteEffects.FlipHorizontally;
+			Texture2D texBodyGlow = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderQueen");
+			Texture2D texSkull = ModContent.GetTexture("SGAmod/Items/Accessories/AmberGlowSkull");
+			Texture2D texBodyOverlay = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderQueenOverlay");
 			Vector2 drawOriginBody = new Vector2(texBody.Width, texBody.Height / 2);
-			Vector2 drawOriginLegs = new Vector2(texLegs.Width, texLegs.Height / 2) / 3f;
-			Vector2 drawPos = ((npc.Center - Main.screenPosition)) + ((npc.rotation+MathHelper.ToRadians(90)).ToRotationVector2() * 8f)+npc.rotation.ToRotationVector2() * -16f;
-			Vector2 drawPosHead = ((npc.Center - Main.screenPosition)) + npc.rotation.ToRotationVector2()*38f;
-			Color color = lightColor;//npc.GetAlpha(lightColor) * 1f;
-			int timing = (int)(npc.localAI[0] / 10f);
-			timing %= 3;
-			timing *= ((texLegs.Height) / 3);
+			Vector2 drawPos = ((npc.Center - Main.screenPosition)) + npc.rotation.ToRotationVector2() * -46f;
+			//((npc.rotation + MathHelper.ToRadians(90)).ToRotationVector2() * 0f)
+			Vector2 drawPosHead = ((npc.Center - Main.screenPosition)) + npc.rotation.ToRotationVector2() * 38f;
+			Color color = lightColor;
 
 
+			if (legs != null)
+			{
+				for (int i = 0; i < legs.Count; i += 1)
+				{
+					legs[i].Draw(npc.Center, npc.rotation,false, npc.velocity, spriteBatch);
+				}
+			}
 
-			spriteBatch.Draw(texLegs, drawPos, new Rectangle(0, timing, texLegs.Width, (texLegs.Height - 1) / 3), color, npc.rotation, drawOriginLegs, npc.scale,SpriteEffects.None, 0f);
+			Vector2 floatypos = new Vector2((float)Math.Cos(Main.GlobalTime / 1f) * 6f, (float)Math.Sin(Main.GlobalTime / 1.37f) * 3f);
 			spriteBatch.Draw(texBody, drawPosHead, null, color, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texBodyGlow, drawPosHead, null, Color.White, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texSkull, drawPos+ floatypos.RotatedBy(npc.rotation), null, Color.White*0.75f, npc.rotation+MathHelper.ToRadians((float)npc.whoAmI*37.53f), new Vector2(texSkull.Width / 2f, texSkull.Height / 2f), npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texBodyOverlay, drawPosHead, null, color, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
 
 			return false;
 		}
 
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			if (npc.life < 1)
+			{
+				for (int i = 0; i < 6; i += 1) {
+					Gore.NewGore(npc.Center, npc.velocity+new Vector2(Main.rand.NextFloat(-2,2), Main.rand.NextFloat(-2, 2)), mod.GetGoreSlot("Gores/SpiderBody"));
+				}
+				for (int i = 0; i < 2; i += 1)
+				{
+					Gore.NewGore(npc.Center+(npc.rotation.ToRotationVector2()*24f), npc.velocity + new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-2, 2)), mod.GetGoreSlot("Gores/SpiderManible"));
+				}
+				for (int i = 0; i < 80; i++)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-58, -14), Main.rand.Next(-10, 14)).RotatedBy(npc.rotation);
+					int dust = Dust.NewDust(npc.Center+new Vector2(randomcircle.X, randomcircle.Y), 0,0, mod.DustType("AcidDust"));
+					Main.dust[dust].scale = 2f;
+					Main.dust[dust].noGravity = false;
+					Main.dust[dust].velocity = -npc.velocity * (float)(Main.rand.Next(20, 120) * 0.01f)+(Main.rand.NextFloat(0,360).ToRotationVector2()*Main.rand.NextFloat(1f,6f));
+				}
+				if (legs != null)
+				{
+					for (int i = 0; i < legs.Count; i += 1)
+					{
+						legs[i].Draw(npc.Center, npc.rotation, true,npc.velocity);
+					}
+				}
+			}
 
+	}
+
+	public class SpiderLeg
+	{
+		Vector2 LegPos;
+		Vector2 PreviousLegPos;
+		Vector2 CurrentLegPos;
+		float lerpvalue = 1;
+		float maxdistance;
+		Vector2 desirsedLegPos;
+		Vector2 BodyLoc;
+		int side;
+		public SpiderLeg(Vector2 Startleg, Vector2 BodyLoc,int side)
+		{
+			LegPos = Startleg;
+			PreviousLegPos = Startleg;
+			CurrentLegPos = Startleg;
+			desirsedLegPos = Startleg;
+			this.BodyLoc = BodyLoc;
+			this.side = side;
+		}
+
+		public void legUpdate(Vector2 SpiderLoc, float SpiderAngle, float maxdistance,Vector2 SpiderVel,bool charge)
+		{
+			bool spin = maxdistance < 94;
+			this.maxdistance = maxdistance;
+			float dev = charge ? 2f : 5f;
+			float forward = Math.Abs((SpiderVel.Length() - 4f) * 8f)* (desirsedLegPos.X>-0 ? desirsedLegPos.X/100f : 1f);
+			if (spin)
+				forward -= (125f-desirsedLegPos.X);
+			Vector2 leghere = SpiderLoc+(new Vector2(forward,0f) + desirsedLegPos).RotatedBy(SpiderAngle);
+			lerpvalue += (1f - lerpvalue) / dev;
+			LegPos = Vector2.Lerp(PreviousLegPos, CurrentLegPos, lerpvalue);
+
+			if ((LegPos - leghere).Length() > (maxdistance+((dev-4f)*16f))+ (charge ? 74 : 0))
+			{
+				PreviousLegPos = LegPos;
+				CurrentLegPos = leghere+new Vector2(Main.rand.Next(-24,24), Main.rand.Next(-24, 24));
+				lerpvalue = 0f;
+			}
+
+		}
+
+			public void Draw(Vector2 SpiderLoc, float SpiderAngle, bool gibs, Vector2 velo, SpriteBatch spriteBatch = null)
+			{
+				Texture2D texLeg1 = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderLeg");
+				Texture2D texLeg2 = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderClaw");
+
+				Vector2 start = SpiderLoc + BodyLoc.RotatedBy(SpiderAngle);
+
+				Vector2 middle = LegPos - start;
+
+				float angleleg1 = (LegPos - start).ToRotation() + (MathHelper.ToRadians(MathHelper.Clamp(90f - middle.Length() / 1.6f, 15f, 90f)) * side);
+
+				Vector2 legdist = angleleg1.ToRotationVector2();
+				legdist.Normalize();
+				Vector2 halfway1 = legdist;
+				legdist *= texLeg1.Width - 8;
+
+				Vector2 leg2 = (SpiderLoc + BodyLoc.RotatedBy(SpiderAngle)) + legdist;
+
+				float angleleg2 = (LegPos - leg2).ToRotation();
+
+				halfway1 *= texLeg1.Width / 2;
+				Vector2 halfway2 = leg2 + (angleleg2.ToRotationVector2() * texLeg2.Width / 2);
+				if (!gibs)
+				{
+					Color lighting = Lighting.GetColor((int)((start.X + halfway1.X) / 16f), (int)((start.Y + halfway1.Y) / 16f));
+					spriteBatch.Draw(texLeg1, start - Main.screenPosition, null, lighting, angleleg1, new Vector2(4, texLeg1.Height / 2f), 1f, angleleg1.ToRotationVector2().X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
+					lighting = Lighting.GetColor((int)(halfway2.X / 16f), (int)(halfway2.Y / 16f));
+					spriteBatch.Draw(texLeg2, leg2 - Main.screenPosition, null, lighting, angleleg2, new Vector2(4, texLeg2.Height / 2f), 1f, angleleg2.ToRotationVector2().X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
+					spriteBatch.Draw(ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderClaw_Glow"), leg2 - Main.screenPosition, null, Color.White, angleleg2, new Vector2(4, texLeg2.Height / 2f), 1f, angleleg2.ToRotationVector2().X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
+				}
+				else
+				{
+					Gore.NewGore(halfway1,velo+new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-2, 2)), SGAmod.Instance.GetGoreSlot("Gores/SpiderLeg1"));
+					Gore.NewGore(halfway2, velo + new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-2, 2)), SGAmod.Instance.GetGoreSlot("Gores/SpiderLeg2"));
+				}
+			}
+		}
 
 	}
 

@@ -281,7 +281,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			{
 				//(Main.npc[num172].CanBeChasedBy(projectile, false)
 				if (Main.npc[num172].active && !Main.npc[num172].friendly)
-				if (!Main.npc[num172].dontTakeDamage && (Main.npc[num172].townNPC == false))
+				if (!Main.npc[num172].dontTakeDamage && !Main.npc[num172].townNPC && Main.npc[num172].CanBeChasedBy())
 				starter.Add(num172);
 
 

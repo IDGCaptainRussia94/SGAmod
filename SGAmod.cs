@@ -230,6 +230,13 @@ namespace SGAmod
 			SGAmod.UsesClips = null;
 			SGAmod.UsesPlasma = null;
 			SGAmod.ScrapCustomCurrencySystem = null;
+			if (!Main.dedServ)
+			{
+				if (SGAmod.ParadoxMirrorTex != null)
+					SGAmod.ParadoxMirrorTex.Dispose();
+				if (SGAmod.hellionLaserTex != null)
+					SGAmod.hellionLaserTex.Dispose();
+			}
 			NightmareUnlocked = false;
 			Instance = null;
 			Calamity = false;
@@ -398,7 +405,7 @@ namespace SGAmod
 				bossList.Call("AddBossWithInfo", "Sharkvern", 9.5f, (Func<bool>)(() => SGAWorld.downedSharkvern), string.Format("Use a [i:{0}] at the ocean", ItemType("ConchHorn")));
 				bossList.Call("AddBossWithInfo", "Cratrosity", 10.5f, (Func<bool>)(() => SGAWorld.downedCratrosity), string.Format("Use any key that is not a [i:{1}] with a [i:{0}] at night, get a [i:{2}] from the merchant to allow enemies to drop [i:{0}], you can use different keys to get a customized boss", ItemType("TerrariacoCrateBase"), ItemType("TerrariacoCrateKey"), ItemType("PremiumUpgrade")));
 				bossList.Call("AddBossWithInfo", "Twin Prime Destroyers", 11.25f, (Func<bool>)(() => SGAWorld.downedTPD), string.Format("Use a [i:{0}] anywhere at night", ItemType("Mechacluskerf")));
-				bossList.Call("AddBossWithInfo", "Doom Harbinger", 11.33, (Func<bool>)(() => SGAWorld.downedHarbinger), string.Format("Can spawn randomly at the start of night after golem is beaten, the DD2 event is finished on tier 3, and the Martians are beaten, defeating him will allow the cultists to spawn (Single Player Only)", ItemType("Prettygel")));
+				bossList.Call("AddBossWithInfo", "Doom Harbinger", 11.85, (Func<bool>)(() => SGAWorld.downedHarbinger), string.Format("Can spawn randomly at the start of night after golem is beaten, the DD2 event is finished on tier 3, and the Martians are beaten, defeating him will allow the cultists to spawn (Single Player Only)", ItemType("Prettygel")));
 				bossList.Call("AddBossWithInfo", "Luminite Wraith", 12.5f, (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), string.Format("Use a [i:{0}], defeat this boss to get the Ancient Manipulator", ItemType("WraithCoreFragment3")));
 				bossList.Call("AddBossWithInfo", "Luminite Wraith (Rematch)", 14.8f, (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), string.Format("Use a [i:{0}] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", ItemType("WraithCoreFragment3")));
 				bossList.Call("AddBossWithInfo", "Cratrogeddon", 15f, (Func<bool>)(() => SGAWorld.downedCratrosityPML), string.Format("Use a [i:{1}] with a [i:{0}] at night", ItemType("SalvagedCrate"), ItemID.TempleKey));
@@ -636,8 +643,13 @@ namespace SGAmod
 				Logger.Debug("DEBUG server: Craft Warning");
 				SGAWorld.CraftWarning();
 				return;
+			}
 
-
+			if (atype == (int)996)
+			{
+				Logger.Debug("DEBUG client: Caliburn points");
+				SGAWorld.downedCaliburnGuardiansPoints = reader.ReadInt32();
+				return;
 			}
 
 			if (atype == 250) {
@@ -766,9 +778,113 @@ namespace SGAmod
 		{
 			return player.GetModPlayer<SGAPlayer>();
 		}
+		public static bool NoInvasion(NPCSpawnInfo spawnInfo)
+		{
+			return !spawnInfo.invasion && ((!Main.pumpkinMoon && !Main.snowMoon) || spawnInfo.spawnTileY > Main.worldSurface || Main.dayTime) && (!Main.eclipse || spawnInfo.spawnTileY > Main.worldSurface || !Main.dayTime);
+		}
 
+		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
+		{
+			float pPosX = start.X;
+			float pPosY = start.Y;
 
-	}
+			Vector2 value = new Vector2(pPosX, pPosY);
+			float projPosX = end.X - value.X;
+			float projPosY = end.Y - value.Y;
+			Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
+			float rotation2 = (float)Math.Atan2((double)projPosY, (double)projPosX) - 1.57f;
+			bool flag2 = true;
+			if (projPosX == 0f && projPosY == 0f)
+			{
+				flag2 = false;
+			}
+			else
+			{
+				float projPosXY = (float)Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
+				projPosXY = 12f / projPosXY;
+				projPosX *= projPosXY;
+				projPosY *= projPosXY;
+				value.X -= projPosX;
+				value.Y -= projPosY;
+				projPosX = end.X - value.X;
+				projPosY = end.Y - value.Y;
+			}
+			while (flag2)
+			{
+				float num = 12f;
+				float num2 = (float)Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
+				float num3 = num2;
+				if (float.IsNaN(num2) || float.IsNaN(num3))
+				{
+					flag2 = false;
+				}
+				else
+				{
+					if (num2 < 20f)
+					{
+						num = num2 - 8f;
+						flag2 = false;
+					}
+					num2 = 12f / num2;
+					projPosX *= num2;
+					projPosY *= num2;
+					value.X += projPosX;
+					value.Y += projPosY;
+					projPosX = end.X - value.X;
+					projPosY = end.Y - value.Y;
+					if (num3 > 12f)
+					{
+						float num4 = 0.3f;
+						float num5 = Math.Abs(Velocity.X) + Math.Abs(Velocity.Y);
+						if (num5 > 16f)
+						{
+							num5 = 16f;
+						}
+						num5 = 1f - num5 / 16f;
+						num4 *= num5;
+						num5 = num3 / 80f;
+						if (num5 > 1f)
+						{
+							num5 = 1f;
+						}
+						num4 *= num5;
+						if (num4 < 0f)
+						{
+							num4 = 0f;
+						}
+						num5 = 1f - reel / 100f;
+						num4 *= num5;
+						if (projPosY > 0f)
+						{
+							projPosY *= 1f + num4;
+							projPosX *= 1f - num4;
+						}
+						else
+						{
+							num5 = Math.Abs(Velocity.X) / 3f;
+							if (num5 > 1f)
+							{
+								num5 = 1f;
+							}
+							num5 -= 0.5f;
+							num4 *= num5;
+							if (num4 > 0f)
+							{
+								num4 *= 2f;
+							}
+							projPosY *= 1f + num4;
+							projPosX *= 1f - num4;
+						}
+					}
+					rotation2 = (float)Math.Atan2((double)projPosY, (double)projPosX) - 1.57f;
+					Microsoft.Xna.Framework.Color color2 = Lighting.GetColor((int)value.X / 16, (int)(value.Y / 16f), Color.AliceBlue);
+
+					Main.spriteBatch.Draw(Main.fishingLineTexture, new Vector2(value.X - Main.screenPosition.X + (float)Main.fishingLineTexture.Width * 0.5f, value.Y - Main.screenPosition.Y + (float)Main.fishingLineTexture.Height * 0.5f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, Main.fishingLineTexture.Width, (int)num)), color2, rotation2, new Vector2((float)Main.fishingLineTexture.Width * 0.5f, 0f), 1f, SpriteEffects.None, 0f);
+				}
+			}
+		}
+
+}
 
 	public class RippleBoom : ModProjectile
 	{
@@ -914,12 +1030,15 @@ namespace SGAmod.Achivements
 
 		public static void UnlockAchivement(string achive,Player who2)
 		{
-			SGAAchivements.SGAchivement = ModLoader.GetMod("SGAmodAchivements");
-			if (SGAAchivements.SGAchivement != null)
+			if (who2 != null)
 			{
-				SGAAchivements.who = who2;
-				UnlockAchivement2 = achive;
-				SGAAchivements.who = null;
+				SGAAchivements.SGAchivement = ModLoader.GetMod("SGAmodAchivements");
+				if (SGAAchivements.SGAchivement != null)
+				{
+					SGAAchivements.who = who2;
+					UnlockAchivement2 = achive;
+					SGAAchivements.who = null;
+				}
 			}
 		}
 

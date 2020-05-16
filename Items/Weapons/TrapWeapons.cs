@@ -957,7 +957,7 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Jindosh Buckler");
 			Tooltip.SetDefault("'Inventive, yet strikingly crude and cruel'\nTrap Damage ignores 50% of enemy defense\nTrap damage may inflict Massive Bleeding\n10% of extra trap damage is dealt directly to your enemy's life\nThis ignores defense and damage reduction\n" +
-				"Trap Damage increased by 10%\nYou reflect 2 times the damage you take back to melee attackers");
+				"Trap Damage increased by 10%\nYou reflect 2 times the damage you take back to melee attackers (Corruption Worlds)\n+20 Max HP and hearts give +5 Health (Crimson Worlds)");
 		}
 
 		public override void SetDefaults()
@@ -973,6 +973,9 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().JaggedWoodenSpike = true;
+			if (WorldGen.crimson || GetType()!=typeof(JindoshBuckler))
+			mod.GetItem("HeartGuard").UpdateAccessory(player, hideVisual);
+			if (!WorldGen.crimson || GetType() != typeof(JindoshBuckler))
 			mod.GetItem("JuryRiggedSpikeBuckler").UpdateAccessory(player, hideVisual);
 			mod.GetItem("GoldenCog").UpdateAccessory(player, hideVisual);
 		}
@@ -984,6 +987,16 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 4);
 			recipe.AddIngredient(mod.ItemType("GoldenCog"), 1);
 			recipe.AddIngredient(mod.ItemType("JuryRiggedSpikeBuckler"), 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SilkRopeCoil, 2);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 5);
+			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 4);
+			recipe.AddIngredient(mod.ItemType("GoldenCog"), 1);
+			recipe.AddIngredient(mod.ItemType("HeartGuard"), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1050,6 +1063,43 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.Cog, 100);
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 5);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class HeartGuard : TrapWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Heart Guard");
+			Tooltip.SetDefault("Trap Damage increased by 10%\n+20 Max HP and hearts give +5 Health");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.rare = 4;
+			item.defense = 5;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.GetModPlayer<SGAPlayer>().HeartGuard = true;
+			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
+			player.statLifeMax2 += 20;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LifeCrystal, 1);
+			recipe.AddIngredient(ItemID.CrimsonHeart, 1);
+			recipe.AddIngredient(ItemID.HeartreachPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

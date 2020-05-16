@@ -23,7 +23,7 @@ namespace SGAmod.Items.Armors.Dev
 		{
 			public override void SetStaticDefaults()
 			{
-				DisplayName.SetDefault("IDGCaptainRussia's Dergon Disguise");
+				DisplayName.SetDefault("IDGCaptainRussia94's Dergon Disguise");
 			}
 			public override void InitEffects()
 			{
@@ -98,7 +98,7 @@ namespace SGAmod.Items.Armors.Dev
 				tooltips=AddText(tooltips);
 				tooltips.Add(new TooltipLine(mod, "IDG", "Great for impersonating a derg who uses code to cover his bad spriting skills"));
 				Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
-				tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia's's dev armor")));
+				tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia94's dev armor")));
 			}
 		public override void UpdateVanity(Player player, EquipType type)
 		{
@@ -119,7 +119,7 @@ namespace SGAmod.Items.Armors.Dev
 		{
 			public override void SetStaticDefaults()
 			{
-				DisplayName.SetDefault("IDGCaptainRussia's Scaled Suit");
+				DisplayName.SetDefault("IDGCaptainRussia94's Scaled Suit");
 			}
 			public override void SetDefaults()
 			{
@@ -141,13 +141,13 @@ namespace SGAmod.Items.Armors.Dev
 				player.maxMinions += 2;
 				player.bulletDamage += 0.10f;
 				player.rocketDamage += 0.20f;
-				player.minionKB += 0.25f;
+				player.minionKB += 0.50f;
 				player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.25f;
 				player.GetModPlayer<SGAPlayer>().techdamage += 0.15f;
 			}
 			public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 			{
-				tooltips.Add(new TooltipLine(mod, "IDG", "25% increased minion knockback, +2 max minions"));
+				tooltips.Add(new TooltipLine(mod, "IDG", "50% increased minion knockback, +2 max minions"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "10% increased bullet damage, 20% increased rocket damage"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "15% increased Tech damage, 25% increased Trap damage"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "Moderately increased Life Regen"));
@@ -178,7 +178,7 @@ namespace SGAmod.Items.Armors.Dev
 		{
 			public override void SetStaticDefaults()
 			{
-				DisplayName.SetDefault("IDGCaptainRussia9s's Dragon Dressings");
+				DisplayName.SetDefault("IDGCaptainRussia94's Dragon Dressings");
 			}
 			public override void SetDefaults()
 			{

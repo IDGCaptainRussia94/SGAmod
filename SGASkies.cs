@@ -33,9 +33,6 @@ namespace SGAmod
 
 			}
 				
-			//if (Hellion.instance != null)
-			//{
-			//Vector2 where = Hellion.instance.npc.Center;
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
 
@@ -53,14 +50,10 @@ namespace SGAmod
 				for (int x = 0; x < width; x++)
 				{
 					float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
-					//if (Main.rand.NextFloat(dist, 32) < 16f)
-					//{
 						float alg = ((-Main.GlobalTime + ((float)(dist) / 0.5f)) / 1f);
 						dataColors[x + y * width] = (Main.hslToRgb(alg % 1f, 0.75f, 0.5f));
-					//}
 				}
 			}
-
 
 			///
 
@@ -228,30 +221,38 @@ namespace SGAmod
 			//GameShaders.Misc["WaterProcessor"].Apply(new DrawData?(new DrawData(this._distortionTarget, Vector2.Zero, Color.White)));
 			//deathShader.UseOpacity(0.5f);
 			//deathShader.Apply(null);
-			if (maxDepth >= 0 && minDepth < 0)
+			//if (maxDepth >= 0 && minDepth < 0)
+			Single[,] singles = { { 3.40282347E+38f, 3.40282347E+38f },{4f,4f } };
+			float[] alphaz = {1f,0.5f };
+			float[] movedir = { 1f, 1f };
+			for (int i = 0; i < 2; i += 1)
 			{
-				Texture2D texa = ModContent.GetTexture("SGAmod/noise");
-
-				int sizechunk = texa.Width;
-				for (int y = 0; y < Main.screenHeight + sizechunk; y += sizechunk)
+				if (maxDepth >= singles[i,0] && minDepth < singles[i,1])
 				{
-					for (int x = -sizechunk*2; x < Main.screenWidth + sizechunk*4; x += sizechunk)
+					Texture2D texa = ModContent.GetTexture("SGAmod/noise");
+
+					int sizechunk = texa.Width;
+					for (int y = 0; y < Main.screenHeight + sizechunk; y += sizechunk)
 					{
-						//thevalue += (y * 0.15) + ((x) / 610);
-						float thecoloralpha = 0.5f + (float)Math.Sin(thevalue) * 0.05f;
+						for (int x = -sizechunk * 2; x < Main.screenWidth + sizechunk * 4; x += sizechunk)
+						{
+							//thevalue += (y * 0.15) + ((x) / 610);
+							float thecoloralpha = 0.5f + (float)Math.Sin(thevalue) * 0.05f;
 
 
-						Main.spriteBatch.End();
-						Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-						ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.ShadowDye); shader.Apply(null);
-						shader = GameShaders.Armor.GetShaderFromItemId(ItemID.MidnightRainbowDye);
-						shader.Apply(null);
-						spriteBatch.Draw(texa, new Rectangle(x-((int)(Main.GlobalTime*30) % sizechunk*3), y, sizechunk, sizechunk), (acolor * 1f) * (thecoloralpha * SGAmod.ProgramSkyAlpha));
-					} }
+							Main.spriteBatch.End();
+							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+							ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.ShadowDye); shader.Apply(null);
+							shader = GameShaders.Armor.GetShaderFromItemId(ItemID.MidnightRainbowDye);
+							shader.Apply(null);
+							spriteBatch.Draw(texa, new Rectangle(x - ((int)(Main.GlobalTime* movedir[i] * 30) % sizechunk * 3), y, sizechunk, sizechunk), (acolor) * (thecoloralpha * SGAmod.ProgramSkyAlpha* alphaz[i]));
+						}
+					}
+				}
 			}
 
 
-			if (maxDepth >= -0 && minDepth < -0)
+			if (maxDepth >= 3.40282347E+38f && minDepth < 3.40282347E+38f)
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);

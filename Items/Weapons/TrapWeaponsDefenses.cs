@@ -78,8 +78,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Non-Stationary Portable Bunny Cannon");
-			Tooltip.SetDefault("A frosty gattling gun in the palm of your... hands" +
-				"\nRapidly fires snowballs from your inventory" + "\nCan only fire in in a forward arc" +
+			Tooltip.SetDefault("Shoots bunnies that deal damage twice against whoever they hit" + "\nRight click to change the firing Arc" +
 	"\nCounts as trap damage, doesn't doesn't crit");
 			SGAmod.NonStationDefenses.Add(SGAmod.Instance.ItemType("NonStationaryBunnyCannonLauncher"), SGAmod.Instance.ProjectileType("NonStationaryBunnyCannonHolding"));
 		}
@@ -130,8 +129,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Non-Stationary Portable Cannon");
-			Tooltip.SetDefault("A frosty gattling gun in the palm of your... hands" +
-				"\nRapidly fires snowballs from your inventory" + "\nCan only fire in in a forward arc" +
+			Tooltip.SetDefault("Shoots Cannonballs that pierce and explode when they hit a tile" + "\nRight click to change the firing Arc" +
 	"\nCounts as trap damage, doesn't doesn't crit");
 			SGAmod.NonStationDefenses.Add(SGAmod.Instance.ItemType("NonStationaryCannonLauncher"), SGAmod.Instance.ProjectileType("NonStationaryCannonHolding"));
 		}

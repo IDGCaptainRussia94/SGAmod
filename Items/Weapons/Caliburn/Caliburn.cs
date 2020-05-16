@@ -26,7 +26,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 80;
 			item.crit = 10;
 			item.melee = true;
 			item.width = 54;
@@ -35,7 +35,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.useAnimation = 16;
 			item.useStyle = 1;
 			item.knockBack = 8;
-			Item.sellPrice(1, 0, 0, 0);
+			item.value=Item.sellPrice(1, 0, 0, 0);
 			item.rare = 7;
 			item.UseSound = SoundID.Item1;
 			item.shoot = mod.ProjectileType("CaliburnHomingSwordTrue");
@@ -113,7 +113,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 				Projectile proj = new Projectile();
 				proj.SetDefaults(ProjectileID.ChlorophyteBullet);
 
-				if (npchim.active && !npchim.friendly && !npchim.dontTakeDamage && npchim.CanBeChasedBy(proj) && (npchim.Center - there).Length() < 400)
+				if (npchim.active && !npchim.friendly && npchim.CanBeChasedBy() && (npchim.Center - there).Length() < 400)
 				{
 					guys.Add(npchim);
 				}
@@ -878,7 +878,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CorrodedShield"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddIngredient(mod.ItemType("SGAmod:CelestialFragments"), 15);
+			recipe.AddRecipeGroup("SGAmod:CelestialFragments", 15);
 			recipe.AddIngredient(ItemID.LunarBar, 5);
 			recipe.AddIngredient(ItemID.RedDye, 1);
 			recipe.AddIngredient(ItemID.SilverDye, 1);
@@ -937,6 +937,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 				{
 					valuez.Add(text2 + " ");
 				}
+				valuez.RemoveAt(1);
 				valuez.Insert(1, "Melee/Throwing ");
 				foreach (string text3 in valuez)
 				{
@@ -1188,7 +1189,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			for (int num1722 = 0; num1722 < Main.maxNPCs; num1722 += 1)
 			{
 				int num172 = num1722;
-				if (Main.npc[num172].active && !Main.npc[num172].friendly && !Main.npc[num172].townNPC && !Main.npc[num172].dontTakeDamage && Main.npc[num172].chaseable && projectile.localNPCImmunity[num1722]<1)
+				if (Main.npc[num172].active && !Main.npc[num172].friendly && !Main.npc[num172].townNPC && Main.npc[num172].CanBeChasedBy() && projectile.localNPCImmunity[num1722]<1)
 				{
 					float num173 = Main.npc[num172].position.X + (float)(Main.npc[num172].width / 2);
 					float num174 = Main.npc[num172].position.Y + (float)(Main.npc[num172].height / 2);

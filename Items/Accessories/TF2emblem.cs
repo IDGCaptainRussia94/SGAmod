@@ -228,7 +228,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elite Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nRestored mana when hit");
+			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nRestored mana when hit and effects of MVM Upgrade");
 		}
 
 		public override void SetDefaults()
@@ -248,18 +248,20 @@ namespace SGAmod.Items.Accessories
 			player.minionDamage += 0.05f;
 			player.thrownDamage += 0.10f;
 			player.thrownVelocity += 0.15f;
-			player.magicCuffs = true;
 			player.statManaMax2 += 20;
 			player.statLifeMax2 += 25;
 			player.manaCost -= 0.025f;
+			player.magicCuffs = true;
 			//mod.GetItem("LifeforceQuintessence").UpdateAccessory(player, hideVisual);
 			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<MVMUpgrade>().UpdateAccessory(player, hideVisual);
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemAssassin"), 1);
+			recipe.AddIngredient(mod.ItemType("MVMUpgrade"), 1);
 			recipe.AddIngredient(ItemID.MagicCuffs, 1);
 			recipe.AddIngredient(ItemID.ManaCrystal, 3);
 			recipe.AddIngredient(ItemID.LifeFruit, 5);

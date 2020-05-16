@@ -50,6 +50,7 @@ namespace SGAmod.NPCs.Hellion
 		}
 		public override bool RematchFirstPhase()
 		{
+			if (Main.netMode>0 || Main.LocalPlayer.name!="giuy")
 			npc.active = false;
 			if (subphase == 0)
 			{

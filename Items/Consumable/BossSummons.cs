@@ -10,11 +10,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.NPCs.Hellion;
+using Terraria.GameContent.Events;
 
 namespace SGAmod.Items.Consumable
 {
 
-	public class WraithCoreFragment3: WraithCoreFragment
+	public class WraithCoreFragment3 : WraithCoreFragment
 	{
 		public override void SetStaticDefaults()
 		{
@@ -27,7 +28,7 @@ namespace SGAmod.Items.Consumable
 			get { return "SGAmod/Items/Consumable/LunarCore"; }
 		}
 
-			public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			base.SetDefaults();
 			item.rare = 8;
@@ -35,24 +36,24 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
-			if (SGAWorld.downedWraiths==3 && !NPC.downedMoonlord)
+			if (SGAWorld.downedWraiths == 3 && !NPC.downedMoonlord)
 			{
-			item.consumable=false;
-			}else{
-			item.consumable=true;
+				item.consumable = false;
+			} else {
+				item.consumable = true;
 			}
 			return base.CanUseItem(player);
 		}
 
 		public override bool UseItem(Player player)
 		{
-			if (item.consumable==false){
+			if (item.consumable == false) {
 				if (player == Main.LocalPlayer)
-					Main.NewText("Our time has not yet come",25, 25, 80);
-			return false;
-			}else{
-			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("LuminiteWraith"));
-			Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
+					Main.NewText("Our time has not yet come", 25, 25, 80);
+				return false;
+			} else {
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("LuminiteWraith"));
+				Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
 			}
 			return true;
 		}
@@ -60,8 +61,8 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:CelestialFragments",4);
-			recipe.AddIngredient(null,"WraithCoreFragment2", 1);
+			recipe.AddRecipeGroup("SGAmod:CelestialFragments", 4);
+			recipe.AddIngredient(null, "WraithCoreFragment2", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -69,7 +70,7 @@ namespace SGAmod.Items.Consumable
 
 	}
 
-	public class WraithCoreFragment2: WraithCoreFragment
+	public class WraithCoreFragment2 : WraithCoreFragment
 	{
 		public override void SetStaticDefaults()
 		{
@@ -82,7 +83,7 @@ namespace SGAmod.Items.Consumable
 			get { return "SGAmod/Items/Consumable/EmpoweredCore"; }
 		}
 
-			public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			base.SetDefaults();
 			item.rare = 5;
@@ -98,16 +99,16 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1HardmodeOre",10);
+			recipe.AddRecipeGroup("SGAmod:Tier1HardmodeOre", 10);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 5);
-			recipe.AddIngredient(null,"WraithCoreFragment", 1);
+			recipe.AddIngredient(null, "WraithCoreFragment", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
 
 	}
-	public class WraithCoreFragment: ModItem
+	public class WraithCoreFragment : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -139,9 +140,9 @@ namespace SGAmod.Items.Consumable
 		{
 			if (!NPC.AnyNPCs(mod.NPCType("CopperWraith")) && !NPC.AnyNPCs(mod.NPCType("CobaltWraith")) && !NPC.AnyNPCs(mod.NPCType("LuminiteWraith")))
 			{
-			return true;
-			}else{
-			return false;
+				return true;
+			} else {
+				return false;
 			}
 		}
 		public override bool UseItem(Player player)
@@ -153,7 +154,7 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1Ore",10);
+			recipe.AddRecipeGroup("SGAmod:Tier1Ore", 10);
 			recipe.AddIngredient(ItemID.FallenStar, 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -161,8 +162,8 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
-		public class ConchHorn : ModItem
-    {
+	public class ConchHorn : ModItem
+	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Conch Horn");
@@ -183,33 +184,33 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.ZoneBeach && !NPC.AnyNPCs(mod.NPCType("SharkvernHead"))){
-			return true;
-			}else{
-				if (player==Main.LocalPlayer)
-			Main.NewText("The couch blows but no waves are shaken by its ring...",100, 100, 250);
-			return false;
+			if (player.ZoneBeach && !NPC.AnyNPCs(mod.NPCType("SharkvernHead"))) {
+				return true;
+			} else {
+				if (player == Main.LocalPlayer)
+					Main.NewText("The couch blows but no waves are shaken by its ring...", 100, 100, 250);
+				return false;
 
 			}
 		}
 
 		public override bool UseItem(Player player)
 		{
-			if (player.ZoneBeach && !NPC.AnyNPCs(mod.NPCType("SharkvernHead"))){
-			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SharkvernHead"));
-			Main.PlaySound(SoundID.Roar, player.position, 0);
-			return true;
+			if (player.ZoneBeach && !NPC.AnyNPCs(mod.NPCType("SharkvernHead"))) {
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SharkvernHead"));
+				Main.PlaySound(SoundID.Roar, player.position, 0);
+				return true;
+			}
+			return false;
 		}
-		return false;
-		}
-		
+
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Seashell, 1);
 			recipe.AddIngredient(ItemID.SharkFin, 1);
-			recipe.AddIngredient(ItemID.SoulofLight,5);
-			recipe.AddIngredient(ItemID.ChlorophyteBar,5);			
+			recipe.AddIngredient(ItemID.SoulofLight, 5);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -248,7 +249,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
-			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0)>0;
+			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 			;
 			if (underground && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
 			{
@@ -264,16 +265,16 @@ namespace SGAmod.Items.Consumable
 		}
 		public override bool UseItem(Player player)
 		{
-		NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SpiderQueen"));
-		Main.PlaySound(SoundID.Roar, player.position, 0);
-		return true;
+			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SpiderQueen"));
+			Main.PlaySound(SoundID.Roar, player.position, 0);
+			return true;
 		}
 
 
 	}
 
 	public class RoilingSludge : ModItem
-    {
+	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Roiling Sludge");
@@ -305,24 +306,24 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.ZoneJungle && !NPC.AnyNPCs(mod.NPCType("Murk")) && !NPC.AnyNPCs(mod.NPCType("BossFlyMiniboss1"))){
-			return true;
-			}else{
+			if (player.ZoneJungle && !NPC.AnyNPCs(mod.NPCType("Murk")) && !NPC.AnyNPCs(mod.NPCType("BossFlyMiniboss1"))) {
+				return true;
+			} else {
 				if (player == Main.LocalPlayer)
-					Main.NewText("There is a lack of mud and sludge for Murk to even exist here...",40, 180, 60);
-			return false;
+					Main.NewText("There is a lack of mud and sludge for Murk to even exist here...", 40, 180, 60);
+				return false;
 
 			}
 		}
 
 		public override bool UseItem(Player player)
 		{
-			if (player.ZoneJungle && !NPC.AnyNPCs(mod.NPCType("Murk")) && !NPC.AnyNPCs(mod.NPCType("BossFlyMiniboss1"))){
-			NPC.SpawnOnPlayer(player.whoAmI,mod.NPCType(SGAWorld.downedMurk==0 ? "BossFlyMiniboss1" : "Murk"));
-			Main.PlaySound(SoundID.Roar, player.position, 0);
-			return true;
-		}
-		return false;
+			if (player.ZoneJungle && !NPC.AnyNPCs(mod.NPCType("Murk")) && !NPC.AnyNPCs(mod.NPCType("BossFlyMiniboss1"))) {
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType(SGAWorld.downedMurk == 0 ? "BossFlyMiniboss1" : "Murk"));
+				Main.PlaySound(SoundID.Roar, player.position, 0);
+				return true;
+			}
+			return false;
 		}
 
 
@@ -354,28 +355,28 @@ namespace SGAmod.Items.Consumable
 		{
 			if (!NPC.AnyNPCs(mod.NPCType("SPinky")) && !NPC.AnyNPCs(50) && !Main.dayTime)
 			{
-			return true;
-			}else{
+				return true;
+			} else {
 				if (player == Main.LocalPlayer)
-					Main.NewText("this gel shimmers only in moonlight...",100, 40, 100);
-			return false;
+					Main.NewText("this gel shimmers only in moonlight...", 100, 40, 100);
+				return false;
 			}
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			if (SGAmod.Calamity)
-			tooltips.Add(new TooltipLine(mod, "NoU", "Summoning this boss with automatically disable Revengence and Death Modes"));
+				tooltips.Add(new TooltipLine(mod, "NoU", "Summoning this boss with automatically disable Revengence and Death Modes"));
 		}
 
 		public override bool UseItem(Player player)
 		{
-		if (item.consumable==true && !Main.dayTime){
+			if (item.consumable == true && !Main.dayTime) {
 				SGAmod.CalamityNoRevengenceNoDeathNoU();
-			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SPinky"));
-			Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
-			//player.GetModPlayer<SGAPlayer>().Locked=new Vector2(player.Center.X-2000,4000);
-}
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("SPinky"));
+				Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
+				//player.GetModPlayer<SGAPlayer>().Locked=new Vector2(player.Center.X-2000,4000);
+			}
 			return true;
 		}
 
@@ -537,6 +538,80 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 	}
+	public class TruelySusEye : ModItem
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Truely Suspicious Looking Eye");
+			Tooltip.SetDefault("Summons the Servents of the lord of the moon...\nOnly useable after Tier 3 DD2 event and Martians are beaten" +
+				"\nUse at Night\nDoesn't work online");
+		}
+		public override bool CanUseItem(Player player)
+	{
+			if ((DD2Event.DownedInvasionT3 && NPC.downedMartians) && !Main.dayTime && Main.netMode<1)
+			{
+				if (NPC.CountNPCS(mod.NPCType("Harbinger"))<1 && NPC.CountNPCS(NPCID.MoonLordFreeEye) < 1)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				Main.NewText("No...", 0, 0, 75);
+				return false;
+			}
+	}
+	public override bool UseItem(Player player)
+	{
+		NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("Harbinger"));
+		//Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
+		return true;
+	}
+
+	public override void AddRecipes()
+	{
+		ModRecipe recipe = new ModRecipe(mod);
+		//recipe.AddIngredient(ItemID.LunarBar, 10);
+		recipe.AddIngredient(ItemID.Ectoplasm, 5);
+		recipe.AddIngredient(ItemID.SuspiciousLookingEye, 1);
+		recipe.AddTile(TileID.CrystalBall);
+		recipe.SetResult(this);
+		recipe.AddRecipe();
+	}
+
+	public override void SetDefaults()
+	{
+		item.rare = 9;
+		item.maxStack = 999;
+		item.consumable = true;
+		item.width = 40;
+		item.height = 40;
+		item.useTime = 30;
+		item.useAnimation = 30;
+		item.useStyle = 4;
+		item.noMelee = true; //so the item's animation doesn't do damage
+		item.value = 0;
+		item.UseSound = SoundID.Item8;
+	}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Aqua;
+
+		}
+
+	public override string Texture
+	{
+		get { return ("Terraria/Item_"+ItemID.SuspiciousLookingEye); }
+	}
+
+
+}
 
 #if DefineHellionUpdate
 	public class HellionSummon : ModItem

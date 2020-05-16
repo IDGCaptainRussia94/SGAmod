@@ -121,7 +121,7 @@ spawned.ai[3]=100001;
 			if (NPC.CountNPCS(mod.NPCType("Cratrogeddon")) > 0)
 			{
 				(spawned.modNPC as Cratrosity).offsetype = new Vector2(-700, 0);
-				spawned.GivenName = "Crates of Light";
+				spawned.GivenName = "Pride";
 			}
 npc.active=false;
 	}
@@ -138,7 +138,7 @@ spawned.ai[3]=-100001;
 			if (NPC.CountNPCS(mod.NPCType("Cratrogeddon")) > 0)
 			{
 				(spawned.modNPC as Cratrosity).offsetype = new Vector2(700, 0);
-				spawned.GivenName = "Crates of Night";
+				spawned.GivenName = "Accomplishment";
 			}
 			npc.active = false;
 		}

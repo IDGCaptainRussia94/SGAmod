@@ -30,6 +30,9 @@ namespace SGAmod
 	public class SGAPlayer : ModPlayer
 	{
 		public int DefenseFrame = 0;
+		public int CustomWings = 0;
+		public int JoyrideShake = 0;
+		public bool twinesoffate = false;
 		public bool Walkmode = false;
 		public bool MVMBoost = false;
 		public int realIFrames = 0;
@@ -93,7 +96,7 @@ namespace SGAmod
 		public int PrismalShots = 0;
 		public int devpower = 0;
 		public float beedamagemul = 1f;
-		public bool JaggedWoodenSpike = false; public bool JuryRiggedSpikeBuckler = false; public bool GoldenCog = false;
+		public bool JaggedWoodenSpike = false; public bool JuryRiggedSpikeBuckler = false; public bool HeartGuard = false; public bool GoldenCog = false;
 		public bool devpowerbool = false; public int Redmanastar = 0;
 		public int MidasIdol = 0; public bool OmegaSigil = false;
 		public bool MurkyDepths = false;
@@ -120,9 +123,10 @@ namespace SGAmod
 		public bool BIP = false;
 		public float summonweaponspeed = 0f;
 		public bool grippinggloves = false;
+		public bool mudbuff = false;
 		public string[] armorglowmasks = new string[4];
 		public int[] devempowerment = { 0, 0, 0, 0 };
-		public Func<Player,int, Color>[] armorglowcolor = {delegate (Player player,int index)
+		public Func<Player, int, Color>[] armorglowcolor = {delegate (Player player,int index)
 		{
 			return Color.White;
 		},
@@ -208,14 +212,14 @@ namespace SGAmod
 				for (int num27 = 0; num27 < Main.maxProjectiles; num27 += 1)
 				{
 					if (Main.projectile[num27].active && Main.projectile[num27].owner == player.whoAmI && Main.projectile[num27].minion && ProjectileID.Sets.MinionSacrificable[num27])
-					ammount += Main.projectile[num27].minionSlots;
+						ammount += Main.projectile[num27].minionSlots;
 				}
 				return ammount;
 			}
 		}
 
 
-		public void StackAttack(ref int damage,Projectile proj)
+		public void StackAttack(ref int damage, Projectile proj)
 		{
 
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
@@ -240,14 +244,14 @@ namespace SGAmod
 						int type = ammo;
 
 
-						for (int i = 0; i < bonusattacks ; i += 1)
+						for (int i = 0; i < bonusattacks; i += 1)
 						{
 							int subtracter = sgaplayer.digiStacks -= damage;
 							if (i > -1)
 							{
 								float angle = MathHelper.ToRadians(sgaplayer.timer + ((((float)i - 1) / (float)bonusattacks) * 360f));
 								Vector2 apos = player.Center + new Vector2((float)Math.Cos(angle) * 64, (float)Math.Sin(angle) * 12);
-								int probg = Projectile.NewProjectile(new Vector2(apos.X, apos.Y), proj.velocity, type, (int)(damage*0.50f), 0f, player.whoAmI);
+								int probg = Projectile.NewProjectile(new Vector2(apos.X, apos.Y), proj.velocity, type, (int)(damage * 0.50f), 0f, player.whoAmI);
 								Main.projectile[probg].GetGlobalProjectile<SGAprojectile>().stackedattack = true;
 							}
 							else
@@ -270,6 +274,18 @@ namespace SGAmod
 
 		}
 
+		public int IsRevolver(Item item)
+		{
+			if (item == null || item.IsAir)
+				return 0;
+			if (SGAmod.UsesClips.ContainsKey(item.type))
+			{
+				if (item.type == mod.ItemType("SoldierRocketLauncher"))
+					return 2;
+				return 1;
+			}
+			return 0;
+		}
 		public bool RefilPlasma(bool checkagain=false)
 		{
 			if (plasmaLeftInClip > 0)
@@ -346,6 +362,7 @@ namespace SGAmod
 		public override void ResetEffects()
 		{
 			MVMBoost = false;
+			twinesoffate = false;
 			realIFrames -= 1;
 			HeavyCrates = false;
 			Microtransactions = false;
@@ -380,7 +397,7 @@ namespace SGAmod
 			devpowerbool = false;
 			MisterCreeperset = false;
 			Noselfdamage = false;
-			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; GoldenCog = false;
+			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; HeartGuard = false; GoldenCog = false;
 			MidasIdol = 0;
 			OmegaSigil = false;
 			MurkyDepths = false;
@@ -413,8 +430,11 @@ namespace SGAmod
 			SlowDownReset -= 1;
 			grippinggloves = false;
 			timer += 1;
+			mudbuff = false;
 			boosterdelay -= 1;
 			digiStacks = (int)MathHelper.Clamp(digiStacks,0,digiStacksMax);
+			CustomWings = 0;
+			JoyrideShake -= 1;
 			if (boosterdelay < 1)
 			{
 				boosterPowerLeft = Math.Min(boosterPowerLeft+ boosterrechargerate, boosterPowerLeftMax);
@@ -432,6 +452,7 @@ namespace SGAmod
 					return Color.White;
 				};
 			digiStacksMax = 0;
+				player.breathMax = 200;
 			}
 		}
 
@@ -727,7 +748,7 @@ namespace SGAmod
 					//longerExpertDebuff
 					for (int i = 0; i < Player.MaxBuffs; i += 1)
 					{
-						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != BuffID.ManaSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
 						{
 							ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
 							bool isdebuff = Main.debuff[player.buffType[i]];
@@ -1051,6 +1072,18 @@ modeproj.enhancedbees=true;
 		}
 
 }
+			if (twinesoffate)
+			{
+					if (player.ownedProjectileCounts[mod.ProjectileType("TwineOfFate")] < 1)
+					{
+						int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("TwineOfFate"), 0, 0, player.whoAmI);
+					}
+					if (player.ownedProjectileCounts[mod.ProjectileType("TwineOfFateClothier")] < 1)
+					{
+						int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("TwineOfFateClothier"), 0, 0, player.whoAmI);
+					}	
+			}
+
 
 			if (lunarSlimeHeart)
 			{
@@ -1325,6 +1358,8 @@ modeproj.enhancedbees=true;
 				{
 					if (npc.type==NPCID.SkeletronHand)
 						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("HotBarCurse").Type, 60 * 20);
+					if (npc.type==NPCID.SkeletronHand)
+						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("ItemCurse").Type, 60 * 25);
 
 
 				}
@@ -1406,7 +1441,7 @@ modeproj.enhancedbees=true;
 			if (npc!=null){
 				if (npc.type==NPCID.BlazingWheel && npc.life==88){
 				SGAnpcs nyx=npc.GetGlobalNPC<SGAnpcs>();
-				damage=(int)(damage*4.0);
+				damage=(int)(damage*2.0);
 			}}
 
 
@@ -1497,7 +1532,6 @@ modeproj.enhancedbees=true;
 				if (Main.rand.Next(4) == 0 && drawInfo.shadow == 0f)
 				{
 					int dust = Dust.NewDust(drawInfo.position - new Vector2(2f, 2f), player.width + 4, player.height + 4, ModContent.DustType<Dusts.AcidDust>(), player.velocity.X * 0.4f, player.velocity.Y * 0.4f, 100, default(Color), 1f);
-					Main.dust[dust].noGravity = true;
 					Main.dust[dust].velocity *= 1.8f;
 					Main.dust[dust].velocity.Y -= 0.5f;
 					Main.playerDrawDust.Add(dust);
@@ -1697,7 +1731,6 @@ modeproj.enhancedbees=true;
 					}
 				}
 
-
 			}
 
 		}
@@ -1712,6 +1745,64 @@ modeproj.enhancedbees=true;
 			SGAPlayer.drawdigistuff(drawInfo, false);
 		});
 
+		public static readonly PlayerLayer AltWings = new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+			//better version, from Qwerty's Mod
+			Color color = drawInfo.bodyColor;
+
+			if (modply.CustomWings == 1)
+			{
+
+				float angle = MathHelper.ToRadians(90f + (drawPlayer.velocity.X * 2f));
+
+				int joy = Math.Max(0, modply.JoyrideShake);
+
+				float nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
+				float nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
+
+				Texture2D texture;
+				int drawX;
+				int drawY;
+				Vector2 org;
+
+				float stealth = (0.2f + drawPlayer.stealth * 0.8f) *Math.Max(0.10f,((float)drawInfo.bodyColor.A / 255f));
+
+				for (int i = -10; i < 11; i += 20)
+				{
+					nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
+					nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
+					drawX = (int)((drawPlayer.MountedCenter.X + (drawPlayer.direction * (-8 + i)) + nalzs));
+					drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 8f));//gravDir 
+					Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
+					color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
+					texture = ModContent.GetTexture("Terraria/Item_" + ItemID.Megashark);
+					org = new Vector2(texture.Width * (drawPlayer.direction > 0 ? 0.25f : 0.25f), texture.Height / 2f);
+					DrawData data2 = new DrawData(texture, whereat2 - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 0.75f, (drawPlayer.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+					data2.shader = (int)drawPlayer.cWings;
+					Main.playerDrawData.Add(data2);
+				}
+
+				nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
+				nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
+
+				texture = ModContent.GetTexture("Terraria/Item_" + ItemID.ChainGun);
+				drawX = (int)((drawPlayer.MountedCenter.X + (drawPlayer.direction * -8) + nalzs));
+				drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 6f));//gravDir 
+				Vector2 whereat = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
+
+				color = Lighting.GetColor((int)(whereat.X / 16f), (int)(whereat.Y/16f), drawInfo.bodyColor) * stealth;
+				org = new Vector2(texture.Width * (drawPlayer.direction > 0 ? 0.25f : 0.25f), texture.Height / 2f);
+				DrawData data = new DrawData(texture, whereat - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 0.75f, (drawPlayer.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				data.shader = (int)drawPlayer.cWings;
+				Main.playerDrawData.Add(data);
+
+			}
+
+		});
 
 		public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
 		{
@@ -1722,7 +1813,7 @@ modeproj.enhancedbees=true;
 			//plasmaLeftInClip
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
-			if (sgaplayer.SpaceDiverset)
+			if (sgaplayer.SpaceDiverset && CustomWings<1)
 			{
 			int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 			int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
@@ -1730,6 +1821,14 @@ modeproj.enhancedbees=true;
 			layers.RemoveAt(wingsLayer);
 			SpaceDiverTank.visible = true;
 			layers.Insert(backacclayer, SpaceDiverTank);
+			}
+
+			if (sgaplayer.CustomWings>0)
+			{
+				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
+				//layers.RemoveAt(wingsLayer);
+				AltWings.visible = true;
+				layers.Insert(wingsLayer+1, AltWings);
 			}
 
 			if (player.HeldItem.type==mod.ItemType("WaveBeam"))
@@ -1910,7 +2009,21 @@ modeproj.enhancedbees=true;
 			{
 				return;
 			}
+			if (bait.type == mod.ItemType("SharkBait"))
+			{
+				//hmmmm
+			}
 			if (DankShrineZone) {
+
+				if (questFish == mod.ItemType("Vinefish") && Main.rand.Next(2) == 0 && DankShrineZone)
+				{
+					caughtType = mod.ItemType("Vinefish");
+				}
+				if (questFish == mod.ItemType("Rootfish") && Main.rand.Next(2) == 0 && DankShrineZone)
+				{
+					caughtType = mod.ItemType("Rootfish");
+				}
+
 				int chance = 10 + (player.cratePotion ? 15 : 0) + (int)Math.Min(50, power);
 				if (Main.rand.Next(0, 100) < chance)
 					caughtType = mod.ItemType("DankCrate");
@@ -2083,18 +2196,18 @@ modeproj.enhancedbees=true;
 			addtolist(NPCID.Spazmatism, 150);
 			addtolist(NPCID.Retinazer, 150);//1500
 			addtolistmodded("SharkvernHead", 500);
-			addtolist(NPCID.Plantera, 600);//2500
+			addtolist(NPCID.Plantera, 600);//2600
 			addtolistmodded("Cratrosity", 700);
 			addtolist(NPCID.Golem, 500);
 			addtolist(NPCID.DD2Betsy, 700);
-			addtolist(NPCID.CultistBoss, 500);//4900
+			addtolist(NPCID.CultistBoss, 500);//5000
 			addtolistmodded("TPD", 800);
 			addtolistmodded("Harbinger", 700);
 			addtolist(NPCID.LunarTowerNebula, 250);
 			addtolist(NPCID.LunarTowerSolar, 250);
 			addtolist(NPCID.LunarTowerStardust, 250);
 			addtolist(NPCID.LunarTowerVortex, 250);
-			addtolist(NPCID.MoonLordCore, 1000);//8400
+			addtolist(NPCID.MoonLordCore, 1000);//8500
 
 			//Post-moonlord Bosses (+7500 total)
 
@@ -2152,7 +2265,7 @@ modeproj.enhancedbees=true;
 				addtolist(NPCID.CultistArcherWhite, 1);
 			}
 
-			//Tally-16000 Expertise
+			//Tally-21600 Expertise
 
 		}
 
@@ -2174,7 +2287,7 @@ modeproj.enhancedbees=true;
 		public override void SetStaticDefaults()
 		{
 			base.DisplayName.SetDefault("IDG's Starting Bag");
-			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory\n{$CommonItemTooltip.RightClickToOpen}\n'don't mind me just reusing TMODLoader assets lol-IDG'");
+			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory??\n{$CommonItemTooltip.RightClickToOpen}\n'don't mind me just reusing TMODLoader assets lol-IDG'");
 		}
 
 		public override void SetDefaults()
@@ -2190,8 +2303,8 @@ modeproj.enhancedbees=true;
 
 			List<int> itemsbonus = new List<int>();
 
-			int[] loot = { ItemID.CloudinaBottle, SGAmod.Instance.ItemType("ThrowerPouch"), ItemID.HermesBoots, ItemID.SailfishBoots, ItemID.GrapplingHook, ItemID.SilverPickaxe, ItemID.TungstenPickaxe };
-			int[] loot2 = { ItemID.ShinePotion, ItemID.BuilderPotion, ItemID.MiningHelmet, ItemID.MiningPotion, ItemID.NightOwlPotion };
+			int[] loot = { ItemID.TsunamiInABottle, ItemID.FartinaJar, ItemID.CloudinaBottle, SGAmod.Instance.ItemType("ThrowerPouch"), ItemID.HermesBoots, ItemID.SailfishBoots, ItemID.GrapplingHook, ItemID.SilverPickaxe, ItemID.TungstenPickaxe, ItemID.MiningHelmet };
+			int[] loot2 = { ItemID.ShinePotion, ItemID.BuilderPotion, ItemID.MiningPotion, ItemID.NightOwlPotion };
 			for (int zz = 0; zz < 3; zz++)
 			{
 				itemsbonus.Add(loot[Main.rand.Next(0, loot.Length)]);
@@ -2200,6 +2313,11 @@ modeproj.enhancedbees=true;
 			Item item3 = new Item();
 			item3.SetDefaults(ItemID.LifeCrystal, false);
 			((IDGStartBag)item.modItem).AddItem(item3);
+
+			Item item4 = new Item();
+			item4.SetDefaults(SGAmod.Instance.ItemType("BossHints"), false);
+			((IDGStartBag)item.modItem).AddItem(item4);			
+			
 			for (int k = 0; k < itemsbonus.Count; k++)
 			{
 				Item item2 = new Item();
@@ -2212,13 +2330,18 @@ modeproj.enhancedbees=true;
 			{
 				itemsbonus.Add(loot2[Main.rand.Next(0, loot2.Length)]);
 			}
-
-			for (int k = 0; k < itemsbonus.Count; k++)
+			for (int gg = 0; gg < 7; gg += 3)
 			{
-				Item item2 = new Item();
-				item2.SetDefaults(itemsbonus[k], false);
-				item2.stack = Main.rand.Next(1, 3);
-				((IDGStartBag)item.modItem).AddItem(item2);
+				for (int k = 0; k < itemsbonus.Count; k++)
+				{
+					if (Main.rand.Next(gg) < 1)
+					{
+						Item item2 = new Item();
+						item2.SetDefaults(itemsbonus[k], false);
+						item2.stack = Main.rand.Next(1, 2);
+						((IDGStartBag)item.modItem).AddItem(item2);
+					}
+				}
 			}
 
 

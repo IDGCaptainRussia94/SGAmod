@@ -51,7 +51,7 @@ namespace SGAmod.HavocGear.Items
         		}
 
 			player.TryGettingDevArmor();
-			int lLoot = (Main.rand.Next(0,3));
+			int lLoot = (Main.rand.Next(0,4));
 			player.QuickSpawnItem(mod.ItemType("SerratedTooth"));
             if (lLoot == 0)
             {
@@ -64,7 +64,11 @@ namespace SGAmod.HavocGear.Items
 			if (lLoot == 2)
 			{
 				player.QuickSpawnItem(mod.ItemType("SnappyShark"));
-				player.QuickSpawnItem(mod.ItemType("SharkTooth"), 99);
+				player.QuickSpawnItem(mod.ItemType("SharkTooth"), 150);
+			}
+			if (lLoot == 3)
+			{
+				player.QuickSpawnItem(mod.ItemType("SharkBait"), Main.rand.Next(60, 150));
 			}
 			player.QuickSpawnItem(mod.ItemType("SharkTooth"), Main.rand.Next(100, 200));
 		}

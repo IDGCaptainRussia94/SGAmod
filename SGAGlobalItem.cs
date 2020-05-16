@@ -163,7 +163,7 @@ namespace SGAmod
             }
             if (set == "Blazewyrm")
             {
-                player.setBonus = "When you Crit with a non-projectile melee hit you create a very powerful explosion equal to triple the damage dealt; hurting everything nearby\nthis however gives you the action cooldown debuff for 10 seconds which this ability will not activate\n25% increased melee damage against enemies who have Thermal Blaze" +
+                player.setBonus = "True melee crits create a very powerful explosion equal to triple the damage dealt\nThis however gives you the action cooldown debuff for 10 seconds blocking reactivation\n25% increased melee damage against enemies inflicted with Thermal Blaze" +
                         "\nImmune to fireblocks as well as immunity to On Fire! and Thermal Blaze";
                 player.fireWalk = true;
                 player.buffImmune[BuffID.OnFire] = true;
@@ -184,7 +184,7 @@ namespace SGAmod
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
                     "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\nThis gives you Action cooldown for 60 seconds, which prevents reactivation\nCreeper's explosive throw and Stormbreaker are empowered\n------";
                 sgaplayer.MisterCreeperset = true;
-                sgaplayer.devempowerment[1] = 2;
+                sgaplayer.devempowerment[1] = 3;
             }
             if (set == "IDG")
             {
@@ -192,7 +192,7 @@ namespace SGAmod
                     "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n------";
                 sgaplayer.IDGset = true;
                 sgaplayer.digiStacksMax += 100000;
-                sgaplayer.devempowerment[0] = 2;
+                sgaplayer.devempowerment[0] = 3;
             }
         }
 
@@ -278,6 +278,11 @@ namespace SGAmod
                 {
                     if (player.HasItem(mod.ItemType("EALogo")))
                         player.QuickSpawnItem(ItemID.SilverCoin, 8);
+                if (sgaplayer.HeartGuard)
+                {
+                    player.HealEffect(5);
+                    player.statLife += 5;
+                }
                 }
                 if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
                 {
@@ -410,6 +415,12 @@ namespace SGAmod
                     player.QuickSpawnItem(mod.ItemType("MisterCreeperBody"), 1);
                     player.QuickSpawnItem(mod.ItemType("MisterCreeperLegs"), 1);
                 }
+                if (Main.rand.Next(100) <= (Main.hardMode ? 2 : 1))
+                {
+                    player.QuickSpawnItem(mod.ItemType("IDGHead"), 1);
+                    player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
+                    player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
+                }
                 if (arg == ItemID.GolemBossBag && Main.rand.Next(100) <= 20)
                     player.QuickSpawnItem(mod.ItemType("Upheaval"), 1);
                 if (arg == ItemID.MoonLordBossBag)
@@ -506,7 +517,7 @@ namespace SGAmod
     }
     public class UberPrefixAccessory : TrapPrefix
     {
-        float[] uber = {0f,0f,0f,0f,0f,0f,0f};
+        private float[] uber = {0f,0f,0f,0f,0f,0f,0f};
         public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
 
         public UberPrefixAccessory()
@@ -592,7 +603,10 @@ namespace SGAmod
         public override bool CanRoll(Item item)
         {
             //return Main.LocalPlayer.HasItem(mod.ItemType("EALogo"))
-            return Main.LocalPlayer.GetModPlayer<SGAPlayer>().EALogo;
+            if (Main.LocalPlayer != null && !Main.gameMenu)
+                return Main.LocalPlayer.GetModPlayer<SGAPlayer>().EALogo;
+            else
+                return false;
         }
         public override float RollChance(Item item)
         {

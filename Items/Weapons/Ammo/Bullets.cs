@@ -159,6 +159,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 30);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 1);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
+			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 1);
 			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
 			recipe.AddIngredient(ItemID.MeteorShot, 50);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -200,7 +201,7 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void SetDefaults()
 		{
-			item.damage = 17;
+			item.damage = 19;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;

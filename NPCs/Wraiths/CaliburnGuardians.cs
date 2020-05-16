@@ -6,9 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.World.Generation;
 using Terraria.ModLoader;
+using Terraria.World.Generation;
 using Idglibrary;
+
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -131,7 +132,15 @@ namespace SGAmod.NPCs.Wraiths
 			if (SGAWorld.downedCaliburnGuardians < 3)
 			{
 				SGAWorld.downedCaliburnGuardians += 1;
+				if (Main.netMode!=2)
 				SGAWorld.downedCaliburnGuardiansPoints += 1;
+			}
+			if (Main.netMode != 2)
+			{
+				ModPacket packet = SGAmod.Instance.GetPacket();
+				packet.Write((int)996);
+				packet.Write(SGAWorld.downedCaliburnGuardiansPoints);
+				packet.Send();
 			}
 			Achivements.SGAAchivements.UnlockAchivement("Caliburn", Main.LocalPlayer);
 		}

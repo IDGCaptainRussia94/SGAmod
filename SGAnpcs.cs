@@ -1143,7 +1143,7 @@ return true;
 			switch (npc.type)
 			{
 				case NPCID.Guide:
-					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon"))>0)
+					if (Main.rand.Next(0, 3) == 0)
 					{
 						string[] lines = { "A dragon is the last person I'd expect to move in to be honest.",
 						"Draken seems upset over his past, I feel sorry for his past."};
@@ -1151,16 +1151,20 @@ return true;
 					}
 					else
 					{
-						if (Main.rand.Next(0, 3) == 0)
+						if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
+						{
 							chat = "I think I see something flying above, maybe if you clear the area of powerful monsters, it might land...";
+							if (Main.rand.Next(0, 2) == 0)
+								chat = "What is that up there... It looks like a dragon...";
+						}
 
 					}
 					if (SGAWorld.downedWraiths == 0 && Main.rand.Next(0, 2) == 0)
-						chat = "A creature has made you lose you knowledge to make a furnace it seems, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment") + "]";
+						chat = "I'd be careful using the furnace if I were you, something is watching... Prehaps you can lure it out beforehand with a [i:" + mod.ItemType("WraithCoreFragment") + "] before it catches you off guard, I heard these can be made with copper/tin ore and fallen stars";
 					if (SGAWorld.downedWraiths == 1 && Main.rand.Next(0, 2) == 0 && Main.hardMode)
-						chat = "Another creature has made you lose you knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "]";
+						chat = "Hmmm... Another creature has done something worse this time, they have stolen your knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "] which is as made from tier 1 hardmode ores and the previous summoning item";
 					if (SGAWorld.downedWraiths < 4 && Main.rand.Next(0, 2) == 0 && NPC.downedAncientCultist)
-						chat = "Yet Another creature has stolen the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "]. Rematch will unlock Luminite bars but require defeating Moonlord first.";
+						chat = "Yet Another creature has stolen knowledge from you, this time the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "] made with lunar fragments and the previous summoning item. Rematch will unlock Luminite bars but require defeating Moonlord first.";
 					break;
 				case NPCID.ArmsDealer:
 					if (Main.rand.Next(0, 5) == 0)

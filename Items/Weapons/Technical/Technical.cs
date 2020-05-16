@@ -90,7 +90,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(0, 8);
+			return new Vector2(0, 2);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -104,7 +104,7 @@ namespace SGAmod.Items.Weapons.Technical
 			float speed = 1.5f;
 			float numberProjectiles = 3;
 			float rotation = MathHelper.ToRadians(1+ player.GetModPlayer<SGAPlayer>().recoil);
-			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20f;
 
 			Vector2 perturbedSpeed2 = (new Vector2(speedX, speedY) * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
 
@@ -827,7 +827,7 @@ namespace SGAmod.Items.Weapons.Technical
 									newloc -= normal * 8f;
 									newloc += (normal.RotatedBy(MathHelper.ToRadians(90)) * num315) * (10 + new1);
 									int proj = Projectile.NewProjectile(newloc.X, newloc.Y, newspeed.X * 1.5f, newspeed.Y * 1.5f, type, damageproj, knockbackproj, player.whoAmI);
-									if (Main.rand.Next(100) < 25)
+									if (Main.rand.Next(100) < 25 && (ammo2.modItem!=null && ammo2.modItem.ConsumeAmmo(player)) && ammo2.maxStack>1)
 										player.ConsumeItem(ammotype);
 								}
 

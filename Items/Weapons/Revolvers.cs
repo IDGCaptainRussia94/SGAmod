@@ -25,7 +25,7 @@ namespace SGAmod.Items.Weapons
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[0] > 0)
 			{
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Primary Explosion is larger and stronger"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Primary Explosion is larger"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary fires faster"));
 			}
 
@@ -36,7 +36,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
             item.CloneDefaults(ItemID.Revolver);
-			item.damage = 2200;
+			item.damage = 2000;
 			item.width = 48;
             item.height = 48;
 			item.useTime = 40;
@@ -44,7 +44,7 @@ namespace SGAmod.Items.Weapons
 			item.knockBack = 10;
 			item.value = Item.sellPrice(2,0,0,0);
 			item.rare = 12;
-			item.crit = 15;
+			item.crit = 0;
 	        item.shootSpeed = 8f;
             item.noMelee = true;
             item.useAmmo = AmmoID.Bullet;
@@ -84,7 +84,7 @@ namespace SGAmod.Items.Weapons
 		item.shoot = mod.ProjectileType("DragonRevolverAiming");
         }else{
         item.useStyle = 5;
-		int firerate = sgaplayer.devempowerment[0] > 0 ? 50 : 60;
+		int firerate = sgaplayer.devempowerment[0] > 0 ? 45 : 60;
 		item.useTime = firerate;
 		item.useAnimation = firerate;
 		item.UseSound = SoundID.Item38;

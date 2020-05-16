@@ -80,7 +80,7 @@ namespace SGAmod.NPCs
 
 
 			Player P = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !Main.dayTime)
+			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
@@ -165,7 +165,8 @@ namespace SGAmod.NPCs
 			types.Insert(types.Count,0);
 			types.Insert(types.Count,1);
 			types.Insert(types.Count,2);
-			int pick=types[Main.rand.Next(0,types.Count)];
+			types.Insert(types.Count, 3);
+			int pick =types[Main.rand.Next(0,types.Count)];
 			if (pick==0){
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("StarfishBlaster"), 1);
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, 2626, Main.rand.Next(50, 100));
@@ -176,6 +177,9 @@ namespace SGAmod.NPCs
 			if (pick==2){
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TidalWave"), 1);
 			}
+			if (pick==3){
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TidalCharm"), 1);
+			}		
 		}
     }
 }

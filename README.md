@@ -1,11 +1,120 @@
 # SGAmod
 IDGCaptainRussia94's content mod
 
+//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Icicle Fall, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?)
+
+//Items that are NOT ok to be resprited: Stormbreaker, Wave Beam, Serpent's Redemption, Creeper's Throw, The trap related weapons for now
+
 Changelog:
+
+
+3.000-(5/16/20)-End of the Beginning Pt1;
+
+-Added:
+
+-Twines of Fate, Tidal Charm,Icicle Fall, Shark Food, Drakenite Bars (they are dropped by Hellion, for now, some items require them now), Heart Guard (Crimson alt of the JuryRigged Spiked Buckler), Anomaly Study Paper, Joyrider
+
+-Truely Suspicious Looking Eye-manually Summon Doom Harbinger and also refight him if you wish
+
+-2 Types of fish quests for the Dank Shrine Zone
+
+-The rest of Havoc's Swamp (now Dank) enemies, most of them spawn in the Dank Shrine
+
+-Resprites for all of Spider Queen's sprites and a massive visual overhaul +added treasure bag, phil would be proud
+
+
+--Changed:
+
+-Mister Creeper's dev items have been renamed to Legacy Dev items
+
+-Slight buff to Portal Bullets
+
+-Renamed the Crates of Light and Night during Cratrogeddon's fight
+
+-Sepent's Redemption rebalanced a bit (removed bonus crit chance and damage reduced, empowerment bonus made slightly better)
+
+-Nerfed the SBC Cannon's base damage greatly, made cheaper
+
+-Nerfed the SBC Cannon MK2's base damage
+
+-IDG's Armor set slightly altered
+
+-Hellion can no longer use both Laser Reign and Healthy Dose of Lasers at once when in Tyrant Mode
+
+-Large rework to Luminite Wraith: added in missing attacks, Vortex Lightning Reworked, Vortex move has been completely reworked, and Heatwave burst reworked as well, the boss stops moving when doing any of the last 2 and warning effects made more noticable
+
+-Most of Cirno's Ice Bolts have been made into a custom projectile that doesn't use Dust to tell you where it is (no more invisible projectiles)
+
+-Buffed Ice Scepter and reworked
+
+-Big Bang and Reality Shaper have gained the new Ice Scepter Bolt projectile and have been rebalanced around it, Reality Shaper nerfed a bit
+
+-Added another attack to Sharkvern so he's not doing nothing for, half the fight. Flying shark HP buffed
+
+-Hellion's Skeletron Hands also now lock your item type, not just the hotbar as well
+
+-Fixed Cursed hail needing Cursed Flames Book instead of material (ffs relogic lol, naming convention plz)
+
+-Blazewyrm bonuses nerfed, text reworked a bit to reduce reading
+
+-Fixed more item prices
+
+-Made several items cheaper to craft
+
+-True Caliburn's damage reduced, and price fixed
+
+-Mud Absorber can not longer stack with any accessories crafted from it
+
+-Hellion's drones no longer shoot at you during attacks where Hellion becames unhittable
+
+-Mudmore's Mud blobs inflict Oiled when they explode, but damage has been slightly reduced
+
+-Throwing gloves no longer give a damage boost when using Beenades
+
+-Widened Arc of Golem Fireballs and reduced rate of Fireball rings, added new attacks, add telegraphing, reduced damage of Blazing Wheels further
+
+-Buffed Rubied Blade
+
+-Heartreach Magnet crafting recipe changed, and alt added for corruption worlds
+
+-Supreme Pinky's sky effect has been altered to be layered and also less jarring on the eyes
+
+
+--Fixed
+
+-Tidal Elementals not attacking or doing anything during night
+
+-Mismatched descriptions on Non-Stationary weapons
+
+-Big Dakka consuming ammo that shouldn't be consumable
+
+-Fixed more item prices
+
+-More fixes I couldn't remember to list
+
+
+
+2.910-(4/30/20)-Hot Fix #3:
+Previous version was suppose to be 2.800, but ended up being 2.900, oh well
+
+--Changed:
+
+-MVM Upgrade has been Added to Elite Emblem's abilities
+
+-IDG's Starting Bag gives you loot differently: you will now always get atleast 1-2 of 4 potions, and won't get more than one mining helmet, Added some extra loot, and added the starter bag to Draken's shop
+
+--Fixed
+
+
+-IDG's armor set not dropping from treasure bags
+
+-Captain America's Shield displaying some bad info and having a bugged crafting recipe
+
+
 
 2.800-(4/30/20)-Patch 7:
 
--Added
+--Added
 
 -Revolving West (placeholder sprite), Captain America's Shield, Jarate Shurikens, Sanguine Bident, MVM Upgrade-Gripping Gloves-Handling Gloves and Hellion's Cascade (using place holder sprites), IDGCaptainRussia94's Dev armor (about time!), Hellion's Crown (Vanity Mask/Crafting Material, thing?), Thrower's Pouch
 
@@ -608,6 +717,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 -Typoes and a few other things
 
 
+
 2.0-(2/22/20)-Caliburn's Gifts:
 
 --A majorish-sorta update for you! 3 Caliburn Alters can now be found on new worlds, they each contain a strong pre-hardmode sword, at a price... But it will be worth it for their true form.
@@ -635,6 +745,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 --Ice Scepter got an alt fire
 
 --Expertise cap is now 16000 (before was 15000)
+
 
 --Changed:
 
@@ -669,6 +780,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 -Various changes to crafting recipes, mostly to account for the new items
 
 -The mod name again, because I don't think 'content mod' is really that entricing
+
 
 --Fixed:
 

@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Helm");
-			Tooltip.SetDefault("25% faster melee speed\n20% increase melee damage");
+			Tooltip.SetDefault("16% faster melee speed and melee damage");
 		}
 		public override void SetDefaults()
 		{
@@ -32,8 +32,8 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-			player.meleeSpeed += 0.25f;
-			player.meleeDamage += 0.2f;
+			player.meleeSpeed += 0.16f;
+			player.meleeDamage += 0.16f;
 		}
 		public override void AddRecipes()
 		{
@@ -53,7 +53,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Breastplate");
-			Tooltip.SetDefault("15% increase melee crit chance");
+			Tooltip.SetDefault("12% increase melee crit chance");
 		}
 		public override void SetDefaults()
 		{
@@ -65,7 +65,7 @@ namespace SGAmod.Items.Armors
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.meleeCrit += 15; 
+			player.meleeCrit += 12; 
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)

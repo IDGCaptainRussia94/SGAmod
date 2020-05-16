@@ -14,7 +14,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Acid Burn");
-			Description.SetDefault("Reduced Defense/nYour defense works again your life");
+			Description.SetDefault("Reduced Defense and your defense works again your life");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

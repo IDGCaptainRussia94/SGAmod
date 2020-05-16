@@ -69,6 +69,7 @@ namespace SGAmod.Items.Tools
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
+			recipe.AddIngredient(mod.ItemType("FrigidShard"), 8);
 			recipe.AddTile(TileID.IceMachine);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -37,6 +37,18 @@ namespace SGAmod.HavocGear.Projectiles
 
         }
 
+        public override bool PreKill(int timeLeft)
+        {
+            for (int num654 = 0; num654 < 10; num654++)
+            {
+                Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+                int num655 = Dust.NewDust(projectile.position + Vector2.UnitX * -20f, projectile.width + 40, projectile.height, DustID.t_Lihzahrd, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 3f, 100, new Color(30, 30, 30, 20), 2f);
+                Main.dust[num655].noGravity = true;
+                Main.dust[num655].velocity *= 0.5f;
+            }
+            return true;
+        }
+
 
         public override void SetStaticDefaults()
         {

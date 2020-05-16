@@ -27,7 +27,7 @@ namespace SGAmod.Items.Weapons
 			}
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
             //string potion="[i:" + ItemID.RedPotion + "]";
-            tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's other dev weapon")));
+            tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's other (Legecy) Dev Weapon")));
         }
 
         public override void SetDefaults()

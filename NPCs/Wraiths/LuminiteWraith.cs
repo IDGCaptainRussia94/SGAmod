@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using SGAmod.Projectiles;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -24,6 +25,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public bool spawnedbosses = false;
 		public float delay=0f;
+		public int alivetimer = 0;
 
 		public override void SetDefaults()
 		{
@@ -60,6 +62,7 @@ return (!master.active);
 
 public override void AI(){
 
+			alivetimer += 1;
 NPC master=Main.npc[(int)npc.ai[1]];
 if (master.active==false){
 npc.active=false;
@@ -102,7 +105,7 @@ if (npc.ai[0]%1800>1200){
 				dust.noGravity = true;
 				dust.color=Main.hslToRgb((float)(npc.ai[0]/300)%1, 1f, 1f);
 
-if (npc.ai[0]%1800>1350 && npc.ai[0]%6==0 && npc.ai[0]%1800<1700){
+if (npc.ai[0]%1800>1350 && npc.ai[0]%6==0 && npc.ai[0]%1800<1700 && alivetimer > 200){
 List<Projectile> itz=Idglib.Shattershots(npc.Center,npc.Center,new Vector2(0f,8f),ProjectileID.PhantasmalBolt,20,(float)Main.rand.Next(200,240)*0.1f,30,1,true,npc.ai[0]/300f,false,250);
 }
 }else{
@@ -124,7 +127,7 @@ npc.velocity+=orgin/800f;
 //}
 
 
-if (npc.ai[0]%300>200){
+if (npc.ai[0]%300>200 && alivetimer > 200){
 npc.velocity/=2f;
 if (npc.ai[0]%300>260 && npc.ai[0]%10==0){
 List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PhantasmalBolt,10,(float)Main.rand.Next(160,200)*0.1f,30,1,true,(float)Main.rand.Next(-200,200)/2000f,false,250);
@@ -269,6 +272,7 @@ return false;
 		public int warninglevel2=0;
 		public int quitermode=0;
 		public int fighttversion=0;
+		public int stopmovement = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminite Wraith");
@@ -282,6 +286,7 @@ writer.Write((short)warninglevel);
 			writer.Write((short)warninglevel2);
 			writer.Write((short)quitermode);
 			writer.Write((short)fighttversion);
+			writer.Write((short)stopmovement);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
@@ -290,6 +295,7 @@ writer.Write((short)warninglevel);
 			warninglevel2 = (int)reader.ReadInt16();
 			quitermode = (int)reader.ReadInt16();
 			fighttversion = (int)reader.ReadInt16();
+			stopmovement = (int)reader.ReadInt16();
 		}
 
 		public override void BossLoot(ref string name, ref int potionType)
@@ -365,8 +371,8 @@ writer.Write((short)warninglevel);
 
 		public override void AI()
 		{
-
-					//npc.netUpdate = true;
+			stopmovement -= 1;
+						//npc.netUpdate = true;
 						Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
@@ -663,6 +669,7 @@ public void DoAIStuff(Player P){
 		}
 
 		dir.Normalize();
+		if (stopmovement<1)
 		npc.velocity+=(dir*addtocircle) +(distnormal * 0.001f);
 
 }else{
@@ -670,6 +677,7 @@ public void DoAIStuff(Player P){
 		if (npc.ai[0]%70>60 && npc.ai[0]%600>40){
 		dir=(P.Center-npc.Center);
 		dir.Normalize();
+		if (stopmovement < 1)
 		npc.velocity+=(dir*5);
 		}
 
@@ -1110,10 +1118,16 @@ public void DoAIStuff(Player P){
 
 			if (npc.ai[3]==ItemID.VortexBreastplate){
 
-			if (npc.ai[0]%800>600 && npc.ai[0]%4==0){
-				for (int a = 0; a < 20; a++){
+						if (npc.ai[0] % 800 == 600 && npc.ai[0] > 400)
+						{
+							(myowner.modNPC as LuminiteWraith).stopmovement = 280;
+							myowner.netUpdate = true;
+						}
+
+						if (npc.ai[0]%800>600 && npc.ai[0]%4==0){
+				for (int a = 0; a < 60; a++){
 				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
-				Vector2 vecr=randomcircle*512;
+				Vector2 vecr=randomcircle*2500;
 				vecr*=(1f-(800f/(npc.ai[0]%800)));
 
 					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y)+vecr, 0, 0, 185, 0f, 0f, 100, default(Color), 1f);
@@ -1128,7 +1142,10 @@ public void DoAIStuff(Player P){
 				}
 			}
 			if (npc.ai[0]%800==799){
-			for (int i = 0; i < Main.maxPlayers; i++)
+
+							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 122, 1f, 0f);
+
+							for (int i = 0; i < Main.maxPlayers; i++)
 			{
 			Player ply=Main.player[i];
 								if (ply != null && ply.active && !ply.dead)
@@ -1157,37 +1174,44 @@ public void DoAIStuff(Player P){
 
 			if (npc.ai[3]==ItemID.SolarFlareBreastplate){
 
-			if (npc.ai[0]%800>600 && npc.ai[0]%4==0){
-				for (int a = 0; a < 20; a++){
-				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
-				Vector2 vecr=randomcircle*512;
-				vecr*=(1f-(800f/(npc.ai[0]%800)));
+						if (npc.ai[0] % 900 == 600 && npc.ai[0] > 400)
+						{
+							(myowner.modNPC as LuminiteWraith).stopmovement = 460;
+							myowner.netUpdate = true;
+						}
 
-					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y)+vecr, 0, 0, 6, 0f, 0f, 100, default(Color), 1.5f);
+						if (npc.ai[0]%900>600 && npc.ai[0]%4==0){
+							for (int a = 0; a < 40; a++)
+							{
+								Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+								Vector2 vecr = randomcircle * 6000;
+								vecr *=(1f-(900f/(npc.ai[0]%900)));
+
+					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y)+vecr, 0, 0, 6, 0f, 0f, 100, default(Color), 2.5f);
 					Main.dust[num622].velocity *= 1f;
 
 					Main.dust[num622].noGravity = true;
 				}
 			}
 
-			if (npc.ai[0]%800<60 && npc.ai[0]%4==0 && npc.ai[0]>400){
-			List<Projectile> itz=Idglib.Shattershots(new Vector2(npc.Center.X,npc.Center.Y),P.position,new Vector2(P.width,P.height),mod.ProjectileType("HeatWave"),30,20f,30,1,true,0,false,120);
+			if (npc.ai[0]%900<160 && npc.ai[0]%4==0 && npc.ai[0]>450){
+			List<Projectile> itz=Idglib.Shattershots(new Vector2(npc.Center.X,npc.Center.Y),P.position,new Vector2(P.width,P.height),mod.ProjectileType("HeatWave"),70,25f,30,1,true,0,false,200);
 			itz[0].friendly=false; itz[0].hostile=true;
-			itz[0].damage=80;
 			itz[0].alpha = 50;
 			itz[0].tileCollide = false;
 			//itz[0].aiStyle=0;
 			}
 
-			if (npc.ai[0]%800==799){
+			if (npc.ai[0]%900==899){
 
-				for (int a = 0; a < 60; a++){
+							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 74, 1f, 0f);
+							for (int a = 0; a < 60; a++){
 				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
 
-					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y), 0, 0, mod.DustType("HotDust"), randomcircle.X*8f, randomcircle.Y*8f, 100, default(Color), 2f);
-					Main.dust[num622].velocity *= 1f;
+					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y), 0, 0, mod.DustType("HotDust"), randomcircle.X*8f, randomcircle.Y*8f, 100, default(Color), 3f);
+								Main.dust[num622].velocity = randomcircle*20f;
 
-						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].scale = 2f;
 						Main.dust[num622].noGravity=true;
 				}
 
@@ -1315,8 +1339,51 @@ public void DoAIStuff(Player P){
 
 			}
 
+					if (npc.ai[3] == ItemID.ShroomiteHeadgear)
+					{
 
-			if (npc.ai[3]==ItemID.StardustHelmet){
+						if (npc.ai[0] % 500 < 250 && npc.ai[0] % 8 == 0)
+						{
+							List<Projectile> itz = Idglib.Shattershots(new Vector2(Main.rand.Next(-15, 15) + npc.Center.X, npc.Center.Y + Main.rand.Next(-30, 30)), P.position, new Vector2(P.width, P.height - 300), ProjectileID.TruffleSpore, 10, Main.rand.Next(120, 250) / 10, 30, 1, true, 0, false, 250);
+							itz[0].friendly = false;
+							itz[0].hostile = true;
+							itz[0].netUpdate = true;
+							//int newguy=NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-12,12), (int)npc.Center.Y-10, NPCID.Bee);
+							//itz[0].aiStyle=0;
+						}
+
+					}
+
+					if (npc.ai[3] == ItemID.SpectreHood)
+					{
+
+						if (npc.ai[0] % 600 < 100 && npc.ai[0] % 40 == 0)
+						{
+							int newguy = NPC.NewNPC((int)npc.Center.X + Main.rand.Next(-1000, 1000), (int)npc.Center.Y - 800, NPCID.DungeonSpirit);
+							NPC newguy2 = Main.npc[newguy];
+							newguy2.knockBackResist = 0f;
+							newguy2.noTileCollide = true;
+							//itz[0].aiStyle=0;
+						}
+
+					}
+
+					if (npc.ai[3] == ItemID.TurtleHelmet)
+					{
+
+						if (npc.ai[0] % 300 < 80 && npc.ai[0] % 8 == 0)
+						{
+							Vector2 normzl = new Vector2(Main.rand.NextFloat(-1000, 1000), 0f);
+							normzl.Normalize();
+							List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center+normzl*16f, new Vector2(0,0), ProjectileID.SeedPlantera, 20, Main.rand.Next(120, 250) / 10, 30, 1, true, 0, false, 250);
+							//int newguy=NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-12,12), (int)npc.Center.Y-10, NPCID.Bee);
+							//itz[0].aiStyle=0;
+						}
+
+					}
+
+
+					if (npc.ai[3]==ItemID.StardustHelmet){
 
 			if (npc.ai[0]%600<100 && npc.ai[0]%40==0){
 		int newguy=NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-1000,1000), (int)npc.Center.Y-800, NPCID.StardustCellSmall);
@@ -1330,11 +1397,13 @@ public void DoAIStuff(Player P){
 
 			if (npc.ai[3]==ItemID.VortexHelmet){
 
-			if (npc.ai[0]%400<200 && npc.ai[0]%20==0){
-			List<Projectile> itz=Idglib.Shattershots(new Vector2(Main.rand.Next(-500,500)+npc.Center.X,npc.Center.Y+Main.rand.Next(-250,-100)),P.position,new Vector2(P.width,P.height),ProjectileID.VortexVortexLightning,30,0f,30,1,true,0,false,400);
+			if (npc.ai[0]%600<200 && npc.ai[0]%20==0){
+			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),mod.ProjectileType("ProjectilePortalLWraith"),30,0f,30,1,true,0,false,400);
 			itz[0].damage=150;
-			//itz[0].aiStyle=0;
-			}
+			itz[0].ai[1] = P.whoAmI;
+			itz[0].netUpdate = true;
+							//itz[0].aiStyle=0;
+						}
 
 			}
 
@@ -1567,7 +1636,7 @@ return false;
 				armors.Insert(Main.rand.Next(4, armors.Count), ItemID.NebulaBreastplate);
 			}
 
-			xpos=0;
+			xpos =0;
 			ypos=0;
 			base.SetDefaults();
 		}
@@ -1602,6 +1671,7 @@ return false;
 
 		public override void SetDefaults()
 		{
+
 			armors.Insert(Main.rand.Next(0, armors.Count), ItemID.SpectreHood);
 			armors.Insert(Main.rand.Next(0, armors.Count), ItemID.TurtleHelmet);
 			armors.Insert(Main.rand.Next(0, armors.Count), ItemID.ShroomiteHeadgear);
@@ -1615,13 +1685,132 @@ return false;
 			armors.Insert(Main.rand.Next(4, armors.Count), ItemID.NebulaHelmet);
 		}
 
-			xpos=0;
+			xpos =0;
 			ypos=-16;
 			base.SetDefaults();
 		}
 }
 
 
+	public class ProjectilePortalLWraith : ProjectilePortal
+	{
+		public float scale = 0f;
+		public int counter = 0;
+		private int counter2 = 0;
+		public override int takeeffectdelay => 0;
+		public override float damagescale => 1f;
+		public override int penetrate => 1;
+		public override int openclosetime => 60;
+		public override int timeleftfirerate => 70;
+
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Spawner");
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + 658; }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 32;
+			projectile.height = 32;
+			//projectile.aiStyle = 1;
+			projectile.friendly = true;
+			//projectile.magic = true;
+			//projectile.penetrate = 1;
+			projectile.timeLeft = 200;
+			projectile.tileCollide = false;
+			aiType = -1;
+		}
+
+		public override void AI()
+		{
+			Player ply = Main.player[(int)projectile.ai[1]];
+			Vector2 vectordir = ply.Center-projectile.Center;
+			vectordir.Normalize();
+			projectile.rotation += 0.1f;
+			counter += 1;
+
+			if (projectile.ai[0] < 9000 ) {
+				projectile.ai[0] = 10000+Main.rand.Next(-300, 300);
+				projectile.netUpdate = true;
+			}
+
+			if (projectile.timeLeft > 100 && ply.active) {
+
+				Vector2 there = (ply.Center + new Vector2(projectile.ai[0]-10000, -200).RotatedByRandom(1.5f))-projectile.Center;
+				there.Normalize();
+				projectile.velocity += there*1f;
+				projectile.velocity *= 0.95f;
+			}
+			else
+			{
+				projectile.velocity /= 2f;
+			}
+
+			scale = Math.Min(Math.Min((float)(counter - takeeffectdelay) / openclosetime, 1), (float)projectile.timeLeft / (float)openclosetime);
+
+			if (scale > 0)
+			{
+					int dustType = DustID.AncientLight;
+				Vector2 loc = new Vector2(Main.rand.NextFloat(-1,1), Main.rand.NextFloat(-1,1));
+				loc.Normalize();
+					int dustIndex = Dust.NewDust(projectile.Center+ loc*16f, 0, 0, dustType);
+					Dust dust = Main.dust[dustIndex];
+					dust.velocity.X = dust.velocity.X + Main.rand.Next(-50, 51) * 0.01f;
+					dust.velocity.Y = dust.velocity.Y + Main.rand.Next(-50, 51) * 0.01f;
+					dust.scale *= (0.75f + Main.rand.Next(-30, 31) * 0.01f) * scale;
+					dust.fadeIn = 0f;
+					dust.noGravity = true;
+					dust.color = Color.Turquoise;
+
+				if (projectile.timeLeft == timeleftfirerate && projectile.ai[0] > 0)
+				{
+					projectile.netUpdate = true;
+					float ai2 = (float)Main.rand.Next(80);
+					float rtoa = vectordir.ToRotation();
+					Projectile.NewProjectile(projectile.Center.X - vectordir.X, projectile.Center.Y - vectordir.Y, vectordir.X*12, vectordir.Y*12, 580, 35, 1f, Main.myPlayer, vectordir.ToRotation(), ai2);
+
+					//Player.FindClosest(base.Center, 0, 0);
+
+					for (int a = 0; a < 30; a++)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+
+						int num622 = Dust.NewDust(projectile.Center, 0, 0, 226, randomcircle.X * 8f, randomcircle.Y * 8f, 100, default(Color), 1f);
+						Main.dust[num622].velocity *= 1f;
+
+						Main.dust[num622].noGravity = true;
+						Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					}
+
+				}
+
+			}
+
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			if (scale > 0)
+			{
+				Texture2D inner = ModContent.GetTexture("Terraria/Projectile_" + 658);
+				Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 641);
+				Texture2D outer = ModContent.GetTexture("Terraria/Projectile_" + 657);
+				spriteBatch.Draw(inner, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.2f), (float)Math.Sin((double)projectile.rotation), new Vector2(inner.Width / 2, inner.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Turquoise, lightColor, 0.15f), projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, lightColor, 0.25f), -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+			}
+			return false;
+		}
+
+	}
 
 }
 

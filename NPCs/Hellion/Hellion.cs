@@ -1406,13 +1406,13 @@ namespace SGAmod.NPCs.Hellion
 			rand.Add("DPSDrones", 2 / (1 + (hell.army.Count>0 ? 0 : NPC.CountNPCS(mod.NPCType("DPSDrones")))));
 			if (npc.ai[1]<1 && hell.phase>0)
 			rand.Add("Cobalt Wraith", 3 / (1 + NPC.CountNPCS(mod.NPCType("CobaltArmorBow"))+ NPC.CountNPCS(mod.NPCType("CobaltArmorSword"))));
-			if (npc.ai[1] < 1 && hell.phase > 1 && hell.army.Count < 1)
+			if (npc.ai[1] < 1 && hell.phase > 1 && hell.army.Count < 1 && !hell.rematch)
 				rand.Add("Xemnas", 2.25);
-			if (npc.ai[1] < 1 && hell.phase > 1 && hell.army.Count < 1)
+			if (npc.ai[1] < 1 && hell.phase > 1 && hell.army.Count < 1 && !hell.rematch)
 				rand.Add("Laser Hell", 2.25);
-			if (npc.ai[1] < 1 && hell.phase > 0 && hell.army.Count < 1)
+			if (npc.ai[1] < 1 && hell.phase > 0 && hell.army.Count < 1 && !hell.haspickedlaser)
 				rand.Add("Homing Lasers", 2);
-			if (hell.phase > -1)
+			if (hell.phase > -1 && !hell.haspickedlaser)
 				rand.Add("Laser Reign", 2);			
 			if (npc.ai[1] < 1 && (npc.life<npc.lifeMax * 0.30) && hell.tyrant==0)
 				rand.Add("Tyrant Grasp", 10);
@@ -1442,6 +1442,7 @@ namespace SGAmod.NPCs.Hellion
 			}
 			if (type == "Homing Lasers")
 			{
+				hell.haspickedlaser = true;
 				hell.npc.ai[1] = 450;
 				hell.HellionTaunt("Have a health dose of lasers!");
 			}
@@ -1523,6 +1524,7 @@ namespace SGAmod.NPCs.Hellion
 			}
 			if (type == "Laser Reign")
 			{
+				hell.haspickedlaser = true;
 				hell.HellionTaunt("Ready for some Laser Reign?");
 				hell.supportabilitycooldown = (int)(hell.supportabilitycooldown * 0.75);
 				hell.manualmovement = 300;
@@ -1618,6 +1620,7 @@ namespace SGAmod.NPCs.Hellion
 		float dpscap = 0;
 		public bool nopuritymount=false;
 		public int subphase = 0;
+		public bool haspickedlaser=false;
 		public virtual bool rematch => false;
 
 
@@ -2188,6 +2191,7 @@ namespace SGAmod.NPCs.Hellion
 					supportabilitycooldown -= 1;
 					if (supportabilitycooldown < 1)
 					{
+						haspickedlaser = false;
 						for (int uu = 0; uu < tyrant + 1; uu += 1)
 						{
 							HellionAttacks.RollSupportAbility(P, uu);
@@ -2475,6 +2479,7 @@ namespace SGAmod.NPCs.Hellion
 			}
 			Achivements.SGAAchivements.UnlockAchivement("Hellion", Main.LocalPlayer);
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DrakeniteBar"), Main.rand.Next(15, 25));
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CodeBreakerHead"), 1);
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -2762,7 +2767,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			if (projectile.hide)
+			if (projectile.hide || SGAmod.ParadoxMirrorTex==null)
 				return false;
 			Matrix dothematrx = Matrix.CreateScale(0.5f * intro, 1f, 1f) *
 			Matrix.CreateRotationZ(rotshit) *
@@ -2890,11 +2895,6 @@ namespace SGAmod.NPCs.Hellion
 			}
 			else
 			{
-				if (Hellion.GetHellion() != null)
-				{
-
-
-				}
 				npc.ai[0] += 1;
 				if (npc.ai[0] == 1)
 				{
@@ -2921,6 +2921,7 @@ namespace SGAmod.NPCs.Hellion
 				npc.velocity += tothere*1f;
 
 				if (npc.ai[0]%180==0 && hell.army.Count<1)
+				if (hell.npc.ai[1] < 1000)
 				Idglib.Shattershots(npc.position, P.position, new Vector2(P.width, P.height), 100, 40, 12, 0, 1, true, 0, true, 300);
 
 

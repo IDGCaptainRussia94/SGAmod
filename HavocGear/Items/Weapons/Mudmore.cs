@@ -12,7 +12,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			base.SetDefaults();
 
-            item.damage = 54;
+            item.damage = 50;
             item.width = 50;
 			item.height = 58;
             item.melee = true;
@@ -47,7 +47,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void SetStaticDefaults()
     {
       DisplayName.SetDefault("Mudmore");
-      Tooltip.SetDefault("Releases mud upon striking enemies");
+      Tooltip.SetDefault("Releases mud upon striking enemies\nMud splashes the Oiled debuff onto nearby enemies");
     }
 
 

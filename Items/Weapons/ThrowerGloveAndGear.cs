@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
+using SGAmod.NPCs.Sharkvern;
 
 namespace SGAmod.Items.Weapons
 {
@@ -139,7 +140,7 @@ namespace SGAmod.Items.Weapons
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			speedX = basespeed.X;
 			speedY = basespeed.Y;
-			//if (type!=mod.ProjectileType("CelestialCocktailProj"))
+			if (type!=ProjectileID.Beenade)
 			damage += (int)((float)basetype2.damage * player.thrownDamage);
 			//else
 			//damage = (int)(basetype2.damage * player.thrownDamage);
@@ -929,5 +930,313 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+	class SharkBait : ModItem
+	{
 
-}
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Shark Bait");
+			Tooltip.SetDefault("'Contains many yummy snacks a Sharvern needs in their diet!'\nThrows a bag of Shark Bait, which erupts into fish\nFish may spawn hungry sharks\nProduces more fish when thrown into water\nDoubles as fishing bait");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.MolotovCocktail);
+			item.useStyle = 1;
+			item.thrown = true;
+			item.damage = 50;
+			item.useTime = 40;
+			item.useAnimation = 40;
+			item.bait = 60;
+			item.maxStack = 999;
+			item.shootSpeed = 8f;
+			item.shoot = mod.ProjectileType("SharkFoodProj");
+			item.value = Item.buyPrice(0, 0, 5, 0);
+			item.rare = 6;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.HerbBag); }
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			return true;
+		}
+
+	}
+
+	class SharkFoodProj : ModProjectile
+	{
+
+		bool hitonce = false;
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Shark Food");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Grenade);
+			projectile.thrown = true;
+			projectile.timeLeft = 600;
+			projectile.aiStyle = -1;
+			projectile.width = 24;
+			projectile.height = 24;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.HerbBag); }
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			int player = projectile.owner;
+			return base.CanHitNPC(target);
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.Kill();
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+
+			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("SharkFoodProj3"),projectile.damage, timeLeft>8000 ? 2 : 1, projectile.owner, 0f, 0f);
+			return true;
+		}
+
+		public override void AI()
+		{
+			Tile tile = Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16];
+			if (tile != null)
+			{
+				if (tile.liquid > 64)
+				{
+					projectile.timeLeft = 9999;
+					projectile.Kill();
+				}
+			}
+
+			int[] dustype = {DustID.Blood};
+			int dust = Dust.NewDust(new Vector2(projectile.Center.X-16, projectile.Center.Y-16), 32, 32, dustype[Main.rand.Next(0, dustype.Length)]);
+			Main.dust[dust].scale = 0.75f;
+			Main.dust[dust].noGravity = false;
+			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+			projectile.timeLeft -= 1;
+			projectile.velocity.Y += 0.25f;
+			projectile.velocity.X *= 0.98f;
+			projectile.rotation += projectile.velocity.Length() * (float)(Math.Sign(projectile.velocity.X*1000f)/1000f)*10f;
+		}
+
+	}
+
+	public class SharkFoodProj3 : ModProjectile
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Yum Yum!");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.HerbBag); }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.width = 72;
+			projectile.height = 24;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.penetrate = 1;
+			projectile.thrown = true;
+			projectile.extraUpdates = 0;
+			projectile.timeLeft = 60;
+			projectile.tileCollide = false;
+			projectile.aiStyle = -1;
+
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+			if (projectile.timeLeft == 30)
+			{
+				for (int i = 0; i < 20; i += 1)
+				{
+					int dust2 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+					Main.dust[dust2].scale = 2.5f;
+					Main.dust[dust2].noGravity = false;
+					Main.dust[dust2].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-12f, 1f));
+				}
+				for (float xx = 5f; xx < 20f; xx += projectile.knockBack>1 ? 1f : 1.75f)
+				{
+					int proj2 = Projectile.NewProjectile(projectile.Center, new Vector2(Main.rand.NextFloat(-5f, 5f), -Main.rand.NextFloat(0, xx)), mod.ProjectileType("SharkFoodProj2"), projectile.damage, 0f,projectile.owner,255);
+					Main.projectile[proj2].friendly = false;
+					Main.projectile[proj2].hostile = true;
+					Main.projectile[proj2].ai[0] = Main.rand.Next(40, 100);
+					Main.projectile[proj2].netUpdate = true;
+				}
+				Main.PlaySound(19, (int)projectile.position.X, (int)projectile.position.Y, 1, 1f, 0.25f);
+			}
+
+			for (int i = 0; i < 3; i += 1)
+			{
+				int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+				Main.dust[dust].scale = 2f;
+				Main.dust[dust].noGravity = false;
+				Main.dust[dust].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1f, 1f));
+			}
+		}
+
+	}
+
+
+	public class SharkFoodProj2 : RandomOceanCrap
+	{
+
+		int fakeid = ProjectileID.FrostShard;
+		int fishtype = 0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Yum Yum!");
+		}
+
+		public override bool CanDamage()
+		{
+			return projectile.velocity.Y > -3f && projectile.ai[1]>2;
+		}
+		public override bool? CanHitNPC(NPC target)
+		{
+			if (projectile.velocity.Y <= -3f)
+				return false;
+			return base.CanHitNPC(target);
+		}
+
+		public override void AI()
+		{
+			base.AI();
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.ai[1] += 1;
+			if (projectile.ai[1] > projectile.ai[0])
+			{
+				projectile.ai[1] = -999;
+				int proj2 = Projectile.NewProjectile(projectile.Center+ new Vector2(Math.Sign(projectile.velocity.X) * 150,42), new Vector2(-Math.Sign(projectile.velocity.X)*12,-2.25f), mod.ProjectileType("FlyingSharkProj"), projectile.damage, 4, projectile.owner);
+			}
+			if (projectile.velocity.Y > 0)
+				projectile.tileCollide = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.CloneDefaults(fakeid);
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.penetrate = 1;
+			projectile.thrown = true;
+			projectile.extraUpdates = 0;
+			projectile.tileCollide = false;
+			projectile.aiStyle = -1;
+			int[] types = { ItemID.Fish, ItemID.Trout, ItemID.TundraTrout, ItemID.ReaverShark, ItemID.Goldfish, ItemID.Ebonkoi, ItemID.MirageFish, ItemID.PrincessFish, ItemID.FrostDaggerfish };
+			fishtype = types[Main.rand.Next(types.Length)];
+		}
+
+	}
+
+	public class FlyingSharkProj : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shark");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/NPC_" + NPCID.Shark); }
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.WaterBolt);
+			projectile.extraUpdates = 0;
+			projectile.width = 72;
+			projectile.height = 42;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 180;
+			projectile.tileCollide = false;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.thrown = true;
+			projectile.scale = 1f;
+		}
+
+		public override void AI()
+		{
+			int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+			Main.dust[dust].scale = 2f;
+			Main.dust[dust].noGravity = false;
+			Main.dust[dust].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1f, 1f));
+
+			projectile.localAI[0] += 1;
+			projectile.velocity.Y += 0.1f;
+			if (Collision.SolidCollision(projectile.position,projectile.width,projectile.height))
+				projectile.timeLeft = Math.Min(projectile.timeLeft, 30);
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D tex = ModContent.GetTexture("Terraria/NPC_"+NPCID.Shark);
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
+			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
+			Color color = projectile.GetAlpha(lightColor) * 1f; //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+			int timing = (int)(projectile.localAI[0] / 8f);
+			timing %= 4;
+			timing *= ((tex.Height) / 4);
+			float yspeed = projectile.velocity.Y;
+			if (Math.Abs(projectile.velocity.Y) > 2f)
+			{
+				yspeed = (Math.Sign(yspeed) * 2f) + yspeed / 5f;
+			}
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 4), 
+				color*MathHelper.Clamp((float)projectile.timeLeft/30f,0f,(float)Math.Min(projectile.localAI[0]/15f,1f)),yspeed * (0.15f* Math.Sign(projectile.velocity.X))
+				, drawOrigin, projectile.scale, projectile.velocity.X<1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			return false;
+		}
+
+	}
+
+
+	}

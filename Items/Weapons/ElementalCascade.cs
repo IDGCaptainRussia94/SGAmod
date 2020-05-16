@@ -196,7 +196,8 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("LunarCascade"), 1);
 			recipe.AddRecipeGroup("SGAmod:CelestialFragments", 10);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 200);
-			recipe.AddIngredient(mod.ItemType("HellionSummon"), 1);
+			//recipe.AddIngredient(mod.ItemType("HellionSummon"), 1);
+			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

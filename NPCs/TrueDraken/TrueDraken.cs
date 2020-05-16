@@ -585,7 +585,7 @@ namespace SGAmod.NPCs.TrueDraken
 
 		}
 
-		//From Joost
+		//From Joost, get perms yeah
 		private Vector2 PredictiveAim(float speed, Vector2 origin, bool ignoreY)
 		{
 			Player P = Main.player[npc.target];
