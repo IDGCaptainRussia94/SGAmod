@@ -36,11 +36,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\IDGCaptainRussia94\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\SGAmod\\SGAmod.csproj",
+      "projectUniqueName": "C:\\Users\\IDGCaptainRussia94\\Documents\\GitHub\\SGAmod\\SGAmod.csproj",
       "projectName": "SGAmod",
-      "projectPath": "C:\\Users\\IDGCaptainRussia94\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\SGAmod\\SGAmod.csproj",
+      "projectPath": "C:\\Users\\IDGCaptainRussia94\\Documents\\GitHub\\SGAmod\\SGAmod.csproj",
       "packagesPath": "C:\\Users\\IDGCaptainRussia94\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\IDGCaptainRussia94\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\SGAmod\\obj\\",
+      "outputPath": "C:\\Users\\IDGCaptainRussia94\\Documents\\GitHub\\SGAmod\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\IDGCaptainRussia94\\AppData\\Roaming\\NuGet\\NuGet.Config",
