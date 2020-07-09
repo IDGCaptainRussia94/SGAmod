@@ -1,5 +1,5 @@
-# SGAmod
-IDGCaptainRussia94's content mod
+# SGAmod (Dated)
+IDGCaptainRussia94's content mod (Older versions only)
 
 //Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Icicle Fall, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?)
 
